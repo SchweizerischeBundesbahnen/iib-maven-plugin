@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<settings>
+<!-- 
+	<mirrors>
+		<mirror>
+			<id>sbbMirror</id>
+			<mirrorOf>*</mirrorOf>
+			<name>SBB Maven Mirror (Nexus)</name>
+			<url>http://repo.sbb.ch/content/groups/mirror/</url>
+		</mirror>
+	</mirrors>
+ -->
+	<profiles>
+		<profile>
+			<id>it-repo</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<id>local.central</id>
+					<url>@localRepositoryUrl@</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>local.central</id>
+					<url>@localRepositoryUrl@</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+	</profiles>
+</settings>

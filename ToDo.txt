@@ -1,0 +1,41 @@
+- .project & pom.xml in UEBERGABE nicht mit liefern
+
+- Fail wmb-bar build if no dependencies are defined
+
+- Add Message Sets to wmb-bar build automatically (als when no flows use them)
+
+- Fail wmb-src & wmb-bar build if no Maven dependency defined for Project References and vice-versa
+
+- Fail all builds if artifactId != EclipseProjectName
+
+- Exclude flows without an input node (they can never be deployed in V7)
+
+? applybaroverride
+  - for i in *.properties
+  - do
+  -   mqsiapplybaroverride -b target/wmb/${project.artifactId}-${project.version}.bar -p $i -o target/wmb/${project.artifactId}-${project.version}-$i(-".properties").bar
+  - done
+  
+  
+.project natures:
+  msgflow:
+<projectDescription>
+    ...
+	<natures>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+<nature>com.ibm.etools.mft.flow.messageflownature</nature>
+		<nature>com.ibm.etools.mft.bar.ext.barnature</nature>
+	</natures>
+</projectDescription>
+
+  wmbjar:
+<projectDescription>
+    ...
+	<natures>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+<nature>com.ibm.etools.mft.jcn.jcnnature</nature>
+		<nature>com.ibm.etools.mft.bar.ext.barnature</nature>
+	</natures>
+</projectDescription>

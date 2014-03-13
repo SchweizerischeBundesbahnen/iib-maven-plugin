@@ -1,0 +1,57 @@
+1.9
+---
+* include any default generated-sources directories when packaging wmb-src projects
+* remove target/wmb prior to wmb7:prepare-wmb-classloader-packaging to ensure the latests versions appear 
+* improved error message with classloader inconsistencies
+* added site generation configuration
+
+1.8
+---
+* Fix bug when no there are no property files under src/test/resources 
+
+1.7
+---
+* support wmb-test *.properites files (src/test/resources)
+* Execute mqsiapplybaroverride for *.properties
+* wmb-bar project *.properties handling changes
+  * files sourced out of src/main/resources (instead of project root)
+  * files will be filtered
+
+1.6
+---
+* Correctly implemented mqsicreatebar "-cleanBuild" parameter
+* Include target/test-dependency/*.jar when packaging wmb-src projects
+
+1.5
+---
+* Implemented ${wmb.useClassloaders} - don't just remove all jars by default
+* Change ${wmb.discardJarsPattern} default value to **\/javacompute_**.jar,**\/jplugin_**.jar
+
+1.4
+---
+* Classloader Implementation functionally complete
+* Classloader Strategy Validation on bar's (all Java Nodes use a classloader or none of them do)
+* Implemented discarding of jar files out of the bar file (used with classloaders)
+
+1.3
+---
+* No change! A failed Release Build deployed an incorrect 1.2 Version to Nexus and it cannot simply be removed 
+
+1.2
+---
+* jar projects copy dependent jars *without* version number into target/dependency (PrepareJarClasspathMojo)
+* set wmb.versionString default value to ${project.version}
+* support Maven filtering für *.mset files
+
+1.1
+---
+* implemented support for wmb java projects 
+* include target/dependecies/*.jar during wmb-src packaging
+* fixed bug with filtering jar files during wmb-src packaging
+* fixed collision issue with command files in temp directory during parallel builds
+
+
+1.0
+---
+
+Initial Release

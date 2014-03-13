@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>@project.groupId@.maven-wmb7-plugin.it</groupId>
+  <artifactId>CreateBarMojo1</artifactId>
+  <version>@project.version@</version>
+
+  <description>Test the default parameters passed to the plugin</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <extensions>true</extensions>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <id>create-bar</id>
+            <goals>
+              <goal>create-bar</goal>
+            </goals>
+            <configuration>
+              <projectName>project1</projectName>
+              <toolkitInstallDir>@wmb.toolkitInstallDir@</toolkitInstallDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

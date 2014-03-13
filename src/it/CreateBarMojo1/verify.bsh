@@ -1,0 +1,48 @@
+import java.io.*;
+
+// somewhat inefficient and not always 100% accurate, but it'll do for now
+void validateParam(String param, String valuePattern) throws FileNotFoundException {
+
+        boolean valid = false;
+        String searchPattern = "^\\[DEBUG\\]   \\(f\\) " +
+                param + " = " + valuePattern;
+
+        // find the build log
+        String filename = "build.log";
+        File file = new File( basedir, filename );
+
+	FileReader fileReader;
+	fileReader = new FileReader(file);
+	BufferedReader br = new BufferedReader(fileReader);
+	String line;
+	try {
+		while ((line = br.readLine()) != null) {
+			if (line.matches(searchPattern)) {
+				valid = true;
+				break;
+			}
+		}
+	} catch (IOException e) {
+		valid = false;
+	} finally {
+		try {
+			br.close();
+		} catch (IOException e) {
+		// ignore
+		}
+	}
+	if (valid == false) {
+	        throw new Exception(searchPattern +
+	                " was not found in " + file.getName());
+        }
+}
+
+validateParam("barName", ".*CreateBarMojo1-.*.bar");
+validateParam("cleanBuild", "true");
+validateParam("esql21", "false");
+//validateParam("excludeArtifactsPattern", "null");
+validateParam("includeArtifactsPattern", "\\*\\*/\\*\\.msgflow,\\*\\*/\\*\\.mset");
+validateParam("versionString", ".*");
+validateParam("toolkitInstallDir", ".*");
+validateParam("toolkitVersion", "7");
+validateParam("workspace", ".*");

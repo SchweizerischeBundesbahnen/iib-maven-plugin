@@ -1,0 +1,10 @@
+import java.io.*;
+
+static String WORKSPACE_DIR = "target/it/PrepareBarBuildWorkspaceMojo1/target/wmb/workspace";
+
+
+File workspace = new File(WORKSPACE_DIR);
+
+if (!workspace.exists()) {
+  throw new Exception("The directory '" + WORKSPACE_DIR + "' should have been created, but wasn't");
+}
