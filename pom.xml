@@ -110,8 +110,8 @@
 		<url>http://ci.sbb.ch</url>
 	</ciManagement>
 	<scm>
-		<connection>scm:git:https://github.com/jamietownsend/maven-wmb7-plugin.git</connection>
-		<developerConnection>scm:git:https://github.com/jamietownsend/maven-wmb7-plugin.git</developerConnection>
+		<connection>scm:svn:https://github.com/jamietownsend/maven-wmb7-plugin.git/trunk</connection>
+		<developerConnection>scm:svn:https://github.com/jamietownsend/maven-wmb7-plugin.git/trunk</developerConnection>
 	</scm>
 	<build>
 		<plugins>
