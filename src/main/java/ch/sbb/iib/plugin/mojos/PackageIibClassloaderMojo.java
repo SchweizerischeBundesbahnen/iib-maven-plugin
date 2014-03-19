@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -27,7 +27,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Creates a .zip file from a wmb-classloader Project which contains the
+ * Creates a .zip file from a iib-classloader Project which contains the
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
@@ -35,12 +35,12 @@ import org.codehaus.plexus.util.IOUtil;
  * @requiresProject true
  * 
  */
-public class PackageWmbClassloaderMojo extends AbstractMojo {
+public class PackageIibClassloaderMojo extends AbstractMojo {
 
     /**
-     * The path to write the assemblies/wmb-bar-project.xml file to before invoking the maven-assembly-plugin.
+     * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
      * 
-     * @parameter default-value="${project.build.directory}/assemblies/wmb-classloader-project.xml"
+     * @parameter default-value="${project.build.directory}/assemblies/iib-classloader-project.xml"
      * @readonly
      */
     private File buildAssemblyFile;
@@ -73,12 +73,12 @@ public class PackageWmbClassloaderMojo extends AbstractMojo {
 
     public void execute() throws MojoFailureException, MojoExecutionException {
 
-        packageWmbBarArtifact();
+        packageIibBarArtifact();
 
     }
 
-    private void packageWmbBarArtifact() throws MojoFailureException, MojoExecutionException {
-        InputStream is = this.getClass().getResourceAsStream("/assemblies/wmb-classloader-project.xml");
+    private void packageIibBarArtifact() throws MojoFailureException, MojoExecutionException {
+        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-classloader-project.xml");
         FileOutputStream fos;
         buildAssemblyFile.getParentFile().mkdirs();
         try {
@@ -94,10 +94,10 @@ public class PackageWmbClassloaderMojo extends AbstractMojo {
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\wmb-classloader-project.xml -Dassembly.appendAssemblyId=false
+        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-classloader-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/wmb-classloader-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/iib-classloader-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {

@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -65,7 +65,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
     /**
      * The path of the workspace in which the projects are extracted to be built.
      * 
-     * @parameter expression="${wmb.workspace}" default-value="${project.build.directory}/wmb/workspace"
+     * @parameter expression="${iib.workspace}" default-value="${project.build.directory}/iib/workspace"
      * @required
      */
     protected File workspace;
@@ -73,31 +73,31 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
     /**
      * The path of the workspace in which the projects will be unpacked.
      * 
-     * @parameter expression="${wmb.unpackDependenciesDirectory}" default-value="${project.build.directory}/wmb/dependencies"
+     * @parameter expression="${iib.unpackDependenciesDirectory}" default-value="${project.build.directory}/iib/dependencies"
      * @required
      * @read-only
      */
     protected File unpackDependenciesDirectory;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:unpack-dependencies -DoutputDirectory=${project.build.directory}/wmb/workspace
+        // mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:unpack-dependencies -DoutputDirectory=${project.build.directory}/iib/workspace
 
         // unpack all the dependencies into the workspace directory for compilation
         // and bar file packaging.
-        unpackWmbDependencies("compile", workspace);
+        unpackIibDependencies("compile", workspace);
 
         // the following code might come in useful for the packaging of specific artifacts in the bar file
 
-        // unpackWmbDependencies("compile", new File(unpackDependenciesDirectory, "compile"));
+        // unpackIibDependencies("compile", new File(unpackDependenciesDirectory, "compile"));
 
         // is not needed for anything
-        // unpackWmbDependencies("runtime");
+        // unpackIibDependencies("runtime");
 
         // unpack the provided dependencies, so that the can be excluded from
         // the bar file creation.
-        // unpackWmbDependencies("provided", new File(unpackDependenciesDirectory, "provided"));
+        // unpackIibDependencies("provided", new File(unpackDependenciesDirectory, "provided"));
 
-        // unpackWmbDependencies("test", new File(unpackDependenciesDirectory, "test"));
+        // unpackIibDependencies("test", new File(unpackDependenciesDirectory, "test"));
 
     }
 
@@ -105,7 +105,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
      * @param scope dependency Scope to be unpacked
      * @throws MojoExecutionException
      */
-    private void unpackWmbDependencies(String scope, File unpackDir) throws MojoExecutionException {
+    private void unpackIibDependencies(String scope, File unpackDir) throws MojoExecutionException {
 
         // define the directory to be unpacked into and create it
         unpackDir.mkdirs();

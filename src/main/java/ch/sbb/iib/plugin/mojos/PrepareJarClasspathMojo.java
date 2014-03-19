@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -59,7 +59,7 @@ public class PrepareJarClasspathMojo extends AbstractMojo {
     protected BuildPluginManager buildPluginManager;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:unpack-dependencies -DoutputDirectory=${project.build.directory}/wmb/workspace
+        // mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:unpack-dependencies -DoutputDirectory=${project.build.directory}/iib/workspace
 
         copyJarDependencies("compile", new File(project.getBuild().getDirectory(), "dependency"));
         copyJarDependencies("test", new File(project.getBuild().getDirectory(), "test-dependency"));

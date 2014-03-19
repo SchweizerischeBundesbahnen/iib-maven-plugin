@@ -1,2 +1,2 @@
-iib9-maven-plugin
+iib-maven-plugin
 =================

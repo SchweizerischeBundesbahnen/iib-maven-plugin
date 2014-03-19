@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.utils;
+package ch.sbb.iib.plugin.utils;
 
 import java.util.ArrayList;
 import java.util.List;

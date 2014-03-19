@@ -1,6 +1,6 @@
 import java.io.*;
 
-static String WORKSPACE_DIR = "target/it/PrepareBarBuildWorkspaceMojo1/target/wmb/workspace";
+static String WORKSPACE_DIR = "target/it/PrepareBarBuildWorkspaceMojo1/target/iib/workspace";
 
 
 File workspace = new File(WORKSPACE_DIR);

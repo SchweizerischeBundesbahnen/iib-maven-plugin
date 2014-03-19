@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ch.sbb.maven.plugins</groupId>
-	<artifactId>iib9-maven-plugin</artifactId>
+	<artifactId>iib-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>1.1-SNAPSHOT</version>
-	<name>iib9-maven-plugin Maven Mojo</name>
+	<version>1.0-SNAPSHOT</version>
+	<name>iib-maven-plugin Maven Mojo</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -108,7 +108,7 @@
 		<url>http://ci.sbb.ch</url>
 	</ciManagement>
 	<scm>
-		<connection>scm:git:https://code.sbb.ch/scm/kd_int/iib9-maven-plugin.git</connection>
-		<developerConnection>scm:git:https://code.sbb.ch/scm/kd_int/iib9-maven-plugin.git</developerConnection>
+		<connection>scm:git:https://code.sbb.ch/scm/kd_int/iib-maven-plugin.git</connection>
+		<developerConnection>scm:git:https://code.sbb.ch/scm/kd_int/iib-maven-plugin.git</developerConnection>
 	</scm>
 </project>
