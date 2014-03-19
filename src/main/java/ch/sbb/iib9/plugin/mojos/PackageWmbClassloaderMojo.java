@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.mojos;
+package ch.sbb.iib9.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;

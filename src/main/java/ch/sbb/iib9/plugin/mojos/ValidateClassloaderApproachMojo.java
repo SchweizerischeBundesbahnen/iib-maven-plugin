@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.mojos;
+package ch.sbb.iib9.plugin.mojos;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 
-import ch.sbb.wmb7.plugin.utils.ConfigurablePropertiesUtil;
+import ch.sbb.iib9.plugin.utils.ConfigurablePropertiesUtil;
 
 /**
  * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them
@@ -45,6 +45,7 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
      */
     protected Boolean useClassloaders;
 
+    @Override
     public void execute() throws MojoFailureException {
 
         // the defaultPropertiesFile will be created in an earlier Maven build
@@ -102,9 +103,10 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
         getLog().info("Reading configurable properties from: " + defaultPropertiesFile.getAbsolutePath());
 
         FileReader fr = null;
+        BufferedReader br = null;
         try {
             fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
+            br = new BufferedReader(fr);
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -114,6 +116,9 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
             try {
                 if (fr != null) {
                     fr.close();
+                }
+                if (br != null) {
+                    br.close();
                 }
             } catch (IOException e) {
                 // ignore any error here

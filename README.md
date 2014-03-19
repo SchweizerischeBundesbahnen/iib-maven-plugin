@@ -1,2 +1,2 @@
-maven-wmb7-plugin
+iib9-maven-plugin
 =================

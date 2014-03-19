@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.mojos;
+package ch.sbb.iib9.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -27,15 +26,23 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Packages a WebSphere Message Broker Project.
+ * Creates a .bar file from a wmb-bar Project.
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
- * @goal package-src
+ * @goal package-wmb-bar
  * @requiresProject true
  * 
  */
-public class PackageWmbSrcMojo extends AbstractMojo {
+public class PackageWmbBarMojo extends CreateBarMojo {
+
+    /**
+     * The path to write the assemblies/wmb-bar-project.xml file to before invoking the maven-assembly-plugin.
+     * 
+     * @parameter default-value="${project.build.directory}/assemblies/wmb-bar-project.xml"
+     * @readonly
+     */
+    private File buildAssemblyFile;
 
     /**
      * The Maven Project Object
@@ -63,16 +70,15 @@ public class PackageWmbSrcMojo extends AbstractMojo {
      */
     protected BuildPluginManager buildPluginManager;
 
-    /**
-     * The path to write the assemblies/wmb-src-project.xml file to before invoking the maven-assembly-plugin.
-     * 
-     * @parameter default-value="${project.build.directory}/assemblies/wmb-src-project.xml"
-     * @readonly
-     */
-    private File buildAssemblyFile;
+    @Override
+    public void execute() throws MojoFailureException, MojoExecutionException {
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        InputStream is = this.getClass().getResourceAsStream("/assemblies/wmb-src-project.xml");
+        packageWmbBarArtifact();
+
+    }
+
+    private void packageWmbBarArtifact() throws MojoFailureException, MojoExecutionException {
+        InputStream is = this.getClass().getResourceAsStream("/assemblies/wmb-bar-project.xml");
         FileOutputStream fos;
         buildAssemblyFile.getParentFile().mkdirs();
         try {
@@ -88,10 +94,10 @@ public class PackageWmbSrcMojo extends AbstractMojo {
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\wmb-src-project.xml -Dassembly.appendAssemblyId=false
+        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\wmb-bar-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/wmb-src-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/wmb-bar-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {

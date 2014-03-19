@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.mojos;
+package ch.sbb.iib9.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
-import ch.sbb.wmb7.plugin.utils.ProcessOutputLogger;
-import ch.sbb.wmb7.plugin.utils.ZipUtils;
+import ch.sbb.iib9.plugin.utils.ProcessOutputLogger;
+import ch.sbb.iib9.plugin.utils.ZipUtils;
 
 /**
  * Creates a .bar file from a wmb-bar Project.
@@ -146,6 +146,7 @@ public class CreateBarMojo extends AbstractMojo {
      */
     protected BuildPluginManager buildPluginManager;
 
+    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         getLog().info("Creating bar file: " + barName);

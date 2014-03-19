@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.utils;
+package ch.sbb.iib9.plugin.utils;
 
 import static org.junit.Assert.assertEquals;
 

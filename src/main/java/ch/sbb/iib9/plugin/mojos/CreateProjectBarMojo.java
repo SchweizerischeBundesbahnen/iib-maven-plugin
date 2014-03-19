@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.mojos;
+package ch.sbb.iib9.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -30,11 +30,87 @@ import org.codehaus.plexus.util.IOUtil;
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
- * @goal package-wmb-bar
+ * @goal create-project-bar
  * @requiresProject true
  * 
  */
-public class PackageWmbBarMojo extends CreateBarMojo {
+public class CreateProjectBarMojo extends CreateBarMojo {
+
+    /**
+     * The name of the BAR (compressed file format) archive file where the result is stored.
+     * 
+     * @parameter expression="${wmb.barName}" default-value="${project.build.directory}/wmb/${project.artifactId}-${project.version}.bar"
+     * @required
+     */
+    protected File barName;
+
+    /**
+     * Refreshes the projects in the workspace and then invokes a clean build before new items are added to the BAR file.
+     * 
+     * @parameter expression="${wmb.cleanBuild}" default-value="true"
+     * @required
+     */
+    protected boolean cleanBuild;
+
+    /**
+     * Compile ESQL for brokers at Version 2.1 of the product.
+     * 
+     * @parameter expression="${wmb.esql21}" default-value="false"
+     * @required
+     */
+    protected boolean esql21;
+
+    /**
+     * Exclude artifacts pattern (or patterns, comma separated)
+     * 
+     * @parameter expression="${wmb.excludeArtifactsPattern}" default-value=""
+     */
+    protected String excludeArtifactsPattern;
+
+    /**
+     * Include artifacts pattern (or patterns, comma separated)
+     * 
+     * @parameter expression="${wmb.includeArtifactsPattern}" default-value="**\/*\.msgflow,**\/*\.mset"
+     * @required
+     */
+    protected String includeArtifactsPattern;
+
+    /**
+     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
+     * 
+     * @parameter expression="${wmb.projectName}" default-value=""
+     */
+    protected String projectName;
+
+    /**
+     * Installation directory of the WMB Toolkit
+     * 
+     * @parameter expression="${wmb.toolkitInstallDir}"
+     * @required
+     */
+    protected File toolkitInstallDir;
+
+    /**
+     * Major Version number of the WMB Toolkit. (Current not used, but will be needed when support for difference Versions with different options is supported)
+     * 
+     * @parameter expression="${wmb.toolkitVersion}" default-value="7"
+     */
+    protected String toolkitVersion;
+
+    /**
+     * Appends the _ (underscore) character and the value of VersionString to the names of the compiled versions of the message flows (.cmf) files added to the BAR file, before the file extension.
+     * 
+     * @parameter expression="${wmb.versionString}" default-value=""
+     */
+    protected String versionString;
+
+    /**
+     * The path of the workspace in which the projects are extracted to be built.
+     * 
+     * @parameter expression="${wmb.workspace}" default-value="${project.build.directory}/wmb/workspace"
+     * @required
+     */
+    protected File workspace;
 
     /**
      * The path to write the assemblies/wmb-bar-project.xml file to before invoking the maven-assembly-plugin.
@@ -73,8 +149,30 @@ public class PackageWmbBarMojo extends CreateBarMojo {
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
+        executeCreateBar();
+
         packageWmbBarArtifact();
 
+    }
+
+    /**
+     * @throws MojoFailureException
+     * @throws MojoExecutionException
+     */
+    private void executeCreateBar() throws MojoFailureException, MojoExecutionException {
+        // pass up the modified default values
+        super.barName = this.barName;
+        super.cleanBuild = this.cleanBuild;
+        super.esql21 = this.esql21;
+        super.excludeArtifactsPattern = this.excludeArtifactsPattern;
+        super.includeArtifactsPattern = this.includeArtifactsPattern;
+        super.projectName = this.projectName;
+        super.toolkitInstallDir = this.toolkitInstallDir;
+        super.toolkitVersion = this.toolkitVersion;
+        super.versionString = this.versionString;
+        super.workspace = this.workspace;
+
+        super.execute();
     }
 
     private void packageWmbBarArtifact() throws MojoFailureException, MojoExecutionException {
