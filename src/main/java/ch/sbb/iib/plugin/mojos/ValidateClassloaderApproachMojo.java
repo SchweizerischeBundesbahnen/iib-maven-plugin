@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
 
-import ch.sbb.iib9.plugin.utils.ConfigurablePropertiesUtil;
+import ch.sbb.iib.plugin.utils.ConfigurablePropertiesUtil;
 
 /**
  * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them
@@ -24,7 +24,7 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
     /**
      * The name of the default properties file to be generated from the bar file.
      * 
-     * @parameter expression="${wmb.configurablePropertiesFile}" default-value="${project.build.directory}/wmb/default.properties"
+     * @parameter expression="${iib.configurablePropertiesFile}" default-value="${project.build.directory}/iib/default.properties"
      * @required
      */
     protected File defaultPropertiesFile;
@@ -32,7 +32,7 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
     /**
      * Whether or not to fail the build if the classloader approach is invalid.
      * 
-     * @parameter expression="${wmb.failOnInvalidClassloader}" default-value="true"
+     * @parameter expression="${iib.failOnInvalidClassloader}" default-value="true"
      * @required
      */
     protected Boolean failOnInvalidClassloader;
@@ -40,7 +40,7 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
     /**
      * Whether classloaders are in use with this bar
      * 
-     * @parameter expression="${wmb.useClassloaders}" default-value="false"
+     * @parameter expression="${iib.useClassloaders}" default-value="false"
      * @since 1.5
      */
     protected Boolean useClassloaders;
@@ -75,14 +75,14 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
             if (clValueDefined != useClassloaders) {
                 logInconsistency(clProps);
                 if (failOnInvalidClassloader) {
-                    throw new MojoFailureException("Inconsistent classloader configuration. (wmb.useClassloaders = " + useClassloaders + ", classloader values defined = " + clValueDefined + ")");
+                    throw new MojoFailureException("Inconsistent classloader configuration. (iib.useClassloaders = " + useClassloaders + ", classloader values defined = " + clValueDefined + ")");
                 }
             }
         }
     }
 
     private void logInconsistency(List<String> clProps) {
-        String logMsg = "Inconsistent classloader configuration. ${wmb.useClassloaders} == " + useClassloaders + ". If classloaders are in use, all Java Nodes should define a classloader:";
+        String logMsg = "Inconsistent classloader configuration. ${iib.useClassloaders} == " + useClassloaders + ". If classloaders are in use, all Java Nodes should define a classloader:";
         if (failOnInvalidClassloader) {
             getLog().error(logMsg);
             for (String string : clProps) {

@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -12,10 +12,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -24,18 +21,20 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Packages a WebSphere Message Broker Project.
+ * Copies the dependencies into a directory for packaging later
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
- * @goal package-src
+ * requiresDependencyResolution below is required for the unpack-dependencies goal to work correctly. See https://github.com/TimMoore/mojo-executor/issues/3
+ * 
+ * @goal prepare-iib-classloader-packaging
  * @requiresProject true
+ * @requiresDependencyResolution test
  * 
  */
-public class PackageWmbSrcMojo extends AbstractMojo {
+public class PrepareIibClassloaderPackagingMojo extends AbstractMojo {
 
     /**
      * The Maven Project Object
@@ -64,42 +63,37 @@ public class PackageWmbSrcMojo extends AbstractMojo {
     protected BuildPluginManager buildPluginManager;
 
     /**
-     * The path to write the assemblies/wmb-src-project.xml file to before invoking the maven-assembly-plugin.
+     * The path where the classloader jars will be copied to for packaging later.
      * 
-     * @parameter default-value="${project.build.directory}/assemblies/wmb-src-project.xml"
-     * @readonly
+     * @parameter expression="${iib.classloader}" default-value="${project.build.directory}/iib/classloader"
+     * @read-only
+     * @required
      */
-    private File buildAssemblyFile;
+    protected File classloader;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        InputStream is = this.getClass().getResourceAsStream("/assemblies/wmb-src-project.xml");
-        FileOutputStream fos;
-        buildAssemblyFile.getParentFile().mkdirs();
+        // mvn
+        // org.apache.maven.plugins:maven-dependency-plugin:2.1:copy-dependencies
+        // -DoutputDirectory=${project.build.directory}/iib/classloader
+
+        getLog().info("Emptying " + new File(project.getBuild().getDirectory(), "iib").getAbsolutePath());
         try {
-            fos = new FileOutputStream(buildAssemblyFile);
-        } catch (FileNotFoundException e) {
-            // should never happen, as the file is packaged in this plugin's jar
-            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile);
-        }
-        try {
-            IOUtil.copy(is, fos);
+            FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "iib"));
         } catch (IOException e) {
-            // should never happen
-            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
+            // ignore
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\wmb-src-project.xml -Dassembly.appendAssemblyId=false
+        executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("2.8")), goal("copy-dependencies"), configuration(element(name("outputDirectory"),
+                classloader.getAbsolutePath()), element(name("includeScope"), "runtime"), element(name("includeTypes"), "jar")), executionEnvironment(project, session, buildPluginManager));
 
-        executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/wmb-src-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
-
-        // delete the archive-tmp directory
+        // delete the dependency-maven-plugin-markers directory
         try {
-            FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "archive-tmp"));
+            FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "dependency-maven-plugin-markers"));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
 }

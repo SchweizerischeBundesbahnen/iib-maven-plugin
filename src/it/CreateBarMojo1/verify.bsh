@@ -44,5 +44,5 @@ validateParam("esql21", "false");
 validateParam("includeArtifactsPattern", "\\*\\*/\\*\\.msgflow,\\*\\*/\\*\\.mset");
 validateParam("versionString", ".*");
 validateParam("toolkitInstallDir", ".*");
-validateParam("toolkitVersion", "7");
+validateParam("toolkitVersion", "9");
 validateParam("workspace", ".*");

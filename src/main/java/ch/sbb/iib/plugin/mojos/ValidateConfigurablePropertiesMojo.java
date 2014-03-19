@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -27,8 +27,8 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
-import ch.sbb.iib9.plugin.utils.ConfigurablePropertiesUtil;
-import ch.sbb.iib9.plugin.utils.ProcessOutputCatcher;
+import ch.sbb.iib.plugin.utils.ConfigurablePropertiesUtil;
+import ch.sbb.iib.plugin.utils.ProcessOutputCatcher;
 
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties
@@ -42,7 +42,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     /**
      * Whether the applybaroverride command should be executed or not
      * 
-     * @parameter expression="${wmb.applybaroverride}" default-value="true"
+     * @parameter expression="${iib.applybaroverride}" default-value="true"
      * @required
      */
     protected Boolean applyBarOverride;
@@ -50,7 +50,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
      * 
-     * @parameter expression="${wmb.barName}" default-value="${project.build.directory}/wmb/${project.artifactId}-${project.version}.bar"
+     * @parameter expression="${iib.barName}" default-value="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
      * @required
      */
     protected File barName;
@@ -58,7 +58,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     /**
      * The name of the default properties file to be generated from the bar file.
      * 
-     * @parameter expression="${wmb.configurablePropertiesFile}" default-value="${project.build.directory}/wmb/default.properties"
+     * @parameter expression="${iib.configurablePropertiesFile}" default-value="${project.build.directory}/iib/default.properties"
      * @required
      */
     protected File defaultPropertiesFile;
@@ -66,15 +66,15 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     /**
      * Whether or not to fail the build if properties are found to be invalid.
      * 
-     * @parameter expression="${wmb.failOnInvalidProperties}" default-value="true"
+     * @parameter expression="${iib.failOnInvalidProperties}" default-value="true"
      * @required
      */
     protected Boolean failOnInvalidProperties;
 
     /**
-     * Installation directory of the WMB Toolkit
+     * Installation directory of the IIB Toolkit
      * 
-     * @parameter expression="${wmb.toolkitInstallDir}"
+     * @parameter expression="${iib.toolkitInstallDir}"
      * @required
      */
     protected File toolkitInstallDir;
@@ -137,14 +137,14 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
         // copy the main resources
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-resources-plugin"), version("2.6")), goal("copy-resources"), configuration(element(name("outputDirectory"),
-                "${project.build.directory}/wmb"), element(name("resources"), element(name("resource"),
+                "${project.build.directory}/iib"), element(name("resources"), element(name("resource"),
                 // TODO hard-coding this isn't great form
                 // see also ValidateConfigurablePropertiesMojo.java
                 element(name("directory"), "src/main/resources"), element(name("filtering"), "true")))), executionEnvironment(project, session, buildPluginManager));
 
         // copy the test resources
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-resources-plugin"), version("2.6")), goal("copy-resources"), configuration(element(name("outputDirectory"),
-                "${project.build.directory}/wmb-test"), element(name("resources"), element(name("resource"),
+                "${project.build.directory}/iib-test"), element(name("resources"), element(name("resource"),
                 // TODO hard-coding this isn't great form
                 // see also ValidateConfigurablePropertiesMojo.java
                 element(name("directory"), "src/test/resources"), element(name("filtering"), "true")))), executionEnvironment(project, session, buildPluginManager));
@@ -445,11 +445,11 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         List<File> propFiles = null;
 
         // TODO hard-coding this isn't great form
-        // see also PrepareWmbBarPackagingMojo.java
-        propFiles = FileUtils.getFiles(new File(project.getBuild().getDirectory(), "wmb"), "*.properties", "default.properties");
-        File targetWmbTestDir = new File(project.getBuild().getDirectory(), "wmb-test");
-        if (targetWmbTestDir.canRead()) {
-            propFiles.addAll(FileUtils.getFiles(targetWmbTestDir, "*.properties", ""));
+        // see also PrepareIibBarPackagingMojo.java
+        propFiles = FileUtils.getFiles(new File(project.getBuild().getDirectory(), "iib"), "*.properties", "default.properties");
+        File targetIibTestDir = new File(project.getBuild().getDirectory(), "iib-test");
+        if (targetIibTestDir.canRead()) {
+            propFiles.addAll(FileUtils.getFiles(targetIibTestDir, "*.properties", ""));
         }
 
         return propFiles;

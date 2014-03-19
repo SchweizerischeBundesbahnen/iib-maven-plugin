@@ -22,7 +22,7 @@
             </goals>
             <phase>compile</phase>
             <configuration>
-              <toolkitInstallDir>@wmb.toolkitInstallDir@</toolkitInstallDir>
+              <toolkitInstallDir>@iib.toolkitInstallDir@</toolkitInstallDir>
             </configuration>
           </execution>
         </executions>

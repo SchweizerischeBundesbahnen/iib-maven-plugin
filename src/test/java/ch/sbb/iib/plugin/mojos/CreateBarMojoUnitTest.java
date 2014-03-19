@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
+
+import ch.sbb.iib.plugin.mojos.CreateBarMojo;
 
 public class CreateBarMojoUnitTest {
 
