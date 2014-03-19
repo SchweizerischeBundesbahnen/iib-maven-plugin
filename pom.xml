@@ -4,13 +4,8 @@
 	<groupId>ch.sbb.maven.plugins</groupId>
 	<artifactId>iib-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-<<<<<<< HEAD
 	<version>1.0-SNAPSHOT</version>
 	<name>iib-maven-plugin Maven Mojo</name>
-=======
-	<version>1.0</version>
-	<name>iib9-maven-plugin Maven Mojo</name>
->>>>>>> f28b0941a509b8b583557b829ea9866cfe609e9e
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
