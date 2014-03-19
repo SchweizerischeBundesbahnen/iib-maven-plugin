@@ -1,4 +1,4 @@
-package ch.sbb.wmb7.plugin.mojos;
+package ch.sbb.iib9.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -27,8 +27,8 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
-import ch.sbb.wmb7.plugin.utils.ConfigurablePropertiesUtil;
-import ch.sbb.wmb7.plugin.utils.ProcessOutputCatcher;
+import ch.sbb.iib9.plugin.utils.ConfigurablePropertiesUtil;
+import ch.sbb.iib9.plugin.utils.ProcessOutputCatcher;
 
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties
@@ -107,6 +107,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     protected BuildPluginManager buildPluginManager;
 
 
+    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         copyAndFilterResources();
@@ -137,14 +138,14 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         // copy the main resources
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-resources-plugin"), version("2.6")), goal("copy-resources"), configuration(element(name("outputDirectory"),
                 "${project.build.directory}/wmb"), element(name("resources"), element(name("resource"),
-        // TODO hard-coding this isn't great form
+                // TODO hard-coding this isn't great form
                 // see also ValidateConfigurablePropertiesMojo.java
                 element(name("directory"), "src/main/resources"), element(name("filtering"), "true")))), executionEnvironment(project, session, buildPluginManager));
 
         // copy the test resources
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-resources-plugin"), version("2.6")), goal("copy-resources"), configuration(element(name("outputDirectory"),
                 "${project.build.directory}/wmb-test"), element(name("resources"), element(name("resource"),
-        // TODO hard-coding this isn't great form
+                // TODO hard-coding this isn't great form
                 // see also ValidateConfigurablePropertiesMojo.java
                 element(name("directory"), "src/test/resources"), element(name("filtering"), "true")))), executionEnvironment(project, session, buildPluginManager));
 

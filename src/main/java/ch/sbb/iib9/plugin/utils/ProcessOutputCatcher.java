@@ -1,20 +1,19 @@
-package ch.sbb.wmb7.plugin.utils;
+package ch.sbb.iib9.plugin.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
-import org.apache.maven.plugin.logging.Log;
-
-public class ProcessOutputLogger extends Thread {
+public class ProcessOutputCatcher extends Thread {
 
 	private InputStream is;
-	private Log log;
+	private ArrayList<String> output;
 
-	public ProcessOutputLogger(InputStream is, Log log) {
+	public ProcessOutputCatcher(InputStream is, ArrayList<String> output) {
 		this.is = is;
-		this.log = log;
+		this.output = output;
 	}
 
 	public void run() {
@@ -24,7 +23,7 @@ public class ProcessOutputLogger extends Thread {
 			while (true) {
 				line = bufferedReader.readLine();
 				if (line != null) {
-					log.info(line);
+					output.add(line);
 					line = null;
 				} else {
 					Thread.sleep(500);
