@@ -22,7 +22,7 @@
             </goals>
             <configuration>
               <projectName>project1</projectName>
-              <toolkitInstallDir>@wmb.toolkitInstallDir@</toolkitInstallDir>
+              <toolkitInstallDir>@iib.toolkitInstallDir@</toolkitInstallDir>
             </configuration>
           </execution>
         </executions>

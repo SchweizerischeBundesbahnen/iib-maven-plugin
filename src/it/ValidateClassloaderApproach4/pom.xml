@@ -8,7 +8,7 @@
   <description>Test the validate-classloader-approach Mojo breaks with classloaders defined sometimes </description>
 
   <properties>
-    <wmb.failOnInvalidClassloader>false</wmb.failOnInvalidClassloader>
+    <iib.failOnInvalidClassloader>false</iib.failOnInvalidClassloader>
   </properties>
 
   <build>

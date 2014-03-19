@@ -1,11 +1,9 @@
 - .project & pom.xml in UEBERGABE nicht mit liefern
 
-- Fail wmb-bar build if no dependencies are defined
+- Fail iib-bar build if no dependencies are defined
 
-- Add Message Sets to wmb-bar build automatically (also when no flows use them)
+- Add Message Sets to iib-bar build automatically (also when no flows use them)
 
-- Fail wmb-src & wmb-bar build if no Maven dependency defined for Project References and vice-versa
+- Fail iib-src & iib-bar build if no Maven dependency defined for Project References and vice-versa
 
 - Fail all builds if artifactId != EclipseProjectName
-
-- Exclude flows without an input node (they can never be deployed in V7)

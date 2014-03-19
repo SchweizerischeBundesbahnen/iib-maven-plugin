@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -26,7 +26,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Creates a .bar file from a wmb-bar Project.
+ * Creates a .bar file from a iib-bar Project.
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
@@ -39,7 +39,7 @@ public class CreateProjectBarMojo extends CreateBarMojo {
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
      * 
-     * @parameter expression="${wmb.barName}" default-value="${project.build.directory}/wmb/${project.artifactId}-${project.version}.bar"
+     * @parameter expression="${iib.barName}" default-value="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
      * @required
      */
     protected File barName;
@@ -47,7 +47,7 @@ public class CreateProjectBarMojo extends CreateBarMojo {
     /**
      * Refreshes the projects in the workspace and then invokes a clean build before new items are added to the BAR file.
      * 
-     * @parameter expression="${wmb.cleanBuild}" default-value="true"
+     * @parameter expression="${iib.cleanBuild}" default-value="true"
      * @required
      */
     protected boolean cleanBuild;
@@ -55,7 +55,7 @@ public class CreateProjectBarMojo extends CreateBarMojo {
     /**
      * Compile ESQL for brokers at Version 2.1 of the product.
      * 
-     * @parameter expression="${wmb.esql21}" default-value="false"
+     * @parameter expression="${iib.esql21}" default-value="false"
      * @required
      */
     protected boolean esql21;
@@ -63,14 +63,14 @@ public class CreateProjectBarMojo extends CreateBarMojo {
     /**
      * Exclude artifacts pattern (or patterns, comma separated)
      * 
-     * @parameter expression="${wmb.excludeArtifactsPattern}" default-value=""
+     * @parameter expression="${iib.excludeArtifactsPattern}" default-value=""
      */
     protected String excludeArtifactsPattern;
 
     /**
      * Include artifacts pattern (or patterns, comma separated)
      * 
-     * @parameter expression="${wmb.includeArtifactsPattern}" default-value="**\/*\.msgflow,**\/*\.mset"
+     * @parameter expression="${iib.includeArtifactsPattern}" default-value="**\/*\.msgflow,**\/*\.mset"
      * @required
      */
     protected String includeArtifactsPattern;
@@ -78,44 +78,44 @@ public class CreateProjectBarMojo extends CreateBarMojo {
     /**
      * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
      * 
-     * @parameter expression="${wmb.projectName}" default-value=""
+     * @parameter expression="${iib.projectName}" default-value=""
      */
     protected String projectName;
 
     /**
-     * Installation directory of the WMB Toolkit
+     * Installation directory of the IIB Toolkit
      * 
-     * @parameter expression="${wmb.toolkitInstallDir}"
+     * @parameter expression="${iib.toolkitInstallDir}"
      * @required
      */
     protected File toolkitInstallDir;
 
     /**
-     * Major Version number of the WMB Toolkit. (Current not used, but will be needed when support for difference Versions with different options is supported)
+     * Major Version number of the IIB Toolkit. (Current not used, but will be needed when support for difference Versions with different options is supported)
      * 
-     * @parameter expression="${wmb.toolkitVersion}" default-value="7"
+     * @parameter expression="${iib.toolkitVersion}" default-value="9"
      */
     protected String toolkitVersion;
 
     /**
      * Appends the _ (underscore) character and the value of VersionString to the names of the compiled versions of the message flows (.cmf) files added to the BAR file, before the file extension.
      * 
-     * @parameter expression="${wmb.versionString}" default-value=""
+     * @parameter expression="${iib.versionString}" default-value=""
      */
     protected String versionString;
 
     /**
      * The path of the workspace in which the projects are extracted to be built.
      * 
-     * @parameter expression="${wmb.workspace}" default-value="${project.build.directory}/wmb/workspace"
+     * @parameter expression="${iib.workspace}" default-value="${project.build.directory}/iib/workspace"
      * @required
      */
     protected File workspace;
 
     /**
-     * The path to write the assemblies/wmb-bar-project.xml file to before invoking the maven-assembly-plugin.
+     * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
      * 
-     * @parameter default-value="${project.build.directory}/assemblies/wmb-bar-project.xml"
+     * @parameter default-value="${project.build.directory}/assemblies/iib-bar-project.xml"
      * @readonly
      */
     private File buildAssemblyFile;
@@ -151,7 +151,7 @@ public class CreateProjectBarMojo extends CreateBarMojo {
 
         executeCreateBar();
 
-        packageWmbBarArtifact();
+        packageIibBarArtifact();
 
     }
 
@@ -175,8 +175,8 @@ public class CreateProjectBarMojo extends CreateBarMojo {
         super.execute();
     }
 
-    private void packageWmbBarArtifact() throws MojoFailureException, MojoExecutionException {
-        InputStream is = this.getClass().getResourceAsStream("/assemblies/wmb-bar-project.xml");
+    private void packageIibBarArtifact() throws MojoFailureException, MojoExecutionException {
+        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-bar-project.xml");
         FileOutputStream fos;
         buildAssemblyFile.getParentFile().mkdirs();
         try {
@@ -192,10 +192,10 @@ public class CreateProjectBarMojo extends CreateBarMojo {
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\wmb-bar-project.xml -Dassembly.appendAssemblyId=false
+        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-bar-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/wmb-bar-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/iib-bar-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {

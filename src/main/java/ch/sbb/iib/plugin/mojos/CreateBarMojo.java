@@ -1,4 +1,4 @@
-package ch.sbb.iib9.plugin.mojos;
+package ch.sbb.iib.plugin.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,11 +15,11 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
-import ch.sbb.iib9.plugin.utils.ProcessOutputLogger;
-import ch.sbb.iib9.plugin.utils.ZipUtils;
+import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
+import ch.sbb.iib.plugin.utils.ZipUtils;
 
 /**
- * Creates a .bar file from a wmb-bar Project.
+ * Creates a .bar file from a iib-bar Project.
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
@@ -32,7 +32,7 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
      * 
-     * @parameter expression="${wmb.barName}" default-value= "${project.build.directory}/wmb/${project.artifactId}-${project.version}.bar"
+     * @parameter expression="${iib.barName}" default-value= "${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
      * @required
      */
     protected File barName;
@@ -40,7 +40,7 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * Refreshes the projects in the workspace and then invokes a clean build before new items are added to the BAR file.
      * 
-     * @parameter expression="${wmb.cleanBuild}" default-value="true"
+     * @parameter expression="${iib.cleanBuild}" default-value="true"
      * @required
      */
     protected boolean cleanBuild;
@@ -48,7 +48,7 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * Compile ESQL for brokers at Version 2.1 of the product.
      * 
-     * @parameter expression="${wmb.esql21}" default-value="false"
+     * @parameter expression="${iib.esql21}" default-value="false"
      * @required
      */
     protected boolean esql21;
@@ -56,14 +56,14 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * Exclude artifacts pattern (or patterns, comma separated)
      * 
-     * @parameter expression="${wmb.excludeArtifactsPattern}" default-value=""
+     * @parameter expression="${iib.excludeArtifactsPattern}" default-value=""
      */
     protected String excludeArtifactsPattern;
 
     /**
      * Include artifacts pattern (or patterns, comma separated)
      * 
-     * @parameter expression="${wmb.includeArtifactsPattern}" default-value="**\/*\.msgflow,**\/*\.mset"
+     * @parameter expression="${iib.includeArtifactsPattern}" default-value="**\/*\.msgflow,**\/*\.mset"
      * @required
      */
     protected String includeArtifactsPattern;
@@ -71,36 +71,36 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
      * 
-     * @parameter expression="${wmb.projectName}" default-value=""
+     * @parameter expression="${iib.projectName}" default-value=""
      */
     protected String projectName;
 
     /**
-     * Installation directory of the WMB Toolkit
+     * Installation directory of the IIB Toolkit
      * 
-     * @parameter expression="${wmb.toolkitInstallDir}"
+     * @parameter expression="${iib.toolkitInstallDir}"
      * @required
      */
     protected File toolkitInstallDir;
 
     /**
-     * Major Version number of the WMB Toolkit. (Current not used, but will be needed when support for difference Versions with different options is supported)
+     * Major Version number of the IIB Toolkit. (Current not used, but will be needed when support for difference Versions with different options is supported)
      * 
-     * @parameter expression="${wmb.toolkitVersion}" default-value="7"
+     * @parameter expression="${iib.toolkitVersion}" default-value="9"
      */
     protected String toolkitVersion;
 
     /**
      * Appends the _ (underscore) character and the value of VersionString to the names of the compiled versions of the message flows (.cmf) files added to the BAR file, before the file extension.
      * 
-     * @parameter expression="${wmb.versionString}" default-value="${project.version}"
+     * @parameter expression="${iib.versionString}" default-value="${project.version}"
      */
     protected String versionString;
 
     /**
      * The path of the workspace in which the projects are extracted to be built.
      * 
-     * @parameter expression="${wmb.workspace}" default-value="${project.build.directory}/wmb/workspace"
+     * @parameter expression="${iib.workspace}" default-value="${project.build.directory}/iib/workspace"
      * @required
      */
     protected File workspace;
@@ -108,14 +108,14 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * Pattern (or patterns, comma separated) of jars to be excluded from the generated bar file
      * 
-     * @parameter expression="${wmb.discardJarsPattern}" default-value="**\/javacompute_**.jar,**\/jplugin2_**.jar"
+     * @parameter expression="${iib.discardJarsPattern}" default-value="**\/javacompute_**.jar,**\/jplugin2_**.jar"
      */
     protected String discardJarsPattern;
 
     /**
      * Whether classloaders are in use with this bar
      * 
-     * @parameter expression="${wmb.useClassloaders}" default-value="false"
+     * @parameter expression="${iib.useClassloaders}" default-value="false"
      * @since 1.5
      */
     protected Boolean useClassloaders;
