@@ -10,12 +10,6 @@
 
 - Exclude flows without an input node (they can never be deployed in V7)
 
-? applybaroverride
-  - for i in *.properties
-  - do
-  -   mqsiapplybaroverride -b target/wmb/${project.artifactId}-${project.version}.bar -p $i -o target/wmb/${project.artifactId}-${project.version}-$i(-".properties").bar
-  - done
-  
   
 .project natures:
   msgflow:
