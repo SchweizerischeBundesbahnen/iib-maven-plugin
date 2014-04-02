@@ -7,6 +7,11 @@
 	<version>1.9-SNAPSHOT</version>
 	<name>maven-wmb7-plugin Maven Mojo</name>
 	<url>http://maven.apache.org</url>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -94,24 +99,35 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<!-- activate this profile to enable signing of artifacts -->
+			<id>sign</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-	<distributionManagement>
-		<repository>
-			<id>hosted.wmb.releases</id>
-			<url>http://repo.sbb.ch/content/repositories/hosted.wmb.releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>hosted.wmb.snapshots</id>
-			<url>http://repo.sbb.ch/content/repositories/hosted.wmb.snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-	<ciManagement>
-		<system>jenkins</system>
-		<url>http://ci.sbb.ch</url>
-	</ciManagement>
 	<scm>
-		<connection>scm:git:https://github.com/jamietownsend/maven-wmb7-plugin.git</connection>
-		<developerConnection>scm:git:https://github.com/jamietownsend/maven-wmb7-plugin.git</developerConnection>
+		<connection>scm:git:https://github.com/SchweizerischeBundesbahnen/maven-wmb7-plugin.git</connection>
+		<developerConnection>scm:git:https://github.com/SchweizerischeBundesbahnen/maven-wmb7-plugin.git</developerConnection>
 	</scm>
 	<build>
 		<plugins>
@@ -131,4 +147,14 @@
 			</plugin>
 		</plugins>
 	</build>
-</project>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<organization>
+		<name>Schweizerische Bundesbahnen - SBB</name>
+		<url>http://www.sbb.ch</url>
+	</organization></project>
