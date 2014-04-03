@@ -71,6 +71,7 @@ public class PackageIibSrcMojo extends AbstractMojo {
      */
     private File buildAssemblyFile;
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-src-project.xml");
         FileOutputStream fos;
@@ -79,13 +80,13 @@ public class PackageIibSrcMojo extends AbstractMojo {
             fos = new FileOutputStream(buildAssemblyFile);
         } catch (FileNotFoundException e) {
             // should never happen, as the file is packaged in this plugin's jar
-            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile);
+            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile, e);
         }
         try {
             IOUtil.copy(is, fos);
         } catch (IOException e) {
             // should never happen
-            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
+            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
 
         // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-src-project.xml -Dassembly.appendAssemblyId=false

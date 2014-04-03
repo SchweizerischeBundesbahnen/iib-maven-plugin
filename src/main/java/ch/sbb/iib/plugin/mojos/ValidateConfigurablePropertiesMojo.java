@@ -251,7 +251,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -269,9 +269,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
@@ -329,7 +329,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -347,9 +347,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
@@ -376,7 +376,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         return output;
     }
 
-    private void writeToFile(ArrayList<String> configurableProperties, File file) {
+    private void writeToFile(ArrayList<String> configurableProperties, File file) throws MojoFailureException {
 
         getLog().info("Writing configurable properties to: " + defaultPropertiesFile.getAbsolutePath());
 
