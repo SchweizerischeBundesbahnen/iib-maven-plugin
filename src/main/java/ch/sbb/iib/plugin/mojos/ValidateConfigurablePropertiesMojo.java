@@ -118,9 +118,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         params.add("-b");
         params.add(barName.getAbsolutePath());
 
-        ArrayList<String> output = executeReadBar(params);
+        List<String> output = executeReadBar(params);
 
-        ArrayList<String> configurableProperties = getConfigurableProperties(output);
+        List<String> configurableProperties = getConfigurableProperties(output);
 
         writeToFile(configurableProperties, defaultPropertiesFile);
 
@@ -251,7 +251,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -269,9 +269,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
@@ -329,7 +329,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -347,9 +347,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
@@ -376,7 +376,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         return output;
     }
 
-    private void writeToFile(ArrayList<String> configurableProperties, File file) {
+    private void writeToFile(List<String> configurableProperties, File file) throws MojoFailureException {
 
         getLog().info("Writing configurable properties to: " + defaultPropertiesFile.getAbsolutePath());
 
@@ -387,10 +387,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 writer.write(prop + System.getProperty("line.separator"));
             }
         } catch (IOException e) {
-            new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile);
+            throw new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile);
         } finally {
             try {
-                writer.close();
+                if (writer != null) {
+                    writer.close();
+                }
             } catch (IOException e) {
                 // ignore any error here
             }
@@ -403,7 +405,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      * @param output
      * @return
      */
-    private ArrayList<String> getConfigurableProperties(ArrayList<String> output) {
+    private List<String> getConfigurableProperties(List<String> output) {
         // extract the configurable properties
         // 1. search the output for "  Deployment descriptor:"
         // 2. everything after that is a configurable property up until
@@ -411,7 +413,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         boolean ddFound = false;
 
         // this could probably be done more efficiently with a subList
-        ArrayList<String> configurableProperties = new ArrayList<String>();
+        List<String> configurableProperties = new ArrayList<String>();
         for (String outputLine : output) {
             if (!ddFound) {
                 if ("  Deployment descriptor:".equals(outputLine)) {
@@ -433,7 +435,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     }
 
     private String getCommandLine(List<String> command) {
-        String ret = new String();
+        String ret = "";
         for (String element : command) {
             ret = ret.concat(" ").concat(element);
         }

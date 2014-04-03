@@ -183,13 +183,13 @@ public class CreateProjectBarMojo extends CreateBarMojo {
             fos = new FileOutputStream(buildAssemblyFile);
         } catch (FileNotFoundException e) {
             // should never happen, as the file is packaged in this plugin's jar
-            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile);
+            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile, e);
         }
         try {
             IOUtil.copy(is, fos);
         } catch (IOException e) {
             // should never happen
-            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
+            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
 
         // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-bar-project.xml -Dassembly.appendAssemblyId=false
