@@ -43,6 +43,6 @@ validateParam("esql21", "false");
 //validateParam("excludeArtifactsPattern", "null");
 validateParam("includeArtifactsPattern", "\\*\\*/\\*\\.msgflow,\\*\\*/\\*\\.mset");
 validateParam("versionString", ".*");
-validateParam("toolkitInstallDir", ".*");
+//validateParam("toolkitInstallDir", ".*");
 validateParam("toolkitVersion", "7");
 validateParam("workspace", ".*");
