@@ -28,7 +28,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 import ch.sbb.iib.plugin.utils.ConfigurablePropertiesUtil;
-import ch.sbb.iib.plugin.utils.ProcessOutputCatcher;
+import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
 
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties
@@ -225,8 +225,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      * @return
      * @throws MojoFailureException
      */
-    private List<String> executeApplyBarOverride(List<String> params) throws MojoFailureException {
-        ArrayList<String> output = new ArrayList<String>();
+    private void executeApplyBarOverride(List<String> params) throws MojoFailureException {
 
         File cmdFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "applybaroverrideCommand-" + UUID.randomUUID() + ".cmd");
 
@@ -260,11 +259,11 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         // redirect subprocess stderr to stdout
         pb.redirectErrorStream(true);
         Process process;
-        ProcessOutputCatcher stdOutHandler = null;
+        ProcessOutputLogger stdOutHandler = null;
         try {
             pb.redirectErrorStream(true);
             process = pb.start();
-            stdOutHandler = new ProcessOutputCatcher(process.getInputStream(), output);
+            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
             stdOutHandler.start();
             process.waitFor();
 
@@ -289,13 +288,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         }
 
         getLog().debug("mqsiapplybaroverride complete");
-        if (getLog().isDebugEnabled()) {
-            Log log = getLog();
-            for (String outputLine : output) {
-                log.debug(outputLine);
-            }
-        }
-        return output;
+
     }
 
     /**
@@ -338,11 +331,11 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         // redirect subprocess stderr to stdout
         pb.redirectErrorStream(true);
         Process process;
-        ProcessOutputCatcher stdOutHandler = null;
+        ProcessOutputLogger stdOutHandler = null;
         try {
             pb.redirectErrorStream(true);
             process = pb.start();
-            stdOutHandler = new ProcessOutputCatcher(process.getInputStream(), output);
+            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
             stdOutHandler.start();
             process.waitFor();
 

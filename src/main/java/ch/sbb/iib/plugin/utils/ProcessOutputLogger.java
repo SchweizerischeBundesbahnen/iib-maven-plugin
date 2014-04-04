@@ -25,7 +25,7 @@ public class ProcessOutputLogger extends Thread {
             while (true) {
                 line = bufferedReader.readLine();
                 if (line != null) {
-                    log.info(line);
+                    log.debug(line);
                     line = null;
                 } else {
                     Thread.sleep(500);
@@ -36,9 +36,9 @@ public class ProcessOutputLogger extends Thread {
             ioe.printStackTrace();
         } catch (InterruptedException ie) {
             // this is to be expected when the child process is finished
-        } catch (Throwable t) {
+        } catch (Exception e) {
             // TODO handle this better
-            t.printStackTrace();
+            e.printStackTrace();
         } finally {
             try {
                 bufferedReader.close();
