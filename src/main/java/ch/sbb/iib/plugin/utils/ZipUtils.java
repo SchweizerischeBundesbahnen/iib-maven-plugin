@@ -8,13 +8,12 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.Zip;
 import org.apache.tools.ant.types.ZipFileSet;
 
-public class ZipUtils {
-
+public final class ZipUtils {
 
     /**
      * hide the default constructor
      */
-    public ZipUtils() {
+    private ZipUtils() {
         super();
     }
 

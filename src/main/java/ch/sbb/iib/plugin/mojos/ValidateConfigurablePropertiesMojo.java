@@ -225,7 +225,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      * @return
      * @throws MojoFailureException
      */
-    private ArrayList<String> executeApplyBarOverride(List<String> params) throws MojoFailureException {
+    private List<String> executeApplyBarOverride(List<String> params) throws MojoFailureException {
         ArrayList<String> output = new ArrayList<String>();
 
         File cmdFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "applybaroverrideCommand-" + UUID.randomUUID() + ".cmd");
@@ -303,7 +303,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      * @return
      * @throws MojoFailureException
      */
-    private ArrayList<String> executeReadBar(List<String> params) throws MojoFailureException {
+    private List<String> executeReadBar(List<String> params) throws MojoFailureException {
         ArrayList<String> output = new ArrayList<String>();
 
         File cmdFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "readbarCommand-" + UUID.randomUUID() + ".cmd");
@@ -387,7 +387,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 writer.write(prop + System.getProperty("line.separator"));
             }
         } catch (IOException e) {
-            throw new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile);
+            throw new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile, e);
         } finally {
             try {
                 if (writer != null) {

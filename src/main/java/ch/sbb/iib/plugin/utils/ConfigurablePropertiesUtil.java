@@ -3,7 +3,7 @@ package ch.sbb.iib.plugin.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigurablePropertiesUtil {
+public final class ConfigurablePropertiesUtil {
 
     /**
      * hide the default constructor
