@@ -277,7 +277,7 @@ public class CreateBarMojo extends AbstractMojo {
             objectNames = FileUtils.getFileNames(workspace, includeArtifactsPattern, excludes, false);
 
         } catch (IOException e) {
-            throw new MojoFailureException("Could not resolve includeArtifactsPattern: " + includeArtifactsPattern);
+            throw new MojoFailureException("Could not resolve includeArtifactsPattern: " + includeArtifactsPattern, e);
         }
 
         // make sure that we found something to add to the bar file
@@ -331,7 +331,7 @@ public class CreateBarMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -348,9 +348,9 @@ public class CreateBarMojo extends AbstractMojo {
             stdOutHandler.start();
             process.waitFor();
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
@@ -369,7 +369,7 @@ public class CreateBarMojo extends AbstractMojo {
     }
 
     private String getCommandLine(List<String> command) {
-        String ret = new String();
+        String ret = "";
         for (String element : command) {
             ret = ret.concat(" ").concat(element);
         }

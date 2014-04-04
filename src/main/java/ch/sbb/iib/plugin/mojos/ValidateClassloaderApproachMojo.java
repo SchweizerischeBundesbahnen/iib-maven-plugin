@@ -96,9 +96,9 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
         }
     }
 
-    private ArrayList<String> readFromFile(File file) throws IOException {
+    private List<String> readFromFile(File file) throws IOException {
 
-        ArrayList<String> configurableProperties = new ArrayList<String>();
+        List<String> configurableProperties = new ArrayList<String>();
 
         getLog().info("Reading configurable properties from: " + defaultPropertiesFile.getAbsolutePath());
 
