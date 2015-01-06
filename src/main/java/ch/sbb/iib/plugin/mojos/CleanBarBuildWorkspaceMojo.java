@@ -32,7 +32,6 @@ public class CleanBarBuildWorkspaceMojo extends AbstractMojo {
      */
     protected boolean debugWorkspace;
 
-    @Override
     public void execute() throws MojoFailureException {
         if (debugWorkspace) {
             getLog().info("debugWorkspace enabled - workspace will not be cleaned");

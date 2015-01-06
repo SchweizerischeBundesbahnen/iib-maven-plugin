@@ -146,7 +146,6 @@ public class CreateBarMojo extends AbstractMojo {
      */
     protected BuildPluginManager buildPluginManager;
 
-    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         getLog().info("Creating bar file: " + barName);

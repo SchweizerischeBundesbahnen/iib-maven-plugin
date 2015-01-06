@@ -45,7 +45,6 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
      */
     protected Boolean useClassloaders;
 
-    @Override
     public void execute() throws MojoFailureException {
 
         // the defaultPropertiesFile will be created in an earlier Maven build

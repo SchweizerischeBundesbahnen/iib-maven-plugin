@@ -107,7 +107,6 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     protected BuildPluginManager buildPluginManager;
 
 
-    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         copyAndFilterResources();

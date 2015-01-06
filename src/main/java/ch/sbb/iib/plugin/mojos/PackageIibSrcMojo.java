@@ -71,7 +71,6 @@ public class PackageIibSrcMojo extends AbstractMojo {
      */
     private File buildAssemblyFile;
 
-    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-src-project.xml");
         FileOutputStream fos;
