@@ -7,6 +7,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -17,11 +21,13 @@ import org.codehaus.plexus.util.FileUtils;
 
 import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
 import ch.sbb.iib.plugin.utils.ZipUtils;
+import ch.sbb.maven.plugins.iib_maven_plugin.eclipse_project.ProjectDescription;
 
 /**
  * Creates a .bar file from a iib-bar Project.
  * 
- * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
+ * Implemented with help from:
+ * https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
  * @goal create-bar
  * @requiresProject true
@@ -29,350 +35,503 @@ import ch.sbb.iib.plugin.utils.ZipUtils;
  */
 public class CreateBarMojo extends AbstractMojo {
 
-    /**
-     * The name of the BAR (compressed file format) archive file where the result is stored.
-     * 
-     * @parameter expression="${iib.barName}" default-value= "${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
-     * @required
-     */
-    protected File barName;
+	/**
+	 * The name of the BAR (compressed file format) archive file where the
+	 * result is stored.
+	 * 
+	 * @parameter expression="${iib.barName}" default-value=
+	 *            "${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
+	 * @required
+	 */
+	protected File barName;
 
-    /**
-     * Refreshes the projects in the workspace and then invokes a clean build before new items are added to the BAR file.
-     * 
-     * @parameter expression="${iib.cleanBuild}" default-value="true"
-     * @required
-     */
-    protected boolean cleanBuild;
+	/**
+	 * Refreshes the projects in the workspace and then invokes a clean build
+	 * before new items are added to the BAR file.
+	 * 
+	 * @parameter expression="${iib.cleanBuild}" default-value="true"
+	 * @required
+	 */
+	protected boolean cleanBuild;
 
-    /**
-     * Compile ESQL for brokers at Version 2.1 of the product.
-     * 
-     * @parameter expression="${iib.esql21}" default-value="false"
-     * @required
-     */
-    protected boolean esql21;
+	/**
+	 * The name of the trace file to use when creating bar files
+	 * 
+	 * @parameter expression="${iib.createBarTraceFile}" default-value=
+	 *            "${project.build.directory}/iib/createbartrace.txt"
+	 * @required
+	 */
+	protected File createBarTraceFile;
 
-    /**
-     * Exclude artifacts pattern (or patterns, comma separated)
-     * 
-     * @parameter expression="${iib.excludeArtifactsPattern}" default-value=""
-     */
-    protected String excludeArtifactsPattern;
+	/**
+	 * Compile ESQL for brokers at Version 2.1 of the product.
+	 * 
+	 * @parameter expression="${iib.esql21}" default-value="false"
+	 * @required
+	 */
+	protected boolean esql21;
 
-    /**
-     * Include artifacts pattern (or patterns, comma separated)
-     * 
-     * @parameter expression="${iib.includeArtifactsPattern}" default-value="**\/*\.msgflow,**\/*\.mset"
-     * @required
-     */
-    protected String includeArtifactsPattern;
+	/**
+	 * Exclude artifacts pattern (or patterns, comma separated)
+	 * 
+	 * @parameter expression="${iib.excludeArtifactsPattern}" default-value=""
+	 */
+	protected String excludeArtifactsPattern;
 
-    /**
-     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
-     * 
-     * @parameter expression="${iib.projectName}" default-value=""
-     */
-    protected String projectName;
+	/**
+	 * Include artifacts pattern (or patterns, comma separated)
+	 * 
+	 * @parameter expression="${iib.includeArtifactsPattern}"
+	 *            default-value="**\/*\.msgflow,**\/*\.mset"
+	 * @required
+	 */
+	protected String includeArtifactsPattern;
 
-    /**
-     * Installation directory of the IIB Toolkit
-     * 
-     * @parameter expression="${iib.toolkitInstallDir}"
-     * @required
-     */
-    protected File toolkitInstallDir;
+	/**
+	 * Projects containing files to include in the BAR file in the workspace.
+	 * Required for a new workspace. A new workspace is a system folder which
+	 * don't contain a .metadata folder.
+	 * 
+	 * @parameter expression="${iib.projectName}" default-value=""
+	 */
+	protected String projectName;
 
-    /**
-     * Major Version number of the IIB Toolkit. (Current not used, but will be needed when support for difference Versions with different options is supported)
-     * 
-     * @parameter expression="${iib.toolkitVersion}" default-value="9"
-     */
-    protected String toolkitVersion;
+	/**
+	 * Whether classloaders are in use with this bar
+	 * 
+	 * @parameter expression="${iib.skipWSErrorCheck}" default-value="false"
+	 * @since 2.0
+	 */
+	protected Boolean skipWSErrorCheck;
 
-    /**
-     * Appends the _ (underscore) character and the value of VersionString to the names of the compiled versions of the message flows (.cmf) files added to the BAR file, before the file extension.
-     * 
-     * @parameter expression="${iib.versionString}" default-value="${project.version}"
-     */
-    protected String versionString;
+	/**
+	 * Installation directory of the IIB Toolkit
+	 * 
+	 * @parameter expression="${iib.toolkitInstallDir}"
+	 * @required
+	 */
+	protected File toolkitInstallDir;
 
-    /**
-     * The path of the workspace in which the projects are extracted to be built.
-     * 
-     * @parameter expression="${iib.workspace}" default-value="${project.build.directory}/iib/workspace"
-     * @required
-     */
-    protected File workspace;
+	/**
+	 * Major Version number of the IIB Toolkit. (Current not used, but will be
+	 * needed when support for difference Versions with different options is
+	 * supported)
+	 * 
+	 * @parameter expression="${iib.toolkitVersion}" default-value="9"
+	 */
+	protected String toolkitVersion;
 
-    /**
-     * Pattern (or patterns, comma separated) of jars to be excluded from the generated bar file
-     * 
-     * @parameter expression="${iib.discardJarsPattern}" default-value="**\/javacompute_**.jar,**\/jplugin2_**.jar"
-     */
-    protected String discardJarsPattern;
+	/**
+	 * Appends the _ (underscore) character and the value of VersionString to
+	 * the names of the compiled versions of the message flows (.cmf) files
+	 * added to the BAR file, before the file extension.
+	 * 
+	 * @parameter expression="${iib.versionString}"
+	 *            default-value="${project.version}"
+	 */
+	protected String versionString;
 
-    /**
-     * Whether classloaders are in use with this bar
-     * 
-     * @parameter expression="${iib.useClassloaders}" default-value="false"
-     * @since 1.5
-     */
-    protected Boolean useClassloaders;
+	/**
+	 * The path of the workspace in which the projects are extracted to be
+	 * built.
+	 * 
+	 * @parameter expression="${iib.workspace}"
+	 *            default-value="${project.build.directory}/iib/workspace"
+	 * @required
+	 */
+	protected File workspace;
 
-    /**
-     * The Maven Project Object
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    protected MavenProject project;
+	/**
+	 * Pattern (or patterns, comma separated) of jars to be excluded from the
+	 * generated bar file
+	 * 
+	 * @parameter expression="${iib.discardJarsPattern}"
+	 *            default-value="**\/javacompute_**.jar,**\/jplugin2_**.jar"
+	 */
+	protected String discardJarsPattern;
 
-    /**
-     * The Maven Session Object
-     * 
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
-     */
-    protected MavenSession session;
+	/**
+	 * Whether classloaders are in use with this bar
+	 * 
+	 * @parameter expression="${iib.useClassloaders}" default-value="false"
+	 * @since 1.5
+	 */
+	protected Boolean useClassloaders;
 
-    /**
-     * The Maven PluginManager Object
-     * 
-     * @component
-     * @required
-     */
-    protected BuildPluginManager buildPluginManager;
+	/**
+	 * The Maven Project Object
+	 * 
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	protected MavenProject project;
 
-    public void execute() throws MojoFailureException, MojoExecutionException {
+	/**
+	 * The Maven Session Object
+	 * 
+	 * @parameter expression="${session}"
+	 * @required
+	 * @readonly
+	 */
+	protected MavenSession session;
 
-        getLog().info("Creating bar file: " + barName);
+	/**
+	 * The Maven PluginManager Object
+	 * 
+	 * @component
+	 * @required
+	 */
+	protected BuildPluginManager buildPluginManager;
 
-        File barDir = barName.getParentFile();
-        if (!barDir.exists()) {
-            barDir.getParentFile().mkdirs();
-        }
+	private List<String> addObjectsAppsLibs() throws MojoFailureException {
+		List<String> params = new ArrayList<String>();
+		List<String> apps = new ArrayList<String>();
+		List<String> libs = new ArrayList<String>();
+		List<String> objs = new ArrayList<String>();
 
-        List<String> params = constructParams();
-        try {
-            executeMqsiCreateBar(params);
-        } catch (MojoFailureException e) {
-            // A bug with the M2Eclipse Plugin causes it to fail to initialise. Restarting the same job
-            // with an existing and now initialised Workspace sometimes helps, so we'll try it now.
-            // With IIB9 Toolkit, a newer version of M2Eclipse can be used and the initialisation works
-            // in headless mode. At that stage, this retry can be removed.
-            executeMqsiCreateBar(params);
-        }
+		// loop through the projects, adding them as "-a" Applications, "-l"
+		// libraries or the deployable artefacts as "-o" objects
 
+		List<String> workspaceProjects = getWorkspaceProjects();
 
-        try {
-            // if classloaders are in use, all jars are to be removed
-            if (useClassloaders) {
-                getLog().info("Classloaders in use. All jars will be removed from the bar file.");
-                ZipUtils.removeFiles(barName, "**/*.jar");
-            } else {
-                // remove the jars specified with discardJarsPattern
-                if (discardJarsPattern != null && !"".equals(discardJarsPattern)) {
-                    getLog().info("Classloaders are not in use. The following jars will be removed from the bar file: " + discardJarsPattern);
-                    ZipUtils.removeFiles(barName, discardJarsPattern);
-                }
-            }
-        } catch (IOException e) {
-            throw new MojoFailureException("Error removing jar files from bar file", e);
-        }
+		for (String projectName : workspaceProjects) {
 
-    }
+			ProjectDescription projectDescription = new ProjectDescription();
+			try {
+				projectDescription = unmarshallEclipseProjectFile(new File(
+						projectName, ".project"));
+			} catch (JAXBException e) {
+				throw (new MojoFailureException(
+						"Error parsing .project file for: " + projectName, e));
+			}
 
-    protected List<String> constructParams() throws MojoFailureException {
-        List<String> params = new ArrayList<String>();
+			if (isApplication(projectDescription)) {
+				apps.add(projectName);
+			} else if (isLibrary(projectDescription)) {
+				libs.add(projectName);
+			} else {
+				// neither Application nor Library, so add the deployable
+				// contents as objects
+				objs.addAll(getObjectNames(projectName));
+			}
+		}
 
-        // workspace parameter - required
-        createWorkspaceDirectory();
-        params.add("-data");
-        params.add(workspace.toString());
+		if (!apps.isEmpty()) {
+			params.add("-a");
+			params.addAll(apps);
+		}
+		if (!apps.isEmpty()) {
+			params.add("-l");
+			params.addAll(libs);
+		}
+		if (!objs.isEmpty()) {
+			params.add("-o");
+			params.addAll(objs);
+		}
 
-        // bar file name - required
-        params.add("-b");
-        params.add(barName.getAbsolutePath());
+		return params;
+	}
 
-        if (cleanBuild) {
-            params.add("-cleanBuild");
-        }
+	protected List<String> constructParams() throws MojoFailureException {
+		List<String> params = new ArrayList<String>();
 
-        if (versionString != null && versionString.length() != 0) {
-            params.add("-version");
-            params.add(versionString);
-        }
+		// workspace parameter - required
+		createWorkspaceDirectory();
+		params.add("-data");
+		params.add(workspace.toString());
 
-        // esql21 - optional
-        if (esql21) {
-            params.add("-esql21");
-        }
+		// bar file name - required
+		params.add("-b");
+		params.add(barName.getAbsolutePath());
 
-        // project name - optional
+		if (cleanBuild) {
+			params.add("-cleanBuild");
+		}
 
-        params.add("-p");
-        if (projectName != null) {
-            params.add(projectName);
-        } else {
-            String workspaceProjects = getWorkspaceProjects();
-            if (workspaceProjects == null || "".equals(workspaceProjects)) {
-                throw (new MojoFailureException("No projects were found in the workspace: " + workspace.getAbsolutePath()));
-            }
-            params.add(workspaceProjects);
-        }
+		if (versionString != null && versionString.length() != 0) {
+			params.add("-version");
+			params.add(versionString);
+		}
 
-        // object names - required
-        params.add("-o");
-        params.addAll(getObjectNames());
+		// esql21 - optional
+		if (esql21) {
+			params.add("-esql21");
+		}
 
-        return params;
-    }
+		// project name - optional
 
-    /**
-     * @return the names of the projects (actually, just all directories) in the workspace
-     * @throws MojoFailureException
-     */
-    private String getWorkspaceProjects() throws MojoFailureException {
+		params.add("-p");
+		if (projectName != null) {
+			params.add(projectName);
+		} else {
+			List<String> workspaceProjects = getWorkspaceProjects();
 
-        String dirNames = null;
+			params.addAll(workspaceProjects);
+		}
 
-        for (File file : workspace.listFiles()) {
-            if (!file.isDirectory() || file.getName().equals(".metadata")) {
-                continue;
-            }
-            if (dirNames == null) {
-                dirNames = file.getName();
-            } else {
-                dirNames = dirNames + " " + file.getName();
-            }
-        }
+		// object names - required
+		params.addAll(addObjectsAppsLibs());
 
-        return dirNames;
-    }
+		if (skipWSErrorCheck) {
+			params.add("-skipWSErrorCheck");
+		}
 
-    /**
-     * @return a list of objects to be (explicitly) added to the bar file
-     * @throws MojoFailureException
-     */
-    @SuppressWarnings("unchecked")
-    private Collection<? extends String> getObjectNames() throws MojoFailureException {
-        List<String> objectNames = new ArrayList<String>();
+		// always trace into the file target/iib/mqsicreatebartrace.txt
+		params.add("-trace");
+		params.add("-v");
+		params.add(createBarTraceFile.getAbsolutePath());
 
-        // get the names of files under: the workspace directory, matching
-        // includeFlowPatterns, not matching anything in a directory called
-        // "tempfiles", excluding the base directory
-        try {
-            // since excludes is a regex and "\" is special for regexes, it must
-            // be escaped. Not really sure if tempfiles pops up everywhere or
-            // not
+		return params;
+	}
 
-            String excludes = "tempfiles" + (File.separator == "\\" ? "\\\\" : File.pathSeparator) + "\\.*";
-            if (excludeArtifactsPattern != null && excludeArtifactsPattern.length() > 1) {
-                excludes = excludes + "," + excludeArtifactsPattern;
-            }
-            objectNames = FileUtils.getFileNames(workspace, includeArtifactsPattern, excludes, false);
+	/**
+	 * @throws MojoFailureException
+	 */
+	protected void createWorkspaceDirectory() throws MojoFailureException {
+		if (!workspace.exists()) {
+			workspace.mkdirs();
+		}
+		if (!workspace.isDirectory()) {
+			throw new MojoFailureException(
+					"Workspace parameter is not a directory: "
+							+ workspace.toString());
+		}
+	}
 
-        } catch (IOException e) {
-            throw new MojoFailureException("Could not resolve includeArtifactsPattern: " + includeArtifactsPattern, e);
-        }
+	public void execute() throws MojoFailureException, MojoExecutionException {
 
-        // make sure that we found something to add to the bar file
-        if (objectNames.size() == 0) {
-            throw new MojoFailureException("Nothing matched includeFlowsPattern: " + excludeArtifactsPattern + " excludeArtifactsPattern: " + excludeArtifactsPattern);
-        }
+		getLog().info("Creating bar file: " + barName);
 
-        return objectNames;
-    }
+		File barDir = barName.getParentFile();
+		if (!barDir.exists()) {
+			barDir.getParentFile().mkdirs();
+		}
 
-    /**
-     * @throws MojoFailureException
-     */
-    protected void createWorkspaceDirectory() throws MojoFailureException {
-        if (!workspace.exists()) {
-            workspace.mkdirs();
-        }
-        if (!workspace.isDirectory()) {
-            throw new MojoFailureException("Workspace parameter is not a directory: " + workspace.toString());
-        }
-    }
+		List<String> params = constructParams();
+//		try {
+			executeMqsiCreateBar(params);
+//		} catch (MojoFailureException e) {
+//			// A bug with the M2Eclipse Plugin causes it to fail to initialise.
+//			// Restarting the same job
+//			// with an existing and now initialised Workspace sometimes helps,
+//			// so we'll try it now.
+//			// With IIB9 Toolkit, a newer version of M2Eclipse can be used and
+//			// the initialisation works
+//			// in headless mode. At that stage, this retry can be removed.
+//			executeMqsiCreateBar(params);
+//		}
 
-    /**
-     * executes mqsicreatebar. Since mqsicreatebar does something strange with stdOut & stdErr, command must be written to a temporary file and executed from there.
-     * 
-     * @param params
-     * @throws MojoFailureException
-     */
-    private void executeMqsiCreateBar(List<String> params) throws MojoFailureException {
+		try {
+			// if classloaders are in use, all jars are to be removed
+			if (useClassloaders) {
+				getLog().info(
+						"Classloaders in use. All jars will be removed from the bar file.");
+				ZipUtils.removeFiles(barName, "**/*.jar");
+			} else {
+				// remove the jars specified with discardJarsPattern
+				if (discardJarsPattern != null
+						&& !"".equals(discardJarsPattern)) {
+					getLog().info(
+							"Classloaders are not in use. The following jars will be removed from the bar file: "
+									+ discardJarsPattern);
+					ZipUtils.removeFiles(barName, discardJarsPattern);
+				}
+			}
+		} catch (IOException e) {
+			throw new MojoFailureException(
+					"Error removing jar files from bar file", e);
+		}
 
-        File cmdFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "createbarCommand-" + UUID.randomUUID() + ".cmd");
+	}
 
-        // make sure that it will be cleaned up on exit
-        cmdFile.deleteOnExit();
+	/**
+	 * executes mqsicreatebar. Since mqsicreatebar does something strange with
+	 * stdOut & stdErr, command must be written to a temporary file and executed
+	 * from there.
+	 * 
+	 * @param params
+	 * @throws MojoFailureException
+	 */
+	private void executeMqsiCreateBar(List<String> params)
+			throws MojoFailureException {
 
-        // construct the command - very windows-centric for now
-        List<String> command = new ArrayList<String>();
-        String executable = "\"" + toolkitInstallDir + File.separator + "mqsicreatebar\"";
-        command.add(executable);
-        command.addAll(params);
-        // command.add("> " + outFile.getAbsolutePath() + " 2>&1");
+		File cmdFile = new File(System.getProperty("java.io.tmpdir")
+				+ File.separator + "createbarCommand-" + UUID.randomUUID()
+				+ ".cmd");
 
-        if (getLog().isDebugEnabled()) {
-            getLog().debug("executing command file: " + cmdFile.getAbsolutePath());
-            getLog().debug("executeMqsiCreateBar command: " + getCommandLine(command));
-        }
+		// make sure that it will be cleaned up on exit
+		cmdFile.deleteOnExit();
 
-        try {
-            FileUtils.fileWrite(cmdFile, getCommandLine(command));
+		// construct the command - very windows-centric for now
+		List<String> command = new ArrayList<String>();
+		String executable = "\"" + toolkitInstallDir + File.separator
+				+ "mqsicreatebar\"";
+		command.add(executable);
+		command.addAll(params);
+		// command.add("> " + outFile.getAbsolutePath() + " 2>&1");
 
-            // make sure it can be executed on Unix
-            cmdFile.setExecutable(true);
-        } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
-        }
+		if (getLog().isDebugEnabled()) {
+			getLog().debug(
+					"executing command file: " + cmdFile.getAbsolutePath());
+		}
+		getLog().info(
+				"executeMqsiCreateBar command: " + getCommandLine(command));
 
-        // ProcessBuilder pb = new ProcessBuilder(command);
-        ProcessBuilder pb = new ProcessBuilder(cmdFile.getAbsolutePath());
+		try {
+			FileUtils.fileWrite(cmdFile, getCommandLine(command));
 
-        pb.directory(workspace);
-        // redirect subprocess stderr to stdout
-        pb.redirectErrorStream(true);
-        Process process;
-        ProcessOutputLogger stdOutHandler = null;
-        try {
-            process = pb.start();
-            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
-            stdOutHandler.start();
-            process.waitFor();
-        } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
-        } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
-        } finally {
-            if (stdOutHandler != null) {
-                stdOutHandler.interrupt();
-                try {
-                    stdOutHandler.join();
-                } catch (InterruptedException e) {
-                    // this should never happen, so ignore this one
-                }
-            }
-        }
+			// make sure it can be executed on Unix
+			cmdFile.setExecutable(true);
+		} catch (IOException e1) {
+			throw new MojoFailureException("Could not create command file: "
+					+ cmdFile.getAbsolutePath(), e1);
+		}
 
-        if (process.exitValue() != 0) {
-            // logOutputFile(outFile, "error");
-            throw new MojoFailureException("mqsicreate bar finished with exit code: " + process.exitValue());
-        }
-    }
+		// ProcessBuilder pb = new ProcessBuilder(command);
+		ProcessBuilder pb = new ProcessBuilder(cmdFile.getAbsolutePath());
 
-    private String getCommandLine(List<String> command) {
-        String ret = "";
-        for (String element : command) {
-            ret = ret.concat(" ").concat(element);
-        }
-        return ret;
-    }
+		pb.directory(workspace);
+		// redirect subprocess stderr to stdout
+		pb.redirectErrorStream(true);
+		Process process;
+		ProcessOutputLogger stdOutHandler = null;
+		try {
+			process = pb.start();
+			stdOutHandler = new ProcessOutputLogger(process.getInputStream(),
+					getLog());
+			stdOutHandler.start();
+			process.waitFor();
+		} catch (IOException e) {
+			throw new MojoFailureException("Error executing: "
+					+ getCommandLine(command), e);
+		} catch (InterruptedException e) {
+			throw new MojoFailureException("Error executing: "
+					+ getCommandLine(command), e);
+		} finally {
+			if (stdOutHandler != null) {
+				stdOutHandler.interrupt();
+				try {
+					stdOutHandler.join();
+				} catch (InterruptedException e) {
+					// this should never happen, so ignore this one
+				}
+			}
+		}
 
+		if (process.exitValue() != 0) {
+			// logOutputFile(outFile, "error");
+			throw new MojoFailureException(
+					"mqsicreate bar finished with exit code: "
+							+ process.exitValue());
+		}
+	}
+
+	private String getCommandLine(List<String> command) {
+		String ret = "";
+		for (String element : command) {
+			ret = ret.concat(" ").concat(element);
+		}
+		return ret;
+	}
+
+	/**
+	 * @return a list of objects to be (explicitly) added to the bar file
+	 * @throws MojoFailureException
+	 */
+	@SuppressWarnings("unchecked")
+	private Collection<? extends String> getObjectNames(String projectName)
+			throws MojoFailureException {
+		List<String> objectNames = new ArrayList<String>();
+
+		// get the names of files under: the workspace directory, matching
+		// includeFlowPatterns, not matching anything in a directory called
+		// "tempfiles", excluding the base directory
+		try {
+			// since excludes is a regex and "\" is special for regexes, it must
+			// be escaped. Not really sure if tempfiles pops up everywhere or
+			// not
+
+			String excludes = "tempfiles"
+					+ (File.separator == "\\" ? "\\\\" : File.pathSeparator)
+					+ "\\.*";
+			if (excludeArtifactsPattern != null
+					&& excludeArtifactsPattern.length() > 1) {
+				excludes = excludes + "," + excludeArtifactsPattern;
+			}
+			objectNames = FileUtils.getFileNames(new File(workspace,
+					projectName), includeArtifactsPattern, excludes, false);
+
+		} catch (IOException e) {
+			throw new MojoFailureException(
+					"Could not resolve includeArtifactsPattern: "
+							+ includeArtifactsPattern, e);
+		}
+
+		// make sure that we found something to add to the bar file
+		// if (objectNames.size() == 0) {
+		// throw new MojoFailureException(
+		// "Nothing matched includeFlowsPattern: "
+		// + excludeArtifactsPattern
+		// + " excludeArtifactsPattern: "
+		// + excludeArtifactsPattern);
+		// }
+
+		return objectNames;
+	}
+
+	/**
+	 * @return the names of the projects (actually, just all directories) in the
+	 *         workspace
+	 * @throws MojoFailureException
+	 */
+	private List<String> getWorkspaceProjects() throws MojoFailureException {
+
+		List<String> workspaceProjects = new ArrayList<String>();
+
+		for (File file : workspace.listFiles()) {
+			if (file.isDirectory() && !file.getName().equals(".metadata")) {
+				workspaceProjects.add(file.getName());
+			}
+		}
+
+		if (workspaceProjects.isEmpty()) {
+			throw (new MojoFailureException(
+					"No projects were found in the workspace: "
+							+ workspace.getAbsolutePath()));
+		}
+
+		return workspaceProjects;
+	}
+
+	private boolean isApplication(ProjectDescription projectDescription) {
+
+		List<String> natureList = projectDescription.getNatures().getNature();
+		if (natureList.contains("com.ibm.etools.msgbroker.tooling.applicationNature")) {
+			getLog().debug(projectDescription.getName() + " is an IIB Application");
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private boolean isLibrary(ProjectDescription projectDescription) {
+		List<String> natureList = projectDescription.getNatures().getNature();
+		if (natureList.contains("com.ibm.etools.msgbroker.tooling.libraryNature")) {
+			getLog().debug(projectDescription.getName() + " is an IIB Library");
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	protected ProjectDescription unmarshallEclipseProjectFile(File projectFile)
+			throws JAXBException {
+		JAXBContext context = JAXBContext.newInstance(ProjectDescription.class);
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		return (ProjectDescription) unmarshaller.unmarshal(projectFile);
+
+	}
 }
