@@ -1,5 +1,6 @@
 package ch.sbb.iib.plugin.mojos;
 
+
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -18,30 +19,28 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Creates a .zip file from a iib-classloader Project which contains the
+ * Creates a .bar file from a iib-bar Project.
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
-@Mojo(name="package-classloader")
-public class PackageIibClassloaderMojo extends AbstractMojo {
+@Mojo(name="package-iib-bar")
+public class PackageIibBarMojo extends CreateBarMojo {
 
     /**
      * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
      */
-    @Parameter(defaultValue="${project.build.directory}/assemblies/iib-classloader-project.xml", readonly=true)
+    @Parameter(defaultValue="${project.build.directory}/assemblies/iib-bar-project.xml", readonly=true)
     private File buildAssemblyFile;
 
     /**
@@ -62,6 +61,7 @@ public class PackageIibClassloaderMojo extends AbstractMojo {
     @Component
     protected BuildPluginManager buildPluginManager;
 
+    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         packageIibBarArtifact();
@@ -69,26 +69,26 @@ public class PackageIibClassloaderMojo extends AbstractMojo {
     }
 
     private void packageIibBarArtifact() throws MojoFailureException, MojoExecutionException {
-        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-classloader-project.xml");
+        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-bar-project.xml");
         FileOutputStream fos;
         buildAssemblyFile.getParentFile().mkdirs();
         try {
             fos = new FileOutputStream(buildAssemblyFile);
         } catch (FileNotFoundException e) {
             // should never happen, as the file is packaged in this plugin's jar
-            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile, e);
+            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile);
         }
         try {
             IOUtil.copy(is, fos);
         } catch (IOException e) {
             // should never happen
-            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
+            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath());
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-classloader-project.xml -Dassembly.appendAssemblyId=false
+        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-bar-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/iib-classloader-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/iib-bar-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {

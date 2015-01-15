@@ -20,6 +20,9 @@ public final class ZipUtils {
     /**
      * Removes files from a given zip file.
      * 
+     * @param zipFile name of the zip file to be modified
+     * @param removePattern pattern of the files to be removed
+     * 
      * @throws IOException
      */
     public static void removeFiles(File zipFile, String removePattern) throws IOException {

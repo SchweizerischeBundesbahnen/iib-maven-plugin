@@ -24,6 +24,10 @@ import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -32,78 +36,59 @@ import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
 
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties
- * 
- * @goal validate-configurable-properties
- * @phase package
- * @requiresProject true
  */
+@Mojo(name="validate-configurable-properties", defaultPhase=LifecyclePhase.PACKAGE)
 public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     /**
      * Whether the applybaroverride command should be executed or not
-     * 
-     * @parameter expression="${iib.applybaroverride}" default-value="true"
-     * @required
      */
+    @Parameter( property="iib.applybaroverride", defaultValue="true", required=true)
     protected Boolean applyBarOverride;
 
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
      * 
-     * @parameter expression="${iib.barName}" default-value="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
-     * @required
      */
+    @Parameter( property="iib.barName", defaultValue="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar", required=true)
     protected File barName;
 
     /**
      * The name of the default properties file to be generated from the bar file.
      * 
-     * @parameter expression="${iib.configurablePropertiesFile}" default-value="${project.build.directory}/iib/default.properties"
-     * @required
      */
+    @Parameter( property="iib.configurablePropertiesFile", defaultValue="${project.build.directory}/iib/default.properties", required=true)
     protected File defaultPropertiesFile;
 
     /**
      * Whether or not to fail the build if properties are found to be invalid.
-     * 
-     * @parameter expression="${iib.failOnInvalidProperties}" default-value="true"
-     * @required
      */
+    @Parameter( property="iib.failOnInvalidProperties", defaultValue="true", required=true)
     protected Boolean failOnInvalidProperties;
 
     /**
      * Installation directory of the IIB Toolkit
-     * 
-     * @parameter expression="${iib.toolkitInstallDir}"
-     * @required
      */
+    @Parameter( property="iib.toolkitInstallDir", required=true)
     protected File toolkitInstallDir;
 
 
     /**
      * The Maven Project Object
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      */
+    @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
 
     /**
      * The Maven Session Object
-     * 
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
      */
+    @Parameter(property="session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
      * The Maven PluginManager Object
-     * 
-     * @component
-     * @required
      */
+    @Component
     protected BuildPluginManager buildPluginManager;
 
 
@@ -221,7 +206,6 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     /**
      * @param params
-     * @return
      * @throws MojoFailureException
      */
     private void executeApplyBarOverride(List<String> params) throws MojoFailureException {
