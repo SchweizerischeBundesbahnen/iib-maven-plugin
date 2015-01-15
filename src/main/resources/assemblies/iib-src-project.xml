@@ -21,6 +21,7 @@
 				<include>**/*.txt</include>
 			</includes>
 			<excludes>
+				<exclude>pom.xml</exclude>
 				<exclude>target/**</exclude>
 			</excludes>
 		</fileSet>
@@ -32,6 +33,7 @@
 				<include>**</include>
 			</includes>
 			<excludes>
+				<exclude>pom.xml</exclude>
 				<exclude>target/**</exclude>
 			</excludes>
 		</fileSet>
