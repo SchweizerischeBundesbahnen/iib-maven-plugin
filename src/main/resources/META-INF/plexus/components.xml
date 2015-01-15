@@ -1,3 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE component-set>
 <component-set>
 	<components>
 		<component>
@@ -7,9 +9,10 @@
 			</implementation>
 			<configuration>
 				<phases>
-					<compile>ch.sbb.maven.plugins:iib-maven-plugin:prepare-bar-build-workspace,ch.sbb.maven.plugins:iib-maven-plugin:create-bar,ch.sbb.maven.plugins:iib-maven-plugin:clean-bar-build-workspace
-					</compile>
-					<process-classes>ch.sbb.maven.plugins:iib-maven-plugin:validate-configurable-properties,ch.sbb.maven.plugins:iib-maven-plugin:validate-classloader-approach
+					<process-resources>ch.sbb.maven.plugins:iib-maven-plugin:prepare-bar-build-workspace
+					</process-resources>
+					<compile>ch.sbb.maven.plugins:iib-maven-plugin:create-bar</compile>
+					<process-classes>ch.sbb.maven.plugins:iib-maven-plugin:clean-bar-build-workspace,ch.sbb.maven.plugins:iib-maven-plugin:validate-configurable-properties,ch.sbb.maven.plugins:iib-maven-plugin:validate-classloader-approach
 					</process-classes>
 					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-iib-bar
 					</package>
@@ -45,8 +48,6 @@
 			</implementation>
 			<configuration>
 				<phases>
-					<generate-sources>ch.sbb.maven.plugins:iib-maven-plugin:prepare-jar-classpath
-					</generate-sources>
 					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources
 					</process-resources>
 					<compile>org.apache.maven.plugins:maven-compiler-plugin:compile

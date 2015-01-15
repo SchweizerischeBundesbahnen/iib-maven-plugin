@@ -30,7 +30,6 @@ public class CreateBarMojoUnitTest {
      * Validates that the right exception is thrown when the workspace parameter points to a file instead of a directory.
      * 
      * @throws IOException
-     * @throws MojoFailureException
      */
     @Test
     public void createWorkspaceDirectory_workspaceIsFile() throws IOException {
@@ -46,7 +45,7 @@ public class CreateBarMojoUnitTest {
         assertTrue("The method createWorkspaceDirectory should have thrown a MojoFailureException but didn't", false);
 
     }
-    
+
     /**
      * Test the unmarshalling of a .project file
      */
@@ -54,11 +53,11 @@ public class CreateBarMojoUnitTest {
     public void unmarshallEclipseProjectFileTest() {
         CreateBarMojo mojo = new CreateBarMojo();
         try {
-        	// somewhat lazy, but test with the local .project file
-			mojo.unmarshallEclipseProjectFile(new File(".project"));
-		} catch (JAXBException e) {
-			e.printStackTrace();
-			assertTrue("An error occurred. See stack trace.", false);
-		}
+            // somewhat lazy, but test with the local .project file
+            mojo.unmarshallEclipseProjectFile(new File(".project"));
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            assertTrue("An error occurred. See stack trace.", false);
+        }
     }
 }

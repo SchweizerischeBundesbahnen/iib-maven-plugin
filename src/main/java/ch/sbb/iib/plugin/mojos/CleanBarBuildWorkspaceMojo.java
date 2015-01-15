@@ -5,31 +5,27 @@ import java.io.IOException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Cleans up the ${iib.workspace} directory. Build errors will appear in the IIB Toolkit if .msgflow files are left under the ${iib.workspace} - the path determines the Namespace of the flow and that
  * certainly won't match the original directory structure.
- * 
- * @goal clean-bar-build-workspace
- * @requiresProject false
- * 
  */
+@Mojo(name="clean-bar-build-workspace", requiresProject=false)
 public class CleanBarBuildWorkspaceMojo extends AbstractMojo {
 
     /**
      * The path of the workspace in which the projects were created.
-     * 
-     * @parameter expression="${iib.workspace}" default-value="${project.build.directory}/iib/workspace"
-     * @required
      */
+    @Parameter(property="iib.workspace", defaultValue="${project.build.directory}/iib/workspace", required=true)
     protected File workspace;
 
     /**
      * set to true to disable the workspace cleaning
-     * 
-     * @parameter expresseion="${debugWorkspace}" default-value="false"
      */
+    @Parameter(property="iib.debugWorkspace", defaultValue="false")
     protected boolean debugWorkspace;
 
     public void execute() throws MojoFailureException {
