@@ -20,10 +20,6 @@
             <goals>
               <goal>validate-classloader-approach</goal>
             </goals>
-            <configuration>
-              <projectName>project1</projectName>
-              <toolkitInstallDir>@iib.toolkitInstallDir@</toolkitInstallDir>
-            </configuration>
           </execution>
         </executions>
       </plugin>
