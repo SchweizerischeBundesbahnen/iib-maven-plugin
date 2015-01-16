@@ -275,8 +275,8 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     }
 
     /**
-     * @param params
-     * @return
+     * @param params the parameters to be used with the mqsireadbar command
+     * @return the screen output of the executed mqsireadbar command
      * @throws MojoFailureException
      */
     private List<String> executeReadBar(List<String> params) throws MojoFailureException {
@@ -378,8 +378,8 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     }
 
     /**
-     * @param output
-     * @return
+     * @param output the output of the mqsireadbar command for a given bar file 
+     * @return a list of properties that can be overriden for a given bar file
      */
     private List<String> getConfigurableProperties(List<String> output) {
         // extract the configurable properties
