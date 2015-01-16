@@ -52,9 +52,6 @@ public class PackageIibSrcMojo extends AbstractMojo {
 
     /**
      * The Maven PluginManager Object
-     * 
-     * @ component
-     * @ required
      */
     @Component
     protected BuildPluginManager buildPluginManager;
