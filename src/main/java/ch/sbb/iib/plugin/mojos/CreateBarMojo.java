@@ -52,8 +52,14 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * The name of the trace file to use when creating bar files
      */
-    @Parameter(property = "iib.createBarTraceFile", defaultValue = "${project.build.directory}/iib/createbartrace.txt", required = true)
+    @Parameter(property = "iib.createBarTraceFile", defaultValue = "${project.build.directory}/createbartrace.txt", required = true)
     protected File createBarTraceFile;
+
+    /**
+     * Include "-deployAsSource" parameter?
+     */
+    @Parameter(property = "iib.deployAsSource", defaultValue = "false", required = true)
+    protected boolean deployAsSource;
 
     /**
      * Compile ESQL for brokers at Version 2.1 of the product.
@@ -68,11 +74,11 @@ public class CreateBarMojo extends AbstractMojo {
     protected String excludeArtifactsPattern;
 
     /**
-     * Include artifacts pattern (or patterns, comma separated). By default, the default value used for mqsipackagebar.
+     * Include artifacts pattern (or patterns, comma separated). By default, the default value used for mqsipackagebar, except .esql & .subflow, which as not compilable
      * 
      * @see <a href="http://www-01.ibm.com/support/knowledgecenter/SSMKHH_9.0.0/com.ibm.etools.mft.doc/bc31720_.htm">IIB9 Documentation</a>
      */
-    @Parameter(property = "iib.includeArtifactsPattern", defaultValue = "**/*.msgflow,**/*.mset,.xsdzip,**/*.tblxmi,**/*.xsd,**/*.wsdl,**/*.dictionary,**/*.xsl,**/*.xslt,**/*.xml,**/*.jar,**/*.inadapter,**/*.outadapter,**/*.insca,**/*.outsca,**/*.descriptor,**/*.php,**/*.idl,**/*.map,**/*.esql,**/*.msgflow,**/*.subflow", required = true)
+    @Parameter(property = "iib.includeArtifactsPattern", defaultValue = "**/*.xsdzip,**/*.tblxmi,**/*.xsd,**/*.wsdl,**/*.dictionary,**/*.xsl,**/*.xslt,**/*.xml,**/*.jar,**/*.inadapter,**/*.outadapter,**/*.insca,**/*.outsca,**/*.descriptor,**/*.php,**/*.idl,**/*.map,**/*.msgflow", required = true)
     protected String includeArtifactsPattern;
 
     /**
@@ -177,15 +183,22 @@ public class CreateBarMojo extends AbstractMojo {
             params.addAll(apps);
         }
 
+        // deployAsSource?
+        if (deployAsSource) {
+            params.add("-deployAsSource");
+        }
+        
         // if there are libraries, add them
         if (!libs.isEmpty()) {
             params.add("-l");
             params.addAll(libs);
         }
 
-        // specify the objects on the command line
-        params.add("-o");
-        params.addAll(getObjectNames());
+        // if there are no applications and no libraries, add "unmanaged" objects
+        if (apps.isEmpty() && libs.isEmpty()) {
+            params.add("-o");
+            params.addAll(getObjectNames());
+        }
 
         return params;
     }
