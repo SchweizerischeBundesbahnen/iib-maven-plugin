@@ -117,7 +117,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     private void copyAndFilterResources() throws MojoFailureException, MojoExecutionException {
 
-        getLog().error(project.getBuild().getResources().toString());
+        getLog().debug("Project Build Resources: " + project.getBuild().getResources().toString());
 
         // copy the main resources
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-resources-plugin"), version("2.6")), goal("copy-resources"), configuration(element(name("outputDirectory"),
