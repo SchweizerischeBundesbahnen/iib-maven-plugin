@@ -62,15 +62,17 @@ public class CreateBarMojo extends AbstractMojo {
     protected boolean esql21;
 
     /**
-     * Exclude artifacts pattern (or patterns, comma separated)
+     * Exclude artifacts pattern (or patterns, comma separated). By default, exclude pom.xml's as each project will have one and this causes a packaging error.
      */
-    @Parameter(property = "iib.excludeArtifactsPattern", defaultValue = "")
+    @Parameter(property = "iib.excludeArtifactsPattern", defaultValue = "**/pom.xml")
     protected String excludeArtifactsPattern;
 
     /**
-     * Include artifacts pattern (or patterns, comma separated)
+     * Include artifacts pattern (or patterns, comma separated). By default, the default value used for mqsipackagebar.
+     * 
+     * @see <a href="http://www-01.ibm.com/support/knowledgecenter/SSMKHH_9.0.0/com.ibm.etools.mft.doc/bc31720_.htm">IIB9 Documentation</a>
      */
-    @Parameter(property = "iib.includeArtifactsPattern", defaultValue = "**/*.msgflow,**/*.mset", required = true)
+    @Parameter(property = "iib.includeArtifactsPattern", defaultValue = "**/*.msgflow,**/*.mset,.xsdzip,**/*.tblxmi,**/*.xsd,**/*.wsdl,**/*.dictionary,**/*.xsl,**/*.xslt,**/*.xml,**/*.jar,**/*.inadapter,**/*.outadapter,**/*.insca,**/*.outsca,**/*.descriptor,**/*.php,**/*.idl,**/*.map,**/*.esql,**/*.msgflow,**/*.subflow", required = true)
     protected String includeArtifactsPattern;
 
     /**
@@ -181,11 +183,9 @@ public class CreateBarMojo extends AbstractMojo {
             params.addAll(libs);
         }
 
-        // if there are no applications and no libraries, add "unmanaged" objects
-        if (apps.isEmpty() && libs.isEmpty()) {
-            params.add("-o");
-            params.addAll(getObjectNames());
-        }
+        // specify the objects on the command line
+        params.add("-o");
+        params.addAll(getObjectNames());
 
         return params;
     }
@@ -353,11 +353,13 @@ public class CreateBarMojo extends AbstractMojo {
         pb.redirectErrorStream(true);
         Process process;
         ProcessOutputLogger stdOutHandler = null;
+        ProcessOutputLogger stdErrorHandler = null;
         try {
             process = pb.start();
-            stdOutHandler = new ProcessOutputLogger(process.getInputStream(),
-                    getLog());
+            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
+            stdErrorHandler = new ProcessOutputLogger(process.getErrorStream(), getLog());
             stdOutHandler.start();
+            stdErrorHandler.start();
             process.waitFor();
         } catch (IOException e) {
             throw new MojoFailureException("Error executing: "
@@ -370,6 +372,14 @@ public class CreateBarMojo extends AbstractMojo {
                 stdOutHandler.interrupt();
                 try {
                     stdOutHandler.join();
+                } catch (InterruptedException e) {
+                    // this should never happen, so ignore this one
+                }
+            }
+            if (stdErrorHandler != null) {
+                stdErrorHandler.interrupt();
+                try {
+                    stdErrorHandler.join();
                 } catch (InterruptedException e) {
                     // this should never happen, so ignore this one
                 }

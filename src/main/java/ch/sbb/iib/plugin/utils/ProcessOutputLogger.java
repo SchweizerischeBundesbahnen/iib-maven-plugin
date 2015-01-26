@@ -25,7 +25,7 @@ public class ProcessOutputLogger extends Thread {
             while (true) {
                 line = bufferedReader.readLine();
                 if (line != null) {
-                    log.debug(line);
+                    log.info(line);
                     line = null;
                 } else {
                     Thread.sleep(500);
