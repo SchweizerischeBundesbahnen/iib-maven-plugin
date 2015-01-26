@@ -315,11 +315,14 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         pb.redirectErrorStream(true);
         Process process;
         ProcessOutputLogger stdOutHandler = null;
+        ProcessOutputLogger stdErrorHandler = null;
         try {
             pb.redirectErrorStream(true);
             process = pb.start();
             stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
+            stdErrorHandler = new ProcessOutputLogger(process.getErrorStream(), getLog());
             stdOutHandler.start();
+            stdErrorHandler.start();
             process.waitFor();
 
         } catch (IOException e) {
@@ -331,6 +334,14 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 stdOutHandler.interrupt();
                 try {
                     stdOutHandler.join();
+                } catch (InterruptedException e) {
+                    // this should never happen, so ignore this one
+                }
+            }
+            if (stdErrorHandler != null) {
+                stdErrorHandler.interrupt();
+                try {
+                    stdErrorHandler.join();
                 } catch (InterruptedException e) {
                     // this should never happen, so ignore this one
                 }
