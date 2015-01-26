@@ -279,18 +279,8 @@ public class CreateBarMojo extends AbstractMojo {
         }
 
         List<String> params = constructParams();
-        // try {
+
         executeMqsiCreateBar(params);
-        // } catch (MojoFailureException e) {
-        // // A bug with the M2Eclipse Plugin causes it to fail to initialise.
-        // // Restarting the same job
-        // // with an existing and now initialised Workspace sometimes helps,
-        // // so we'll try it now.
-        // // With IIB9 Toolkit, a newer version of M2Eclipse can be used and
-        // // the initialisation works
-        // // in headless mode. At that stage, this retry can be removed.
-        // executeMqsiCreateBar(params);
-        // }
 
         try {
             // if classloaders are in use, all jars are to be removed
