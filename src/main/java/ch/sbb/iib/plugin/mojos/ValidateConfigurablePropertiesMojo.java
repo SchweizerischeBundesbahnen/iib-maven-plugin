@@ -24,90 +24,74 @@ import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 import ch.sbb.iib.plugin.utils.ConfigurablePropertiesUtil;
-import ch.sbb.iib.plugin.utils.ProcessOutputCatcher;
+import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
 
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties
- * 
- * @goal validate-configurable-properties
- * @phase package
- * @requiresProject true
  */
+@Mojo(name="validate-configurable-properties", defaultPhase=LifecyclePhase.PACKAGE)
 public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     /**
      * Whether the applybaroverride command should be executed or not
-     * 
-     * @parameter expression="${iib.applybaroverride}" default-value="true"
-     * @required
      */
+    @Parameter( property="iib.applybaroverride", defaultValue="true", required=true)
     protected Boolean applyBarOverride;
 
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
      * 
-     * @parameter expression="${iib.barName}" default-value="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar"
-     * @required
      */
+    @Parameter( property="iib.barName", defaultValue="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar", required=true)
     protected File barName;
 
     /**
      * The name of the default properties file to be generated from the bar file.
      * 
-     * @parameter expression="${iib.configurablePropertiesFile}" default-value="${project.build.directory}/iib/default.properties"
-     * @required
      */
+    @Parameter( property="iib.configurablePropertiesFile", defaultValue="${project.build.directory}/iib/default.properties", required=true)
     protected File defaultPropertiesFile;
 
     /**
      * Whether or not to fail the build if properties are found to be invalid.
-     * 
-     * @parameter expression="${iib.failOnInvalidProperties}" default-value="true"
-     * @required
      */
+    @Parameter( property="iib.failOnInvalidProperties", defaultValue="true", required=true)
     protected Boolean failOnInvalidProperties;
 
     /**
      * Installation directory of the IIB Toolkit
-     * 
-     * @parameter expression="${iib.toolkitInstallDir}"
-     * @required
      */
+    @Parameter( property="iib.toolkitInstallDir", required=true)
     protected File toolkitInstallDir;
 
 
     /**
      * The Maven Project Object
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      */
+    @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
 
     /**
      * The Maven Session Object
-     * 
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
      */
+    @Parameter(property="session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
      * The Maven PluginManager Object
-     * 
-     * @component
-     * @required
      */
+    @Component
     protected BuildPluginManager buildPluginManager;
 
 
-    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         copyAndFilterResources();
@@ -118,9 +102,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         params.add("-b");
         params.add(barName.getAbsolutePath());
 
-        ArrayList<String> output = executeReadBar(params);
+        List<String> output = executeReadBar(params);
 
-        ArrayList<String> configurableProperties = getConfigurableProperties(output);
+        List<String> configurableProperties = getConfigurableProperties(output);
 
         writeToFile(configurableProperties, defaultPropertiesFile);
 
@@ -133,7 +117,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     private void copyAndFilterResources() throws MojoFailureException, MojoExecutionException {
 
-        getLog().error(project.getBuild().getResources().toString());
+        getLog().debug("Project Build Resources: " + project.getBuild().getResources().toString());
 
         // copy the main resources
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-resources-plugin"), version("2.6")), goal("copy-resources"), configuration(element(name("outputDirectory"),
@@ -222,11 +206,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     /**
      * @param params
-     * @return
      * @throws MojoFailureException
      */
-    private ArrayList<String> executeApplyBarOverride(List<String> params) throws MojoFailureException {
-        ArrayList<String> output = new ArrayList<String>();
+    private void executeApplyBarOverride(List<String> params) throws MojoFailureException {
 
         File cmdFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "applybaroverrideCommand-" + UUID.randomUUID() + ".cmd");
 
@@ -251,7 +233,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -260,18 +242,18 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         // redirect subprocess stderr to stdout
         pb.redirectErrorStream(true);
         Process process;
-        ProcessOutputCatcher stdOutHandler = null;
+        ProcessOutputLogger stdOutHandler = null;
         try {
             pb.redirectErrorStream(true);
             process = pb.start();
-            stdOutHandler = new ProcessOutputCatcher(process.getInputStream(), output);
+            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
             stdOutHandler.start();
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
@@ -289,21 +271,15 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         }
 
         getLog().debug("mqsiapplybaroverride complete");
-        if (getLog().isDebugEnabled()) {
-            Log log = getLog();
-            for (String outputLine : output) {
-                log.debug(outputLine);
-            }
-        }
-        return output;
+
     }
 
     /**
-     * @param params
-     * @return
+     * @param params the parameters to be used with the mqsireadbar command
+     * @return the screen output of the executed mqsireadbar command
      * @throws MojoFailureException
      */
-    private ArrayList<String> executeReadBar(List<String> params) throws MojoFailureException {
+    private List<String> executeReadBar(List<String> params) throws MojoFailureException {
         ArrayList<String> output = new ArrayList<String>();
 
         File cmdFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "readbarCommand-" + UUID.randomUUID() + ".cmd");
@@ -329,7 +305,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -338,23 +314,34 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         // redirect subprocess stderr to stdout
         pb.redirectErrorStream(true);
         Process process;
-        ProcessOutputCatcher stdOutHandler = null;
+        ProcessOutputLogger stdOutHandler = null;
+        ProcessOutputLogger stdErrorHandler = null;
         try {
             pb.redirectErrorStream(true);
             process = pb.start();
-            stdOutHandler = new ProcessOutputCatcher(process.getInputStream(), output);
+            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
+            stdErrorHandler = new ProcessOutputLogger(process.getErrorStream(), getLog());
             stdOutHandler.start();
+            stdErrorHandler.start();
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
                 try {
                     stdOutHandler.join();
+                } catch (InterruptedException e) {
+                    // this should never happen, so ignore this one
+                }
+            }
+            if (stdErrorHandler != null) {
+                stdErrorHandler.interrupt();
+                try {
+                    stdErrorHandler.join();
                 } catch (InterruptedException e) {
                     // this should never happen, so ignore this one
                 }
@@ -376,7 +363,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         return output;
     }
 
-    private void writeToFile(ArrayList<String> configurableProperties, File file) {
+    private void writeToFile(List<String> configurableProperties, File file) throws MojoFailureException {
 
         getLog().info("Writing configurable properties to: " + defaultPropertiesFile.getAbsolutePath());
 
@@ -387,10 +374,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 writer.write(prop + System.getProperty("line.separator"));
             }
         } catch (IOException e) {
-            new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile);
+            throw new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile, e);
         } finally {
             try {
-                writer.close();
+                if (writer != null) {
+                    writer.close();
+                }
             } catch (IOException e) {
                 // ignore any error here
             }
@@ -400,10 +389,10 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     }
 
     /**
-     * @param output
-     * @return
+     * @param output the output of the mqsireadbar command for a given bar file 
+     * @return a list of properties that can be overriden for a given bar file
      */
-    private ArrayList<String> getConfigurableProperties(ArrayList<String> output) {
+    private List<String> getConfigurableProperties(List<String> output) {
         // extract the configurable properties
         // 1. search the output for "  Deployment descriptor:"
         // 2. everything after that is a configurable property up until
@@ -411,7 +400,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         boolean ddFound = false;
 
         // this could probably be done more efficiently with a subList
-        ArrayList<String> configurableProperties = new ArrayList<String>();
+        List<String> configurableProperties = new ArrayList<String>();
         for (String outputLine : output) {
             if (!ddFound) {
                 if ("  Deployment descriptor:".equals(outputLine)) {
@@ -433,7 +422,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     }
 
     private String getCommandLine(List<String> command) {
-        String ret = new String();
+        String ret = "";
         for (String element : command) {
             ret = ret.concat(" ").concat(element);
         }

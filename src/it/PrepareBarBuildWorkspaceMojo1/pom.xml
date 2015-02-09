@@ -21,9 +21,6 @@
             	<goal>prepare-bar-build-workspace</goal>
             </goals>
             <phase>compile</phase>
-            <configuration>
-              <toolkitInstallDir>@iib.toolkitInstallDir@</toolkitInstallDir>
-            </configuration>
           </execution>
         </executions>
       </plugin>

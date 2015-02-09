@@ -19,6 +19,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -28,48 +32,33 @@ import org.codehaus.plexus.util.FileUtils;
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  * 
  * requiresDependencyResolution below is required for the unpack-dependencies goal to work correctly. See https://github.com/TimMoore/mojo-executor/issues/3
- * 
- * @goal prepare-iib-classloader-packaging
- * @requiresProject true
- * @requiresDependencyResolution test
- * 
  */
+@Mojo(name = "prepare-iib-classloader-packaging", requiresDependencyResolution=ResolutionScope.TEST)
 public class PrepareIibClassloaderPackagingMojo extends AbstractMojo {
 
     /**
      * The Maven Project Object
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      */
+    @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
 
     /**
      * The Maven Session Object
-     * 
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
      */
+    @Parameter(property="session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
      * The Maven PluginManager Object
-     * 
-     * @component
-     * @required
      */
+    @Component
     protected BuildPluginManager buildPluginManager;
 
     /**
      * The path where the classloader jars will be copied to for packaging later.
-     * 
-     * @parameter expression="${iib.classloader}" default-value="${project.build.directory}/iib/classloader"
-     * @read-only
-     * @required
      */
-    protected File classloader;
+    @Parameter(property="iib.classloaderPath", defaultValue="${project.build.directory}/iib/classloader", required=true, readonly=true)
+    protected File classloaderPath;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         // mvn
@@ -84,7 +73,7 @@ public class PrepareIibClassloaderPackagingMojo extends AbstractMojo {
         }
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("2.8")), goal("copy-dependencies"), configuration(element(name("outputDirectory"),
-                classloader.getAbsolutePath()), element(name("includeScope"), "runtime"), element(name("includeTypes"), "jar")), executionEnvironment(project, session, buildPluginManager));
+                classloaderPath.getAbsolutePath()), element(name("includeScope"), "runtime"), element(name("includeTypes"), "jar")), executionEnvironment(project, session, buildPluginManager));
 
         // delete the dependency-maven-plugin-markers directory
         try {

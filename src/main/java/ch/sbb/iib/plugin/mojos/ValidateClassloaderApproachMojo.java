@@ -9,43 +9,36 @@ import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 import ch.sbb.iib.plugin.utils.ConfigurablePropertiesUtil;
 
 /**
  * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them
  * should.
- * 
- * @goal validate-classloader-approach
- * @requiresProject true
  */
+@Mojo(name="validate-classloader-approach")
 public class ValidateClassloaderApproachMojo extends AbstractMojo {
 
     /**
      * The name of the default properties file to be generated from the bar file.
-     * 
-     * @parameter expression="${iib.configurablePropertiesFile}" default-value="${project.build.directory}/iib/default.properties"
-     * @required
      */
+    @Parameter(property="iib.configurablePropertiesFile", defaultValue="${project.build.directory}/iib/default.properties", required=true)
     protected File defaultPropertiesFile;
 
     /**
      * Whether or not to fail the build if the classloader approach is invalid.
-     * 
-     * @parameter expression="${iib.failOnInvalidClassloader}" default-value="true"
-     * @required
      */
+    @Parameter(property="iib.failOnInvalidClassloader", defaultValue="true", required=true)
     protected Boolean failOnInvalidClassloader;
 
     /**
      * Whether classloaders are in use with this bar
-     * 
-     * @parameter expression="${iib.useClassloaders}" default-value="false"
-     * @since 1.5
      */
+    @Parameter(property="iib.useClassloaders", defaultValue="false")
     protected Boolean useClassloaders;
 
-    @Override
     public void execute() throws MojoFailureException {
 
         // the defaultPropertiesFile will be created in an earlier Maven build
@@ -96,9 +89,9 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
         }
     }
 
-    private ArrayList<String> readFromFile(File file) throws IOException {
+    private List<String> readFromFile(File file) throws IOException {
 
-        ArrayList<String> configurableProperties = new ArrayList<String>();
+        List<String> configurableProperties = new ArrayList<String>();
 
         getLog().info("Reading configurable properties from: " + defaultPropertiesFile.getAbsolutePath());
 

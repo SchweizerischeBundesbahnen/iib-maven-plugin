@@ -1,5 +1,6 @@
 package ch.sbb.iib.plugin.mojos;
 
+
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -21,6 +22,9 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -29,45 +33,32 @@ import org.codehaus.plexus.util.IOUtil;
  * Creates a .bar file from a iib-bar Project.
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
- * 
- * @goal package-iib-bar
- * @requiresProject true
- * 
  */
+@Mojo(name="package-iib-bar")
 public class PackageIibBarMojo extends CreateBarMojo {
 
     /**
      * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
-     * 
-     * @parameter default-value="${project.build.directory}/assemblies/iib-bar-project.xml"
-     * @readonly
      */
+    @Parameter(defaultValue="${project.build.directory}/assemblies/iib-bar-project.xml", readonly=true)
     private File buildAssemblyFile;
 
     /**
      * The Maven Project Object
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
      */
+    @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
 
     /**
      * The Maven Session Object
-     * 
-     * @parameter expression="${session}"
-     * @required
-     * @readonly
      */
+    @Parameter(property="session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
      * The Maven PluginManager Object
-     * 
-     * @component
-     * @required
      */
+    @Component
     protected BuildPluginManager buildPluginManager;
 
     @Override
