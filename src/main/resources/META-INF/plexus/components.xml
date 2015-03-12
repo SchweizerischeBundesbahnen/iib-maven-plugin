@@ -12,7 +12,7 @@
 					<process-resources>ch.sbb.maven.plugins:iib-maven-plugin:prepare-bar-build-workspace
 					</process-resources>
 					<compile>ch.sbb.maven.plugins:iib-maven-plugin:create-bar</compile>
-					<process-classes>ch.sbb.maven.plugins:iib-maven-plugin:clean-bar-build-workspace,ch.sbb.maven.plugins:iib-maven-plugin:validate-configurable-properties,ch.sbb.maven.plugins:iib-maven-plugin:validate-classloader-approach
+					<process-classes>ch.sbb.maven.plugins:iib-maven-plugin:validate-configurable-properties,ch.sbb.maven.plugins:iib-maven-plugin:clean-bar-build-workspace,ch.sbb.maven.plugins:iib-maven-plugin:validate-classloader-approach
 					</process-classes>
 					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-iib-bar
 					</package>

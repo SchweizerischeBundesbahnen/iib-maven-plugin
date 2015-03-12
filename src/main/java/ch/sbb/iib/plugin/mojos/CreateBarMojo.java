@@ -7,10 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -23,9 +19,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
+import ch.sbb.iib.plugin.utils.EclipseProjectUtils;
 import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
 import ch.sbb.iib.plugin.utils.ZipUtils;
-import ch.sbb.maven.plugins.iib_maven_plugin.eclipse_project.ProjectDescription;
 
 /**
  * Creates a .bar file from a iib-bar Project.
@@ -155,24 +151,12 @@ public class CreateBarMojo extends AbstractMojo {
         // loop through the projects, adding them as "-a" Applications, "-l"
         // libraries or the deployable artefacts as "-o" objects
 
-        List<String> workspaceProjects = getWorkspaceProjects();
+        List<String> workspaceProjects = EclipseProjectUtils.getWorkspaceProjects(workspace);
 
         for (String projectName : workspaceProjects) {
-
-            ProjectDescription projectDescription = new ProjectDescription();
-            try {
-                // unmarshall the .project file, which is in the temp workspace
-                // under a directory of the same name as the projectName
-                projectDescription = unmarshallEclipseProjectFile(new File(
-                        new File(workspace, projectName), ".project"));
-            } catch (JAXBException e) {
-                throw (new MojoFailureException(
-                        "Error parsing .project file for: " + projectName, e));
-            }
-
-            if (isApplication(projectDescription)) {
+            if (EclipseProjectUtils.isApplication(workspace, projectName, getLog())) {
                 apps.add(projectName);
-            } else if (isLibrary(projectDescription)) {
+            } else if (EclipseProjectUtils.isLibrary(workspace, projectName, getLog())) {
                 libs.add(projectName);
             }
         }
@@ -235,7 +219,7 @@ public class CreateBarMojo extends AbstractMojo {
         if (projectName != null) {
             params.add(projectName);
         } else {
-            List<String> workspaceProjects = getWorkspaceProjects();
+            List<String> workspaceProjects = EclipseProjectUtils.getWorkspaceProjects(workspace);
 
             params.addAll(workspaceProjects);
         }
@@ -448,62 +432,6 @@ public class CreateBarMojo extends AbstractMojo {
         // }
 
         return objectNames;
-    }
-
-    /**
-     * @return the names of the projects (actually, just all directories) in the
-     *         workspace
-     * @throws MojoFailureException
-     */
-    private List<String> getWorkspaceProjects() throws MojoFailureException {
-
-        List<String> workspaceProjects = new ArrayList<String>();
-
-        for (File file : workspace.listFiles()) {
-            if (file.isDirectory() && !file.getName().equals(".metadata")) {
-                workspaceProjects.add(file.getName());
-            }
-        }
-
-        if (workspaceProjects.isEmpty()) {
-            throw (new MojoFailureException(
-                    "No projects were found in the workspace: "
-                            + workspace.getAbsolutePath()));
-        }
-
-        return workspaceProjects;
-    }
-
-    private boolean isApplication(ProjectDescription projectDescription) {
-
-        List<String> natureList = projectDescription.getNatures().getNature();
-        if (natureList
-                .contains("com.ibm.etools.msgbroker.tooling.applicationNature")) {
-            getLog().debug(
-                    projectDescription.getName() + " is an IIB Application");
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isLibrary(ProjectDescription projectDescription) {
-        List<String> natureList = projectDescription.getNatures().getNature();
-        if (natureList
-                .contains("com.ibm.etools.msgbroker.tooling.libraryNature")) {
-            getLog().debug(projectDescription.getName() + " is an IIB Library");
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected ProjectDescription unmarshallEclipseProjectFile(File projectFile)
-            throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(ProjectDescription.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (ProjectDescription) unmarshaller.unmarshal(projectFile);
-
     }
 
 }
