@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
@@ -46,18 +44,4 @@ public class CreateBarMojoUnitTest {
 
     }
 
-    /**
-     * Test the unmarshalling of a .project file
-     */
-    @Test
-    public void unmarshallEclipseProjectFileTest() {
-        CreateBarMojo mojo = new CreateBarMojo();
-        try {
-            // somewhat lazy, but test with the local .project file
-            mojo.unmarshallEclipseProjectFile(new File(".project"));
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            assertTrue("An error occurred. See stack trace.", false);
-        }
-    }
 }

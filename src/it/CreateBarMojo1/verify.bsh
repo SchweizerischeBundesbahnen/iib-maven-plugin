@@ -49,8 +49,8 @@ boolean checkBuildLogContains(String searchPattern) {
 validateParam("barName", ".*CreateBarMojo1-.*.bar");
 validateParam("cleanBuild", "true");
 validateParam("esql21", "false");
-//validateParam("excludeArtifactsPattern", "null");
-validateParam("includeArtifactsPattern", "\\*\\*/\\*\\.msgflow,\\*\\*/\\*\\.mset");
+validateParam("excludeArtifactsPattern", ".*");
+validateParam("includeArtifactsPattern", ".*");
 validateParam("versionString", ".*");
 validateParam("toolkitInstallDir", ".*");
 validateParam("toolkitVersion", "9");

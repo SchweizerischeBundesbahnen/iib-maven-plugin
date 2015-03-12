@@ -72,6 +72,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     @Parameter( property="iib.toolkitInstallDir", required=true)
     protected File toolkitInstallDir;
 
+    /**
+     * The path of the workspace in which the projects are extracted to be built.
+     */
+    @Parameter(property = "iib.workspace", defaultValue = "${project.build.directory}/iib/workspace", required = true)
+    protected File workspace;
+
 
     /**
      * The Maven Project Object
@@ -90,6 +96,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      */
     @Component
     protected BuildPluginManager buildPluginManager;
+    
+    /**
+     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
+     */
+    @Parameter(property = "iib.projectName", defaultValue = "")
+    protected String projectName;
 
 
     public void execute() throws MojoFailureException, MojoExecutionException {
@@ -145,16 +157,39 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 getLog().info("  " + propFile.getAbsolutePath());
 
                 List<String> params = new ArrayList<String>();
+                
+                // (Required) The path to the BAR file.
                 params.add("-b");
                 params.add(barName.getAbsolutePath());
 
+                // (Optional) The name of the output BAR file to which the BAR file changes are to be made.
                 params.add("-o");
                 String outputBarFile = new File(propFile.getParent(), propFile.getName().replaceAll("properties$", "bar")).getAbsolutePath();
                 params.add(outputBarFile);
 
+                // (Optional) The path to one of the following resources:
+                // - A BAR file that contains the deployment descriptor.
+                // - A properties file in which each line contains a property-name=override.
+                // - A deployment descriptor that is used to apply overrides to the BAR file.
                 params.add("-p");
                 params.add(propFile.getAbsolutePath());
 
+                // (Optional) The name of an application in the BAR file
+                params.add("-k");
+                params.add(projectName);
+                
+                // (Optional) A list of the property-name=override pairs, current-property-value=override pairs.
+                // -m
+                
+                // (Optional) Specifies that all deployment descriptor files are updated recursively.
+                // -r
+                
+                // (Optional) Specifies that the internal trace is to be sent to the named file.
+                // -v
+                
+                // (Optional) The name of a library in the BAR file to which to apply overrides.
+                // -y
+                
                 executeApplyBarOverride(params);
 
             }
