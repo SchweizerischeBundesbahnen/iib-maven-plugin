@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -54,7 +55,7 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * Include "-deployAsSource" parameter?
      */
-    @Parameter(property = "iib.deployAsSource", defaultValue = "false", required = true)
+    @Parameter(property = "iib.deployAsSource", defaultValue = "true", required = true)
     protected boolean deployAsSource;
 
     /**
@@ -151,9 +152,15 @@ public class CreateBarMojo extends AbstractMojo {
         // loop through the projects, adding them as "-a" Applications, "-l"
         // libraries or the deployable artefacts as "-o" objects
 
-        List<String> workspaceProjects = EclipseProjectUtils.getWorkspaceProjects(workspace);
+//        List<String> workspaceProjects = EclipseProjectUtils.getWorkspaceProjects(workspace);
 
-        for (String projectName : workspaceProjects) {
+        // only direct dependencies of the current bar project will be added as Applications or Libraries
+        // loop through them
+        for (Dependency dependency : project.getDependencies()) {
+            
+            // the projectName is the directoryName is the artifactId
+            projectName = dependency.getArtifactId();
+            
             if (EclipseProjectUtils.isApplication(workspace, projectName, getLog())) {
                 apps.add(projectName);
             } else if (EclipseProjectUtils.isLibrary(workspace, projectName, getLog())) {
