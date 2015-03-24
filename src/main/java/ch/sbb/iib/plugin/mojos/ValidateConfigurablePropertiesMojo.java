@@ -16,8 +16,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -37,39 +39,39 @@ import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties
  */
-@Mojo(name="validate-configurable-properties", defaultPhase=LifecyclePhase.PACKAGE)
+@Mojo(name = "validate-configurable-properties", defaultPhase = LifecyclePhase.PACKAGE)
 public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     /**
      * Whether the applybaroverride command should be executed or not
      */
-    @Parameter( property="iib.applybaroverride", defaultValue="true", required=true)
+    @Parameter(property = "iib.applybaroverride", defaultValue = "true", required = true)
     protected Boolean applyBarOverride;
 
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
      * 
      */
-    @Parameter( property="iib.barName", defaultValue="${project.build.directory}/iib/${project.artifactId}-${project.version}.bar", required=true)
+    @Parameter(property = "iib.barName", defaultValue = "${project.build.directory}/iib/${project.artifactId}-${project.version}.bar", required = true)
     protected File barName;
 
     /**
      * The name of the default properties file to be generated from the bar file.
      * 
      */
-    @Parameter( property="iib.configurablePropertiesFile", defaultValue="${project.build.directory}/iib/default.properties", required=true)
+    @Parameter(property = "iib.configurablePropertiesFile", defaultValue = "${project.build.directory}/iib/default.properties", required = true)
     protected File defaultPropertiesFile;
 
     /**
      * Whether or not to fail the build if properties are found to be invalid.
      */
-    @Parameter( property="iib.failOnInvalidProperties", defaultValue="true", required=true)
+    @Parameter(property = "iib.failOnInvalidProperties", defaultValue = "true", required = true)
     protected Boolean failOnInvalidProperties;
 
     /**
      * Installation directory of the IIB Toolkit
      */
-    @Parameter( property="iib.toolkitInstallDir", required=true)
+    @Parameter(property = "iib.toolkitInstallDir", required = true)
     protected File toolkitInstallDir;
 
     /**
@@ -88,7 +90,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     /**
      * The Maven Session Object
      */
-    @Parameter(property="session", required = true, readonly = true)
+    @Parameter(property = "session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
@@ -96,12 +98,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      */
     @Component
     protected BuildPluginManager buildPluginManager;
-    
+
     /**
      * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
      */
-    @Parameter(property = "iib.projectName", defaultValue = "")
-    protected String projectName;
+    @Parameter(property = "iib.applicationName")
+    protected String applicationName;
 
 
     public void execute() throws MojoFailureException, MojoExecutionException {
@@ -148,7 +150,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
     }
 
-    private void executeApplyBarOverrides() throws MojoFailureException {
+    private void executeApplyBarOverrides() throws MojoFailureException, MojoExecutionException {
 
         try {
             getLog().info("Applying properties files as bar file overrides");
@@ -157,7 +159,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 getLog().info("  " + propFile.getAbsolutePath());
 
                 List<String> params = new ArrayList<String>();
-                
+
                 // (Required) The path to the BAR file.
                 params.add("-b");
                 params.add(barName.getAbsolutePath());
@@ -176,26 +178,49 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
                 // (Optional) The name of an application in the BAR file
                 params.add("-k");
-                params.add(projectName);
-                
+                params.add(getApplicationName());
+
                 // (Optional) A list of the property-name=override pairs, current-property-value=override pairs.
                 // -m
-                
+
                 // (Optional) Specifies that all deployment descriptor files are updated recursively.
                 // -r
-                
+
                 // (Optional) Specifies that the internal trace is to be sent to the named file.
-                // -v
-                
+                // TODO
+                // -v machen mit creatbar...
+
                 // (Optional) The name of a library in the BAR file to which to apply overrides.
                 // -y
-                
+
                 executeApplyBarOverride(params);
 
             }
         } catch (IOException e) {
             throw new MojoFailureException("Error applying bar overrides", e);
         }
+    }
+
+    private String getApplicationName() throws MojoExecutionException {
+        // if the application name is specified, use it
+        if (applicationName != null && !applicationName.isEmpty()) {
+            return applicationName;
+        }
+
+        // application name not specified, look for a single dependency
+        Set<Artifact> artifacts = project.getDependencyArtifacts();
+        if (artifacts.size() == 1) {
+            // there is only one dependency - it should be an application
+            // there is only one, but we have to use the iterator...
+            for (Artifact artifact : artifacts) {
+                // return the artifactId of the first (only) artifact
+                return artifact.getArtifactId();
+            }
+        }
+
+        // TODO return project.getArtifactId()artifacts - "bar" + "app"
+
+        throw new MojoExecutionException("Unable to determine application to be overriden");
     }
 
     @SuppressWarnings("unchecked")
@@ -424,7 +449,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     }
 
     /**
-     * @param output the output of the mqsireadbar command for a given bar file 
+     * @param output the output of the mqsireadbar command for a given bar file
      * @return a list of properties that can be overriden for a given bar file
      */
     private List<String> getConfigurableProperties(List<String> output) {
@@ -478,5 +503,6 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
         return propFiles;
     }
+
 
 }
