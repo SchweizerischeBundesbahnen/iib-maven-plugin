@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.utils;
+package ch.sbb.maven.plugins.iib.utils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-
-import ch.sbb.iib.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
 
 public class ConfigurablePropertiesUtilTest {
 

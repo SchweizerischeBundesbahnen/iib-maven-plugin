@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.mojos;
+package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import ch.sbb.iib.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
+import ch.sbb.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
 
 /**
  * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them

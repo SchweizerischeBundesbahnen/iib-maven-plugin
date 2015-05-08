@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.mojos;
+package ch.sbb.maven.plugins.iib.mojos;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,8 +9,6 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.Test;
-
-import ch.sbb.iib.maven.plugins.iib.mojos.CreateBarMojo;
 
 public class CreateBarMojoUnitTest {
 

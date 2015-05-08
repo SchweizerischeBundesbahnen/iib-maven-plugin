@@ -1,5 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.mojos;
-
+package ch.sbb.maven.plugins.iib.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -31,12 +30,18 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Packages a WebSphere Message Broker Project.
+ * Creates a .zip file from a iib-classloader Project which contains the
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
-@Mojo(name = "package-src")
-public class PackageIibSrcMojo extends AbstractMojo {
+@Mojo(name = "package-classloader")
+public class PackageIibClassloaderMojo extends AbstractMojo {
+
+    /**
+     * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/assemblies/iib-classloader-project.xml", readonly = true)
+    private File buildAssemblyFile;
 
     /**
      * The Maven Project Object
@@ -56,14 +61,14 @@ public class PackageIibSrcMojo extends AbstractMojo {
     @Component
     protected BuildPluginManager buildPluginManager;
 
-    /**
-     * The path to write the assemblies/iib-src-project.xml file to before invoking the maven-assembly-plugin.
-     */
-    @Parameter(defaultValue = "${project.build.directory}/assemblies/iib-src-project.xml", readonly = true)
-    private File buildAssemblyFile;
+    public void execute() throws MojoFailureException, MojoExecutionException {
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-src-project.xml");
+        packageIibBarArtifact();
+
+    }
+
+    private void packageIibBarArtifact() throws MojoFailureException, MojoExecutionException {
+        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-classloader-project.xml");
         FileOutputStream fos;
         buildAssemblyFile.getParentFile().mkdirs();
         try {
@@ -79,10 +84,10 @@ public class PackageIibSrcMojo extends AbstractMojo {
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-src-project.xml -Dassembly.appendAssemblyId=false
+        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-classloader-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/iib-src-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/iib-classloader-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {

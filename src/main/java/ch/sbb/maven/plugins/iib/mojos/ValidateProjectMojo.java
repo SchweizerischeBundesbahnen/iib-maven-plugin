@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.mojos;
+package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.File;
 
@@ -8,7 +8,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
+import ch.sbb.maven.plugins.iib.utils.EclipseProjectUtils;
 
 /**
  * Validates the iib project

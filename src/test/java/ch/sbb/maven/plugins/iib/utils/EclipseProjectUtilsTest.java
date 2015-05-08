@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.utils;
+package ch.sbb.maven.plugins.iib.utils;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,8 +7,6 @@ import java.io.File;
 import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
-
-import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
 
 public class EclipseProjectUtilsTest {
 
@@ -24,8 +22,8 @@ public class EclipseProjectUtilsTest {
             e.printStackTrace();
             assertTrue("An error occurred. See stack trace.", false);
         }
-    } 
-    
+    }
+
     /**
      * Hier sollten vor allem:
      * - isApplication

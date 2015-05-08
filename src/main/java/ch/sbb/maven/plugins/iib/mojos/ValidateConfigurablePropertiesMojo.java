@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.mojos;
+package ch.sbb.maven.plugins.iib.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -33,8 +33,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
-import ch.sbb.iib.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
-import ch.sbb.iib.maven.plugins.iib.utils.ProcessOutputLogger;
+import ch.sbb.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
+import ch.sbb.maven.plugins.iib.utils.ProcessOutputLogger;
 
 /**
  * Goal which reads the a bar file, including creating a list of configurable properties

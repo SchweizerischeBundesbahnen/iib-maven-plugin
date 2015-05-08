@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.utils;
+package ch.sbb.maven.plugins.iib.utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 
-import ch.sbb.iib.maven.plugins.iib.generated.eclipse_project.ProjectDescription;
+import ch.sbb.maven.plugins.iib.generated.eclipse_project.ProjectDescription;
 
 /**
  * @author u209936

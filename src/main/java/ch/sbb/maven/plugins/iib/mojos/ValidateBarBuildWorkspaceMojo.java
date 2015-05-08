@@ -1,4 +1,4 @@
-package ch.sbb.iib.maven.plugins.iib.mojos;
+package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.File;
 
@@ -18,8 +18,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import ch.sbb.iib.maven.plugins.iib.generated.maven_pom.Model;
-import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
+import ch.sbb.maven.plugins.iib.generated.maven_pom.Model;
+import ch.sbb.maven.plugins.iib.utils.EclipseProjectUtils;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
