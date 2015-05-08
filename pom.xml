@@ -183,6 +183,9 @@
 							<settingsFile>src/it/settings.xml</settingsFile>
 							<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
 							<postBuildHookScript>verify</postBuildHookScript>
+							<properties>
+								<iib.toolkitInstallDir>${iib.toolkitInstallDir}</iib.toolkitInstallDir>
+							</properties>
 
 							<!-- don't multithread, otherwise problems can happen when downloading 
 								artifacts from Nexus -->

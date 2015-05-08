@@ -24,7 +24,6 @@
         </executions>
         <configuration>
           <projectName>project1</projectName>
-          <toolkitInstallDir>@iib.toolkitInstallDir@</toolkitInstallDir>
         </configuration>
       </plugin>
     </plugins>
