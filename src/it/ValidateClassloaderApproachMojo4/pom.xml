@@ -7,10 +7,6 @@
 
   <description>Test the validate-classloader-approach Mojo breaks with classloaders defined sometimes </description>
 
-  <properties>
-    <iib.failOnInvalidClassloader>false</iib.failOnInvalidClassloader>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -18,14 +14,9 @@
         <artifactId>@project.artifactId@</artifactId>
         <extensions>true</extensions>
         <version>@project.version@</version>
-        <executions>
-          <execution>
-            <id>validate-classloader-approach</id>
-            <goals>
-              <goal>validate-classloader-approach</goal>
-            </goals>
-          </execution>
-        </executions>
+        <configuration>
+          <useClassloaders>true</useClassloaders>
+        </configuration>
       </plugin>
     </plugins>
   </build>

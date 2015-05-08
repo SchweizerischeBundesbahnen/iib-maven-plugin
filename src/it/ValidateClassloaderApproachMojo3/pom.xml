@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>@project.groupId@.@project.artifactId@.it</groupId>
-  <artifactId>ValidateClassloaderApproach1</artifactId>
+  <artifactId>ValidateClassloaderApproach3</artifactId>
   <version>@project.version@</version>
 
-  <description>Test the validate-classloader-approach Mojo with no classloaders defined</description>
+  <description>Test the validate-classloader-approach Mojo breaks with classloaders defined sometimes - failure</description>
 
   <build>
     <plugins>
@@ -14,14 +14,6 @@
         <artifactId>@project.artifactId@</artifactId>
         <extensions>true</extensions>
         <version>@project.version@</version>
-        <executions>
-          <execution>
-            <id>validate-classloader-approach</id>
-            <goals>
-              <goal>validate-classloader-approach</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

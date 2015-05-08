@@ -59,7 +59,7 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
         }
 
         // loop through the javaClassLoader properties to see if they're
-        // consistent
+        // consistent (all defined or all not defined)
         List<String> clProps = ConfigurablePropertiesUtil.getJavaClassLoaderProperties(configurableProperties);
 
         for (String clProp : clProps) {
