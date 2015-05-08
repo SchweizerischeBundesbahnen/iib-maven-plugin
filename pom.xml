@@ -105,7 +105,7 @@
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<packageName>ch.sbb.iib.maven.plugins.iib.generated.eclipse_project</packageName>
+							<packageName>${project.groupId}.iib_maven_plugin.eclipse_project</packageName>
 							<clearOutputDir>false</clearOutputDir>
 							<includes>
 								<include>EclipseProject.xsd</include>
@@ -118,10 +118,10 @@
 							<goal>xjc</goal>
 						</goals>
 						<configuration>
-							<packageName>ch.sbb.iib.maven.plugins.iib.generated.maven_pom</packageName>
+							<packageName>${project.groupId}.iib_maven_plugin.pom</packageName>
 							<clearOutputDir>false</clearOutputDir>
 							<includes>
-								<include>SimplePom.xsd</include>
+								<include>maven-v4_0_0.xsd</include>
 							</includes>
 						</configuration>
 					</execution>
@@ -194,7 +194,7 @@
 								<pomExclude>CreateBarMojo1</pomExclude>
 							</pomExcludes>
 							<pomIncludes>
-								<pomInclude>ValidateClassloaderApproach*</pomInclude>
+								<pomInclude>ValidateBarBuildWorkspaceMojo*</pomInclude>
 							</pomIncludes>
 							 -->
 						</configuration>

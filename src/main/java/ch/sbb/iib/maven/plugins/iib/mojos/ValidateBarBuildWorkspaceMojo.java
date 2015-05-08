@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.JAXBIntrospector;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.maven.execution.MavenSession;
@@ -123,7 +124,7 @@ public class ValidateBarBuildWorkspaceMojo extends AbstractMojo {
             throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(Model.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (Model) unmarshaller.unmarshal(pomFile);
+        return (Model) JAXBIntrospector.getValue(unmarshaller.unmarshal(pomFile));
 
     }
 
