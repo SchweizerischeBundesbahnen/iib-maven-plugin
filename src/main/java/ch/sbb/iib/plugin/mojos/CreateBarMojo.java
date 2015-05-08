@@ -161,9 +161,9 @@ public class CreateBarMojo extends AbstractMojo {
             // the projectName is the directoryName is the artifactId
             projectName = dependency.getArtifactId();
             
-            if (EclipseProjectUtils.isApplication(workspace, projectName, getLog())) {
+            if (EclipseProjectUtils.isApplication(new File(workspace, projectName), getLog())) {
                 apps.add(projectName);
-            } else if (EclipseProjectUtils.isLibrary(workspace, projectName, getLog())) {
+            } else if (EclipseProjectUtils.isLibrary(new File(workspace, projectName), getLog())) {
                 libs.add(projectName);
             }
         }

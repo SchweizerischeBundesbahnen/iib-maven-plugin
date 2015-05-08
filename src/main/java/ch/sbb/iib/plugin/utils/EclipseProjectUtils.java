@@ -11,20 +11,24 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import ch.sbb.maven.plugins.iib_maven_plugin.eclipse_project.ProjectDescription;
+import ch.sbb.maven.plugins.iib_maven_plugin.eclipse_project.ProjectDescription;;
 
+/**
+ * @author u209936
+ *
+ */
 public class EclipseProjectUtils {
 
-    private static ProjectDescription getProjectDescription(File workspace, String projectName) throws MojoFailureException {
+    private static ProjectDescription getProjectDescription(File projectDirectory) throws MojoFailureException {
         ProjectDescription projectDescription = new ProjectDescription();
         try {
             // unmarshall the .project file, which is in the temp workspace
             // under a directory of the same name as the projectName
             projectDescription = unmarshallEclipseProjectFile(new File(
-                    new File(workspace, projectName), ".project"));
+                    projectDirectory, ".project"));
         } catch (JAXBException e) {
             throw (new MojoFailureException(
-                    "Error parsing .project file for: " + projectName, e));
+                    "Error parsing .project file in: " + projectDirectory.getPath(), e));
         }
         return projectDescription;
     }
@@ -55,31 +59,62 @@ public class EclipseProjectUtils {
     }
 
 
-    public static boolean isApplication(File workspace, String projectName, Log log) throws MojoFailureException {
+    /**
+     * returns the name of the project out of the .project file
+     * 
+     * @param projectDirectory the (workspace) directory containing the project
+     * @return the name of the project out of the .project file 
+     * @throws MojoFailureException if something goes wrong
+     */
+    public static String getProjectName(File projectDirectory) throws MojoFailureException {
 
-        List<String> natureList = getProjectDescription(workspace, projectName).getNatures().getNature();
+        return getProjectDescription(projectDirectory).getName();
+    }
+
+    /**
+     * @param projectDirectory the (workspace) directory containing the project
+     * @param log logger to be used if debugging information should be produced
+     * @return true if the project is an IIB Application 
+     * @throws MojoFailureException if something went wrong
+     */
+    public static boolean isApplication(File projectDirectory, Log log) throws MojoFailureException {
+
+        List<String> natureList = getProjectDescription(projectDirectory).getNatures().getNature();
         if (natureList
                 .contains("com.ibm.etools.msgbroker.tooling.applicationNature")) {
             log.debug(
-                    projectName + " is an IIB Application");
+                    projectDirectory + " is an IIB Application");
             return true;
         } else {
             return false;
         }
     }
 
-    public static boolean isLibrary(File workspace, String projectName, Log log) throws MojoFailureException {
+    /**
+     * @param projectDirectory the (workspace) directory containing the project
+     * @param log logger to be used if debugging information should be produced
+     * @return true if the project is an IIB Application 
+     * @throws MojoFailureException if something went wrong
+     */
+    public static boolean isLibrary(File projectDirectory, Log log) throws MojoFailureException {
 
-        List<String> natureList = getProjectDescription(workspace, projectName).getNatures().getNature();
+        List<String> natureList = getProjectDescription(projectDirectory).getNatures().getNature();
         if (natureList
                 .contains("com.ibm.etools.msgbroker.tooling.libraryNature")) {
-            log.debug(projectName + " is an IIB Library");
+            log.debug(projectDirectory + " is an IIB Library");
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     * returns a java object containing the contents of the .project file
+     * 
+     * @param projectFile the .project file to be unmarshalled
+     * @return the unmarshalled .profile file
+     * @throws JAXBException if something goes wrong
+     */
     protected static ProjectDescription unmarshallEclipseProjectFile(File projectFile)
             throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(ProjectDescription.class);
@@ -87,6 +122,5 @@ public class EclipseProjectUtils {
         return (ProjectDescription) unmarshaller.unmarshal(projectFile);
 
     }
-
 
 }

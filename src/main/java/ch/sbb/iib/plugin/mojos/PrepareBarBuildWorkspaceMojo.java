@@ -13,12 +13,15 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.dependency.utils.DependencyUtil;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -35,6 +38,13 @@ import org.codehaus.plexus.util.FileUtils;
  */
 @Mojo(name="prepare-bar-build-workspace", requiresDependencyResolution=ResolutionScope.TEST)
 public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
+
+    /**
+     * a comma separated list of dependency types to be unpacked
+     */
+    private static final String UNPACK_IIB_DEPENDENCY_TYPES = "zip";
+
+    private static final String UNPACK_IIB_DEPENDENCY_SCOPE = "compile";
 
     /**
      * The Maven Project Object
@@ -67,42 +77,25 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
     protected File unpackDependenciesDirectory;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:unpack-dependencies -DoutputDirectory=${project.build.directory}/iib/workspace
 
-        // unpack all the dependencies into the workspace directory for compilation
-        // and bar file packaging.
-        unpackIibDependencies("compile", workspace);
-
-        // the following code might come in useful for the packaging of specific artifacts in the bar file
-
-        // unpackIibDependencies("compile", new File(unpackDependenciesDirectory, "compile"));
-
-        // is not needed for anything
-        // unpackIibDependencies("runtime");
-
-        // unpack the provided dependencies, so that the can be excluded from
-        // the bar file creation.
-        // unpackIibDependencies("provided", new File(unpackDependenciesDirectory, "provided"));
-
-        // unpackIibDependencies("test", new File(unpackDependenciesDirectory, "test"));
+        unpackIibDependencies(workspace);
 
     }
 
     /**
      * unpacks dependencies of a given scope to the specified directory
      * 
-     * @param scope dependency Scope to be unpacked
      * @param unpackDir the directory to unpack the dependencies into
      * @throws MojoExecutionException
      */
-    private void unpackIibDependencies(String scope, File unpackDir) throws MojoExecutionException {
+    private void unpackIibDependencies(File unpackDir) throws MojoExecutionException {
 
         // define the directory to be unpacked into and create it
         unpackDir.mkdirs();
 
         // unpack all dependencies that match the given scope
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("2.8")), goal("unpack-dependencies"), configuration(element(name("outputDirectory"),
-                unpackDir.getAbsolutePath()), element(name("includeTypes"), "zip"), element(name("includeScope"), scope)), executionEnvironment(project, session, buildPluginManager));
+                unpackDir.getAbsolutePath()), element(name("includeTypes"), UNPACK_IIB_DEPENDENCY_TYPES), element(name("includeScope"), UNPACK_IIB_DEPENDENCY_SCOPE)), executionEnvironment(project, session, buildPluginManager));
 
         // delete the dependency-maven-plugin-markers directory
         try {
@@ -113,4 +106,14 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * @return the types that will be unpacked when preparing the Bar Build Workspace
+     */
+    public static Set<String> getUnpackIibDependencyTypes() {
+        HashSet<String> types = new HashSet<String>();
+        for (String type : DependencyUtil.tokenizer(UNPACK_IIB_DEPENDENCY_TYPES)) {
+            types.add(type);
+        }
+        return types;
+    }
 }

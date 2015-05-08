@@ -1,21 +1,34 @@
 <?xml version="1.0"?>
 <!DOCTYPE lifecycleMappingMetadata>
-<!-- the presence of this file fixes the m2eclipse problem "Plugin execution not covered by lifecycle configuration..." -->
+<!-- the presence of this file fixes the m2eclipse problem "Plugin execution 
+	not covered by lifecycle configuration..." -->
 <lifecycleMappingMetadata>
-  <pluginExecutions>
-    <pluginExecution>
-      <pluginExecutionFilter>
-        <goals>
-          <goal>clean-bar-build-workspace</goal>
-          <goal>create-bar</goal>
-          <goal>prepare-bar-build-workspace</goal>
-          <goal>validate-classloader-approach</goal>
-          <goal>validate-configurable-properties</goal>
-        </goals>
-      </pluginExecutionFilter>
-      <action>
-      	<ignore/>
-      </action>
-    </pluginExecution>
-  </pluginExecutions>
+	<pluginExecutions>
+		<pluginExecution>
+			<pluginExecutionFilter>
+				<goals>
+					<goal>clean-bar-build-workspace</goal>
+					<goal>create-bar</goal>
+					<goal>prepare-bar-build-workspace</goal>
+					<goal>validate-classloader-approach</goal>
+					<goal>validate-configurable-properties</goal>
+				</goals>
+			</pluginExecutionFilter>
+			<action>
+				<ignore />
+			</action>
+		</pluginExecution>
+		<pluginExecution>
+			<pluginExecutionFilter>
+				<goals>
+					<goal>validate-project</goal>
+				</goals>
+			</pluginExecutionFilter>
+			<action>
+				<execute>
+					<runOnIncremental>false</runOnIncremental>
+				</execute>
+			</action>
+		</pluginExecution>
+	</pluginExecutions>
 </lifecycleMappingMetadata>
