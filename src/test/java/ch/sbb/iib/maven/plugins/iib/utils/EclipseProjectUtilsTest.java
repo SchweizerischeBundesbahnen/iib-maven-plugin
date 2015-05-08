@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.utils;
+package ch.sbb.iib.maven.plugins.iib.utils;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,6 +7,8 @@ import java.io.File;
 import javax.xml.bind.JAXBException;
 
 import org.junit.Test;
+
+import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
 
 public class EclipseProjectUtilsTest {
 

@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.mojos;
+package ch.sbb.iib.maven.plugins.iib.mojos;
 
 import java.io.File;
 
@@ -17,8 +17,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import ch.sbb.iib.plugin.utils.EclipseProjectUtils;
-import ch.sbb.maven.plugins.iib_maven_plugin.pom.Model;
+import ch.sbb.iib.maven.plugins.iib.generated.maven_pom.Model;
+import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
@@ -64,20 +64,19 @@ public class ValidateBarBuildWorkspaceMojo extends AbstractMojo {
 
         // the following code would be a nicer implementation, but breaks the Integration Tests
         //
-//        Set<String> unpackIibDependencyTypes = PrepareBarBuildWorkspaceMojo.getUnpackIibDependencyTypes();
-//
-//        // loop through the dependencies
-//        for (Dependency dependency : project.getDependencies()) {
-//
-//            // ignore dependencies that won't be unpacked (ie. non-IIB dependencies)
-//            if (!unpackIibDependencyTypes.contains(dependency.getType())) {
-//                continue;
-//            }
-//
-//            String projectDirectoryName = dependency.getArtifactId();
+        // Set<String> unpackIibDependencyTypes = PrepareBarBuildWorkspaceMojo.getUnpackIibDependencyTypes();
+        //
+        // // loop through the dependencies
+        // for (Dependency dependency : project.getDependencies()) {
+        //
+        // // ignore dependencies that won't be unpacked (ie. non-IIB dependencies)
+        // if (!unpackIibDependencyTypes.contains(dependency.getType())) {
+        // continue;
+        // }
+        //
+        // String projectDirectoryName = dependency.getArtifactId();
 
-        
-        
+
         // loop through the project directories
         File[] projects = workspace.listFiles();
         //

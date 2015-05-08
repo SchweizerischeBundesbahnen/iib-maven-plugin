@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.utils;
+package ch.sbb.iib.maven.plugins.iib.utils;
 
 import java.io.File;
 import java.io.IOException;

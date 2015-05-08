@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.mojos;
+package ch.sbb.iib.maven.plugins.iib.mojos;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
@@ -36,7 +36,7 @@ import org.codehaus.plexus.util.FileUtils;
  * 
  * requiresDependencyResolution below is required for the unpack-dependencies goal to work correctly. See https://github.com/TimMoore/mojo-executor/issues/3
  */
-@Mojo(name="prepare-bar-build-workspace", requiresDependencyResolution=ResolutionScope.TEST)
+@Mojo(name = "prepare-bar-build-workspace", requiresDependencyResolution = ResolutionScope.TEST)
 public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
     /**
@@ -55,7 +55,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
     /**
      * The Maven Session Object
      */
-    @Parameter(property="session", required = true, readonly = true)
+    @Parameter(property = "session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
@@ -67,13 +67,13 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
     /**
      * The path of the workspace in which the projects are extracted to be built.
      */
-    @Parameter(property="iib.workspace", defaultValue="${project.build.directory}/iib/workspace", required=true)
+    @Parameter(property = "iib.workspace", defaultValue = "${project.build.directory}/iib/workspace", required = true)
     protected File workspace;
 
     /**
      * The path of the workspace in which the projects will be unpacked.
      */
-    @Parameter(property="iib.unpackDependenciesDirectory", defaultValue="${project.build.directory}/iib/dependencies", required=true, readonly=true)
+    @Parameter(property = "iib.unpackDependenciesDirectory", defaultValue = "${project.build.directory}/iib/dependencies", required = true, readonly = true)
     protected File unpackDependenciesDirectory;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -95,7 +95,8 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
         // unpack all dependencies that match the given scope
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("2.8")), goal("unpack-dependencies"), configuration(element(name("outputDirectory"),
-                unpackDir.getAbsolutePath()), element(name("includeTypes"), UNPACK_IIB_DEPENDENCY_TYPES), element(name("includeScope"), UNPACK_IIB_DEPENDENCY_SCOPE)), executionEnvironment(project, session, buildPluginManager));
+                unpackDir.getAbsolutePath()), element(name("includeTypes"), UNPACK_IIB_DEPENDENCY_TYPES), element(name("includeScope"), UNPACK_IIB_DEPENDENCY_SCOPE)),
+                executionEnvironment(project, session, buildPluginManager));
 
         // delete the dependency-maven-plugin-markers directory
         try {

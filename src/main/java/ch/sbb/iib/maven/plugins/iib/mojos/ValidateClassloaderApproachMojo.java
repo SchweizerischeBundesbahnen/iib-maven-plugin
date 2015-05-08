@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.mojos;
+package ch.sbb.iib.maven.plugins.iib.mojos;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,31 +12,31 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import ch.sbb.iib.plugin.utils.ConfigurablePropertiesUtil;
+import ch.sbb.iib.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
 
 /**
  * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them
  * should.
  */
-@Mojo(name="validate-classloader-approach")
+@Mojo(name = "validate-classloader-approach")
 public class ValidateClassloaderApproachMojo extends AbstractMojo {
 
     /**
      * The name of the default properties file to be generated from the bar file.
      */
-    @Parameter(property="iib.configurablePropertiesFile", defaultValue="${project.build.directory}/iib/default.properties", required=true)
+    @Parameter(property = "iib.configurablePropertiesFile", defaultValue = "${project.build.directory}/iib/default.properties", required = true)
     protected File defaultPropertiesFile;
 
     /**
      * Whether or not to fail the build if the classloader approach is invalid.
      */
-    @Parameter(property="iib.failOnInvalidClassloader", defaultValue="true", required=true)
+    @Parameter(property = "iib.failOnInvalidClassloader", defaultValue = "true", required = true)
     protected Boolean failOnInvalidClassloader;
 
     /**
      * Whether classloaders are in use with this bar
      */
-    @Parameter(property="iib.useClassloaders", defaultValue="false")
+    @Parameter(property = "iib.useClassloaders", defaultValue = "false")
     protected Boolean useClassloaders;
 
     public void execute() throws MojoFailureException {

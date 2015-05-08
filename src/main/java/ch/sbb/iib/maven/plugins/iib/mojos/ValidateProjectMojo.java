@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.mojos;
+package ch.sbb.iib.maven.plugins.iib.mojos;
 
 import java.io.File;
 
@@ -8,7 +8,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import ch.sbb.iib.plugin.utils.EclipseProjectUtils;
+import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
 
 /**
  * Validates the iib project
@@ -20,7 +20,7 @@ public class ValidateProjectMojo extends AbstractMojo {
     /**
      * The path of the workspace in which the projects were created.
      */
-    @Parameter(property="iib.workspace", defaultValue="${project.build.directory}/iib/workspace", required=true)
+    @Parameter(property = "iib.workspace", defaultValue = "${project.build.directory}/iib/workspace", required = true)
     protected File workspace;
 
     /**

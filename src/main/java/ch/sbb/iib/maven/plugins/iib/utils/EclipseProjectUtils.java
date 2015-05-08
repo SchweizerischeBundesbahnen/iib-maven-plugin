@@ -1,7 +1,4 @@
-package ch.sbb.iib.plugin.utils;
-
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
+package ch.sbb.iib.maven.plugins.iib.utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,11 +8,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import ch.sbb.maven.plugins.iib_maven_plugin.eclipse_project.ProjectDescription;;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+
+import ch.sbb.iib.maven.plugins.iib.generated.eclipse_project.ProjectDescription;
 
 /**
  * @author u209936
- *
+ * 
  */
 public class EclipseProjectUtils {
 
@@ -34,7 +34,7 @@ public class EclipseProjectUtils {
     }
 
     /**
-     * @param workspace 
+     * @param workspace
      * @return the names of the projects (actually, just all directories) in the
      *         workspace
      * @throws MojoFailureException
@@ -63,7 +63,7 @@ public class EclipseProjectUtils {
      * returns the name of the project out of the .project file
      * 
      * @param projectDirectory the (workspace) directory containing the project
-     * @return the name of the project out of the .project file 
+     * @return the name of the project out of the .project file
      * @throws MojoFailureException if something goes wrong
      */
     public static String getProjectName(File projectDirectory) throws MojoFailureException {
@@ -74,7 +74,7 @@ public class EclipseProjectUtils {
     /**
      * @param projectDirectory the (workspace) directory containing the project
      * @param log logger to be used if debugging information should be produced
-     * @return true if the project is an IIB Application 
+     * @return true if the project is an IIB Application
      * @throws MojoFailureException if something went wrong
      */
     public static boolean isApplication(File projectDirectory, Log log) throws MojoFailureException {
@@ -93,7 +93,7 @@ public class EclipseProjectUtils {
     /**
      * @param projectDirectory the (workspace) directory containing the project
      * @param log logger to be used if debugging information should be produced
-     * @return true if the project is an IIB Application 
+     * @return true if the project is an IIB Application
      * @throws MojoFailureException if something went wrong
      */
     public static boolean isLibrary(File projectDirectory, Log log) throws MojoFailureException {

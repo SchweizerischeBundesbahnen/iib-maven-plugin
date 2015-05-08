@@ -1,4 +1,4 @@
-package ch.sbb.iib.plugin.mojos;
+package ch.sbb.iib.maven.plugins.iib.mojos;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +20,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
-import ch.sbb.iib.plugin.utils.EclipseProjectUtils;
-import ch.sbb.iib.plugin.utils.ProcessOutputLogger;
-import ch.sbb.iib.plugin.utils.ZipUtils;
+import ch.sbb.iib.maven.plugins.iib.utils.EclipseProjectUtils;
+import ch.sbb.iib.maven.plugins.iib.utils.ProcessOutputLogger;
+import ch.sbb.iib.maven.plugins.iib.utils.ZipUtils;
 
 /**
  * Creates a .bar file from a iib-bar Project.
@@ -30,7 +30,7 @@ import ch.sbb.iib.plugin.utils.ZipUtils;
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
 
-@Mojo(name = "create-bar", defaultPhase=LifecyclePhase.COMPILE)
+@Mojo(name = "create-bar", defaultPhase = LifecyclePhase.COMPILE)
 public class CreateBarMojo extends AbstractMojo {
 
     /**
@@ -135,7 +135,7 @@ public class CreateBarMojo extends AbstractMojo {
     /**
      * The Maven Session Object
      */
-    @Parameter(property="session", required = true, readonly = true)
+    @Parameter(property = "session", required = true, readonly = true)
     protected MavenSession session;
 
     /**
@@ -152,15 +152,15 @@ public class CreateBarMojo extends AbstractMojo {
         // loop through the projects, adding them as "-a" Applications, "-l"
         // libraries or the deployable artefacts as "-o" objects
 
-//        List<String> workspaceProjects = EclipseProjectUtils.getWorkspaceProjects(workspace);
+        // List<String> workspaceProjects = EclipseProjectUtils.getWorkspaceProjects(workspace);
 
         // only direct dependencies of the current bar project will be added as Applications or Libraries
         // loop through them
         for (Dependency dependency : project.getDependencies()) {
-            
+
             // the projectName is the directoryName is the artifactId
             projectName = dependency.getArtifactId();
-            
+
             if (EclipseProjectUtils.isApplication(new File(workspace, projectName), getLog())) {
                 apps.add(projectName);
             } else if (EclipseProjectUtils.isLibrary(new File(workspace, projectName), getLog())) {
@@ -178,7 +178,7 @@ public class CreateBarMojo extends AbstractMojo {
         if (deployAsSource) {
             params.add("-deployAsSource");
         }
-        
+
         // if there are libraries, add them
         if (!libs.isEmpty()) {
             params.add("-l");
