@@ -1,0 +1,37 @@
+import java.io.*;
+
+void checkBuildLogContains(String searchPattern) throws Exception {
+
+        boolean valid = false;
+
+        // find the build log
+        String filename = "build.log";
+        File file = new File( basedir, filename );
+
+	FileReader fileReader;
+	fileReader = new FileReader(file);
+	BufferedReader br = new BufferedReader(fileReader);
+	String line;
+	try {
+		while ((line = br.readLine()) != null) {
+			if (line.matches(searchPattern)) {
+				valid = true;
+				break;
+			}
+		}
+	} catch (IOException e) {
+		valid = false;
+	} finally {
+		try {
+			br.close();
+		} catch (IOException e) {
+		// ignore
+		}
+	}
+	if (!valid) {
+                throw new Exception("'" + searchPattern + "' was not found in build.log ");
+        }
+}
+
+//validate the reason for the failure
+checkBuildLogContains(".*Exception unmarshalling.*pom.xml.*UnmarshalException.*");

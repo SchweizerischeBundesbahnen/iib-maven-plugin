@@ -2,19 +2,16 @@ import java.io.*;
 
 // somewhat inefficient and not always 100% accurate, but it'll do for now
 
-void validateParam(String param, String valuePattern) throws FileNotFoundException {
+void validateParam(String param, String valuePattern) throws Exception {
 
         String searchPattern = "^\\[DEBUG\\]   \\(f\\) " +
                 param + " = " + valuePattern;
 
-	if (!checkBuildLogContains(searchPattern)) {
-	        throw new Exception(searchPattern +
-	                " was not found in build.log ");
-        }
+	checkBuildLogContains(searchPattern);
 
 }
 
-boolean checkBuildLogContains(String searchPattern) {
+void checkBuildLogContains(String searchPattern) throws Exception {
 
         boolean valid = false;
 
@@ -42,7 +39,9 @@ boolean checkBuildLogContains(String searchPattern) {
 		// ignore
 		}
 	}
-	return valid;
+	if (!valid) {
+                throw new Exception("'" + searchPattern + "' was not found in build.log ");
+        }
 }
 
 //validate that the mojo parameters are set correctly
@@ -55,6 +54,3 @@ validateParam("versionString", ".*");
 validateParam("toolkitInstallDir", ".*");
 validateParam("toolkitVersion", "9");
 validateParam("workspace", ".*");
-
-//validate that the mojo execution succeeded
-checkBuildLogContains("\\[INFO\\] BUILD SUCCESS");

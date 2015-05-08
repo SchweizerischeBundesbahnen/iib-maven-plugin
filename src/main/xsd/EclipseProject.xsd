@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<!-- XML Schema Generated from XML Document on Wed Jan 14 2015 15:12:08 
-		GMT+0100 (Mitteleuropäische Zeit) -->
-	<!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
 	<xs:element name="projectDescription">
 		<xs:complexType>
 			<xs:sequence>
