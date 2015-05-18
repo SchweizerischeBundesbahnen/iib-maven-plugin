@@ -1,0 +1,393 @@
+BIP1051I: Reading Bar file using toolkit mqsireadbar...
+D:\devsbb\workspaces\migration\iprix-cis\iprix-cis-bar\target\iib\iprix-cis-bar-2.0.0-SNAPSHOT.bar:
+  iprix-cis-app.appzip (5/12/15 8:17 AM):
+    CIS_IPRIX_V1_1_TestFormatError.xml (5/12/15 8:17 AM):
+    estaint-replication-lib.libzip (5/12/15 8:17 AM):
+        estaint\replication\Sub_ReplicatedQueueDelivery.subflow (5/12/15 8:17 AM):
+        pom.xml (5/12/15 8:17 AM):
+        estaint\replication\Sub_ReplicateWireTap.subflow (5/12/15 8:17 AM):
+        estaint\replication\Sub_ReplicatedInput.subflow (5/12/15 8:17 AM):
+        estaint\replication\Sub_SetExpiryTime.subflow (5/12/15 8:17 AM):
+        estaint-replication-java.jar (5/12/15 8:17 AM):
+        estaint\replication\Sub_ReplicateWireTap.esql (5/12/15 8:17 AM):
+        estaint\replication\SetExpiryTime.esql (5/12/15 8:17 AM):
+        Deployment descriptor:
+          estaint.replication.Sub_ReplicatedQueueDelivery#ReplicationConfigurationFile = /data/<application>/ReplicationConfiguration.xml
+          estaint.replication.Sub_ReplicatedQueueDelivery#ReplicationSourceEnvironment = ENTW
+          estaint.replication.Sub_ReplicatedQueueDelivery#ReplicationCurrentEnvironment = ENTW
+          estaint.replication.Sub_ReplicatedQueueDelivery#ReplicationMessageType = <msgType>
+          estaint.replication.Sub_ReplicatedQueueDelivery#ReplicationApplication = <application>
+          estaint.replication.Sub_ReplicatedQueueDelivery#filePath = /opt/source/delivery/wsm/traces/<application>/ReplicationError.trc
+          estaint.replication.Sub_ReplicatedQueueDelivery#ApplicationId = <application>
+          estaint.replication.Sub_ReplicatedQueueDelivery#filePath1 = /opt/source/delivery/wsm/traces/<application>/ReplicationDebug.trc
+          estaint.replication.Sub_ReplicatedQueueDelivery#ApplicationId1 = <application>
+          estaint.replication.Sub_ReplicatedQueueDelivery#Send to Replication Target Instances.queueManagerName
+          estaint.replication.Sub_ReplicatedQueueDelivery#Send to Replication Target Instances.queueName
+          estaint.replication.Sub_ReplicatedQueueDelivery#Send to Replication Target Instances.replyToQMgr
+          estaint.replication.Sub_ReplicatedQueueDelivery#Send to Replication Target Instances.replyToQ
+          estaint.replication.Sub_ReplicatedQueueDelivery#Send to Replication Target Instances.validateMaster
+          estaint.replication.Sub_ReplicatedQueueDelivery#Send to Replication Target Instances.securityProfileName
+          estaint.replication.Sub_ReplicatedQueueDelivery#PopulateDestinationListNode.javaClassLoader
+          estaint.replication.Sub_ReplicatedQueueDelivery#PopulateDestinationListNode.validateMaster
+          estaint.replication.Sub_ReplicatedQueueDelivery#Sub_ApplicationLogging.LogLevel = ERROR
+          estaint.replication.Sub_ReplicatedQueueDelivery#Sub_ApplicationLogging.LogMessage = Replication Error - Error sending to Target Instance Queues
+          estaint.replication.Sub_ReplicatedQueueDelivery#Sub_ApplicationLogging.FullLogging = false
+          estaint.replication.Sub_ReplicatedQueueDelivery#Sub_ApplicationLogging - Success Debug.LogLevel = DEBUG
+          estaint.replication.Sub_ReplicatedQueueDelivery#Sub_ApplicationLogging - Success Debug.LogMessage = Replication Success - Sent to Target Instance Queues
+          estaint.replication.Sub_ReplicatedQueueDelivery#Sub_ApplicationLogging - Success Debug.FullLogging = false
+          estaint.replication.Sub_SetExpiryTime#ExpirySeconds = 0
+          estaint.replication.Sub_SetExpiryTime#Set Expiry Time.dataSource
+          estaint.replication.Sub_SetExpiryTime#Set Expiry Time.connectDatasourceBeforeFlowStarts
+          estaint.replication.Sub_SetExpiryTime#Set Expiry Time.validateMaster
+          estaint.replication.Sub_ReplicatedInput#connectionFactoryName = cn=<application>_jms_<srcEnv>_cf,cn=<application>
+          estaint.replication.Sub_ReplicatedInput#sourceQueueName = cn=<application>_rep_<msgType>_entw,cn=ifolov
+          estaint.replication.Sub_ReplicatedInput#backoutDestination
+          estaint.replication.Sub_ReplicatedInput#filePath = /opt/source/delivery/wsm/traces/<application>/ReplicationError.trc
+          estaint.replication.Sub_ReplicatedInput#ApplicationId = <application>
+          estaint.replication.Sub_ReplicatedInput#Replicate von Quellumgebung.topic
+          estaint.replication.Sub_ReplicatedInput#Replicate von Quellumgebung.durableSubscriptionID
+          estaint.replication.Sub_ReplicatedInput#Replicate von Quellumgebung.initialContextFactory = not_used
+          estaint.replication.Sub_ReplicatedInput#Replicate von Quellumgebung.locationJndiBindings = not_used
+          estaint.replication.Sub_ReplicatedInput#Replicate von Quellumgebung.validateMaster
+          estaint.replication.Sub_ReplicatedInput#Reset Content Descriptor.validateMaster
+          estaint.replication.Sub_ReplicatedInput#Sub_ApplicationLogging.LogLevel = ERROR
+          estaint.replication.Sub_ReplicatedInput#Sub_ApplicationLogging.LogMessage = Replication Error - Error receiving from Source Environment
+          estaint.replication.Sub_ReplicatedInput#Sub_ApplicationLogging.FullLogging = false
+          estaint.replication.Sub_ReplicateWireTap#ReplicationCurrentEnvironment = ENTW
+          estaint.replication.Sub_ReplicateWireTap#ReplicationConfigurationFile = /data/<application>/ReplicationConfiguration.xml
+          estaint.replication.Sub_ReplicateWireTap#ReplicationApplication = <application>
+          estaint.replication.Sub_ReplicateWireTap#ReplicationMessageType = <msgType>
+          estaint.replication.Sub_ReplicateWireTap#ExpirySeconds = 86400
+          estaint.replication.Sub_ReplicateWireTap#filePath = /opt/source/delivery/wsm/traces/<application>/ReplicationError-<msgType>.trc
+          estaint.replication.Sub_ReplicateWireTap#ApplicationId = <application>
+          estaint.replication.Sub_ReplicateWireTap#filePath1 = /opt/source/delivery/wsm/traces/<application>/ReplicationDebug-<msgType>.trc
+          estaint.replication.Sub_ReplicateWireTap#ApplicationId1 = <application>
+          estaint.replication.Sub_ReplicateWireTap#Send To Replication Queues.queueManagerName
+          estaint.replication.Sub_ReplicateWireTap#Send To Replication Queues.queueName
+          estaint.replication.Sub_ReplicateWireTap#Send To Replication Queues.replyToQMgr
+          estaint.replication.Sub_ReplicateWireTap#Send To Replication Queues.replyToQ
+          estaint.replication.Sub_ReplicateWireTap#Send To Replication Queues.validateMaster
+          estaint.replication.Sub_ReplicateWireTap#Send To Replication Queues.securityProfileName
+          estaint.replication.Sub_ReplicateWireTap#Populate Replication Destination List.javaClassLoader
+          estaint.replication.Sub_ReplicateWireTap#Populate Replication Destination List.validateMaster
+          estaint.replication.Sub_ReplicateWireTap#Sub_ApplicationLogging.LogLevel = ERROR
+          estaint.replication.Sub_ReplicateWireTap#Sub_ApplicationLogging.LogMessage = Replication Error - Error sending to Replication Queues
+          estaint.replication.Sub_ReplicateWireTap#Sub_ApplicationLogging.FullLogging = false
+          estaint.replication.Sub_ReplicateWireTap#Add MQ Header.mqmdReplyToQ
+          estaint.replication.Sub_ReplicateWireTap#Add MQ Header.mqmdReplyToQMgr
+          estaint.replication.Sub_ReplicateWireTap#Add MQ Header.mqdlhDestQName
+          estaint.replication.Sub_ReplicateWireTap#Add MQ Header.mqdlhDestQMgrName
+          estaint.replication.Sub_ReplicateWireTap#Sub_ApplicationLogging - Success Debug.LogLevel = DEBUG
+          estaint.replication.Sub_ReplicateWireTap#Sub_ApplicationLogging - Success Debug.LogMessage = Replication Success - Sent to Replication Queues
+          estaint.replication.Sub_ReplicateWireTap#Sub_ApplicationLogging - Success Debug.FullLogging = false
+    iprix-cis-lib.libzip (5/12/15 8:17 AM):
+        pom.xml (5/12/15 8:17 AM):
+        iprix\cis\Sub_IprixCisCheckMQ.subflow (5/12/15 8:17 AM):
+        iprix\cis\command\IprixCisAppstatus.subflow (5/12/15 8:17 AM):
+        iprix\cis\Sub_IprixDatabaseInsert.subflow (5/12/15 8:17 AM):
+        iprix\cis\CISI2IPRIX.esql (5/12/15 8:17 AM):
+        Deployment descriptor:
+          iprix.cis.Sub_IprixDatabaseInsert#dataSource = IPRIX
+          iprix.cis.Sub_IprixDatabaseInsert#InsertIntoDb.connectDatasourceBeforeFlowStarts
+          iprix.cis.Sub_IprixDatabaseInsert#InsertIntoDb.validateMaster
+          iprix.cis.Sub_IprixDatabaseInsert#Sub_ApplicationLogging.LogLevel = DEBUG
+          iprix.cis.Sub_IprixDatabaseInsert#Sub_ApplicationLogging.ApplicationId = iprix
+          iprix.cis.Sub_IprixDatabaseInsert#Sub_ApplicationLogging.LogMessage
+          iprix.cis.Sub_IprixDatabaseInsert#Sub_ApplicationLogging.FullLogging = true
+          iprix.cis.Sub_IprixDatabaseInsert#Sub_ApplicationLogging.filePath = /opt/source/delivery/wsm/traces/iprix/logging.trc
+          iprix.cis.Sub_IprixCisCheckMQ#IPRIX.FROM.CIS.KOMPOSITION.L.Label = CheckMQ
+          iprix.cis.Sub_IprixCisCheckMQ#IPRIX.FROM.CIS.KOMPOSITION.L.QueueName = IPRIX.FROM.CIS.KOMPOSITION.L
+          iprix.cis.Sub_IprixCisCheckMQ#IPRIX.FROM.CIS.KOMPOSITION.A.Label = CheckMQ
+          iprix.cis.Sub_IprixCisCheckMQ#IPRIX.FROM.CIS.KOMPOSITION.A.QueueName = IPRIX.FROM.CIS.KOMPOSITION.A
+          iprix.cis.command.IprixCisAppstatus#Sub_CheckODBCOK.TestQuery = SELECT 1 FROM DUAL
+          iprix.cis.command.IprixCisAppstatus#Sub_CheckODBCOK.Label = ODBCCheckOK
+          iprix.cis.command.IprixCisAppstatus#Sub_CheckODBCOK.dataSource = IPRIX
+    CIS_IPRIX_V1_2_Test.xml (5/12/15 8:17 AM):
+    estaint-logging-lib.libzip (5/12/15 8:17 AM):
+        estaint\logging\Sub_ApplicationLogging.subflow (5/12/15 8:17 AM):
+        pom.xml (5/12/15 8:17 AM):
+        estaint\logging\Sub_SetApplicationLogLevel.subflow (5/12/15 8:17 AM):
+        estaint\logging\Sub_ApplicationLogging.esql (5/12/15 8:17 AM):
+        estaint\logging\Namespaces.esql (5/12/15 8:17 AM):
+        estaint-logging-java.jar (5/12/15 8:17 AM):
+        Deployment descriptor:
+          estaint.logging.Sub_SetApplicationLogLevel#SetApplicationLogLevel.dataSource
+          estaint.logging.Sub_SetApplicationLogLevel#SetApplicationLogLevel.connectDatasourceBeforeFlowStarts
+          estaint.logging.Sub_SetApplicationLogLevel#SetApplicationLogLevel.validateMaster
+          estaint.logging.Sub_ApplicationLogging#LogLevel = ERROR
+          estaint.logging.Sub_ApplicationLogging#ApplicationId = APP_ID
+          estaint.logging.Sub_ApplicationLogging#LogMessage
+          estaint.logging.Sub_ApplicationLogging#FullLogging = true
+          estaint.logging.Sub_ApplicationLogging#filePath = /opt/source/delivery/wsm/traces/${LocalEnvironment.Estaint.Log.Properties.ApplicationId}/logging.trc
+          estaint.logging.Sub_ApplicationLogging#IsLoggingActive.dataSource
+          estaint.logging.Sub_ApplicationLogging#IsLoggingActive.connectDatasourceBeforeFlowStarts
+          estaint.logging.Sub_ApplicationLogging#IsLoggingActive.validateMaster
+          estaint.logging.Sub_ApplicationLogging#InitializeTrace.dataSource
+          estaint.logging.Sub_ApplicationLogging#InitializeTrace.connectDatasourceBeforeFlowStarts
+          estaint.logging.Sub_ApplicationLogging#InitializeTrace.validateMaster
+    iprix\cis\IprixCisKomposition.msgflow (5/12/15 8:17 AM):
+    estaint-appstatus-lib.libzip (5/12/15 8:17 AM):
+        estaint\appstatus\ApplicationStatusUtil.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckHTTPUrl.esql (5/12/15 8:17 AM):
+        estaint\appstatus\ExceptionUtil.esql (5/12/15 8:17 AM):
+        estaint-appstatus-java.jar (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_RegisterApplication.subflow (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckJDBCDataSource.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_RegisterApplication.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckJDBCDataSource.subflow (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckODBCdataSource.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckMQ.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckReachable.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckODBCdataSource.subflow (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckHostReachable.subflow (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckMQ.subflow (5/12/15 8:17 AM):
+        pom.xml (5/12/15 8:17 AM):
+        estaint\appstatus\NamespacesAndConstants.esql (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_CheckHTTPUrl.subflow (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_ComputeOverallStatus.subflow (5/12/15 8:17 AM):
+        estaint\appstatus\Sub_ComputeOverallStatus.esql (5/12/15 8:17 AM):
+        Deployment descriptor:
+          estaint.appstatus.Sub_RegisterApplication#ApplicationId = TESTAPPL
+          estaint.appstatus.Sub_RegisterApplication#uniqueIdentifier = TEST
+          estaint.appstatus.Sub_RegisterApplication#queueName = ESTAINT.MON.REGISTRY.A
+          estaint.appstatus.Sub_RegisterApplication#Timeout Notification.timeoutInterval = 3600
+          estaint.appstatus.Sub_RegisterApplication#Timeout Notification.validateMaster
+          estaint.appstatus.Sub_RegisterApplication#MQ Output.queueManagerName
+          estaint.appstatus.Sub_RegisterApplication#MQ Output.replyToQMgr
+          estaint.appstatus.Sub_RegisterApplication#MQ Output.replyToQ
+          estaint.appstatus.Sub_RegisterApplication#MQ Output.validateMaster
+          estaint.appstatus.Sub_RegisterApplication#MQ Output.securityProfileName
+          estaint.appstatus.Sub_RegisterApplication#CreateFormat.dataSource
+          estaint.appstatus.Sub_RegisterApplication#CreateFormat.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_RegisterApplication#CreateFormat.validateMaster
+          estaint.appstatus.Sub_CheckHostReachable#Host = DUMMY
+          estaint.appstatus.Sub_CheckHostReachable#Port
+          estaint.appstatus.Sub_CheckHostReachable#Label = DUMMY
+          estaint.appstatus.Sub_CheckHostReachable#CheckReachableHost.javaClassLoader
+          estaint.appstatus.Sub_CheckHostReachable#CheckReachableHost.validateMaster
+          estaint.appstatus.Sub_CheckHostReachable#ReachableCheckOK.dataSource
+          estaint.appstatus.Sub_CheckHostReachable#ReachableCheckOK.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckHostReachable#ReachableCheckOK.validateMaster
+          estaint.appstatus.Sub_CheckHostReachable#ReachableCheckERROR.dataSource
+          estaint.appstatus.Sub_CheckHostReachable#ReachableCheckERROR.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckHostReachable#ReachableCheckERROR.validateMaster
+          estaint.appstatus.Sub_CheckJDBCDataSource#DataSource = DUMMY
+          estaint.appstatus.Sub_CheckJDBCDataSource#TestQuery = SELECT 1 FROM DUAL
+          estaint.appstatus.Sub_CheckJDBCDataSource#Label = DUMMY
+          estaint.appstatus.Sub_CheckJDBCDataSource#CheckJDBCDataSource.javaClassLoader
+          estaint.appstatus.Sub_CheckJDBCDataSource#CheckJDBCDataSource.validateMaster
+          estaint.appstatus.Sub_CheckJDBCDataSource#ReachableCheckOK.dataSource
+          estaint.appstatus.Sub_CheckJDBCDataSource#ReachableCheckOK.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckJDBCDataSource#ReachableCheckOK.validateMaster
+          estaint.appstatus.Sub_CheckJDBCDataSource#ReachableCheckERROR.dataSource
+          estaint.appstatus.Sub_CheckJDBCDataSource#ReachableCheckERROR.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckJDBCDataSource#ReachableCheckERROR.validateMaster
+          estaint.appstatus.Sub_CheckHTTPUrl#URLSpecifier = http://server/path/to/test
+          estaint.appstatus.Sub_CheckHTTPUrl#timeoutForServer = 2
+          estaint.appstatus.Sub_CheckHTTPUrl#protocol
+          estaint.appstatus.Sub_CheckHTTPUrl#Label = DUMMY
+          estaint.appstatus.Sub_CheckHTTPUrl#ReachableCheckOK.dataSource
+          estaint.appstatus.Sub_CheckHTTPUrl#ReachableCheckOK.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckHTTPUrl#ReachableCheckOK.validateMaster
+          estaint.appstatus.Sub_CheckHTTPUrl#ReachableCheckERROR.dataSource
+          estaint.appstatus.Sub_CheckHTTPUrl#ReachableCheckERROR.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckHTTPUrl#ReachableCheckERROR.validateMaster
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.httpProxyLocation
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.httpVersion
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.enableKeepAlive
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.requestCompressionType
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.allowedCiphers
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.hostnameChecking
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.keyAlias
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.enableCRLCheck
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.acceptCompressedResponses
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.validateMaster
+          estaint.appstatus.Sub_CheckHTTPUrl#CheckHTTPUrl.securityProfileName
+          estaint.appstatus.Sub_ComputeOverallStatus#CreateOverallStatus.dataSource
+          estaint.appstatus.Sub_ComputeOverallStatus#CreateOverallStatus.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_ComputeOverallStatus#CreateOverallStatus.validateMaster
+          estaint.appstatus.Sub_CheckMQ#Label = CheckMQ
+          estaint.appstatus.Sub_CheckMQ#QueueName = DUMMY
+          estaint.appstatus.Sub_CheckMQ#MQ Get.queueName = DUMMY
+          estaint.appstatus.Sub_CheckMQ#MQ Get.validateMaster
+          estaint.appstatus.Sub_CheckMQ#MQCheckOK.dataSource
+          estaint.appstatus.Sub_CheckMQ#MQCheckOK.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckMQ#MQCheckOK.validateMaster
+          estaint.appstatus.Sub_CheckMQ#MQCheckWarning.dataSource
+          estaint.appstatus.Sub_CheckMQ#MQCheckWarning.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckMQ#MQCheckWarning.validateMaster
+          estaint.appstatus.Sub_CheckMQ#MQCheckError.dataSource
+          estaint.appstatus.Sub_CheckMQ#MQCheckError.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckMQ#MQCheckError.validateMaster
+          estaint.appstatus.Sub_CheckMQ#SetQueue.dataSource
+          estaint.appstatus.Sub_CheckMQ#SetQueue.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckMQ#SetQueue.validateMaster
+          estaint.appstatus.Sub_CheckODBCdataSource#TestQuery = SELECT 1 FROM DUAL
+          estaint.appstatus.Sub_CheckODBCdataSource#Label = DUMMY
+          estaint.appstatus.Sub_CheckODBCdataSource#dataSource = DUMMY
+          estaint.appstatus.Sub_CheckODBCdataSource#ReachableCheckOK.dataSource
+          estaint.appstatus.Sub_CheckODBCdataSource#ReachableCheckOK.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckODBCdataSource#ReachableCheckOK.validateMaster
+          estaint.appstatus.Sub_CheckODBCdataSource#ReachableCheckERROR.dataSource
+          estaint.appstatus.Sub_CheckODBCdataSource#ReachableCheckERROR.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckODBCdataSource#ReachableCheckERROR.validateMaster
+          estaint.appstatus.Sub_CheckODBCdataSource#CheckODBCDatasource.connectDatasourceBeforeFlowStarts
+          estaint.appstatus.Sub_CheckODBCdataSource#CheckODBCDatasource.validateMaster
+    estaint-retry-lib.libzip (5/12/15 8:17 AM):
+        estaint\retry\Sub_Retry.subflow (5/12/15 8:17 AM):
+        pom.xml (5/12/15 8:17 AM):
+        estaint\retry\Sub_Delay.esql (5/12/15 8:17 AM):
+        estaint\retry\Sub_Retry.esql (5/12/15 8:17 AM):
+        estaint\retry\Sub_RetryLongtermDelay.esql (5/12/15 8:17 AM):
+        estaint\retry\Sub_Delay.subflow (5/12/15 8:17 AM):
+        estaint\retry\Sub_RetryLongtermDelay.subflow (5/12/15 8:17 AM):
+        Deployment descriptor:
+          estaint.retry.Sub_RetryLongtermDelay#delay = 500
+          estaint.retry.Sub_RetryLongtermDelay#retryCount = 4
+          estaint.retry.Sub_RetryLongtermDelay#retryQueue = INPUT
+          estaint.retry.Sub_RetryLongtermDelay#uniqueIdentifier = mustbeunique
+          estaint.retry.Sub_RetryLongtermDelay#TimeoutNotification.timeoutInterval
+          estaint.retry.Sub_RetryLongtermDelay#TimeoutNotification.validateMaster
+          estaint.retry.Sub_RetryLongtermDelay#Set Parameters.dataSource
+          estaint.retry.Sub_RetryLongtermDelay#Set Parameters.connectDatasourceBeforeFlowStarts
+          estaint.retry.Sub_RetryLongtermDelay#Set Parameters.validateMaster
+          estaint.retry.Sub_RetryLongtermDelay#RestructureMessage.dataSource
+          estaint.retry.Sub_RetryLongtermDelay#RestructureMessage.connectDatasourceBeforeFlowStarts
+          estaint.retry.Sub_RetryLongtermDelay#RestructureMessage.validateMaster
+          estaint.retry.Sub_RetryLongtermDelay#GetFromRetryQueue.validateMaster
+          estaint.retry.Sub_RetryLongtermDelay#PutToRetryQueue.queueManagerName
+          estaint.retry.Sub_RetryLongtermDelay#PutToRetryQueue.replyToQMgr
+          estaint.retry.Sub_RetryLongtermDelay#PutToRetryQueue.replyToQ
+          estaint.retry.Sub_RetryLongtermDelay#PutToRetryQueue.validateMaster
+          estaint.retry.Sub_RetryLongtermDelay#PutToRetryQueue.securityProfileName
+          estaint.retry.Sub_RetryLongtermDelay#SetTimeoutControlParameter.dataSource
+          estaint.retry.Sub_RetryLongtermDelay#SetTimeoutControlParameter.connectDatasourceBeforeFlowStarts
+          estaint.retry.Sub_RetryLongtermDelay#SetTimeoutControlParameter.validateMaster
+          estaint.retry.Sub_RetryLongtermDelay#Trace.filePath
+          estaint.retry.Sub_Retry#MaxRetries = 10
+          estaint.retry.Sub_Retry#Check MAX_RETRIES_REACHED.dataSource
+          estaint.retry.Sub_Retry#Check MAX_RETRIES_REACHED.connectDatasourceBeforeFlowStarts
+          estaint.retry.Sub_Retry#Sub_Delay.DelayMilliseconds = 1000
+          estaint.retry.Sub_Delay#DelayMilliseconds = 1000
+          estaint.retry.Sub_Delay#Delay.dataSource
+          estaint.retry.Sub_Delay#Delay.connectDatasourceBeforeFlowStarts
+          estaint.retry.Sub_Delay#Delay.validateMaster
+    pom.xml (5/12/15 8:17 AM):
+    CIS_IPRIX_V1_1_Test.xml (5/12/15 8:17 AM):
+    estaint-command-lib.libzip (5/12/15 8:17 AM):
+        pom.xml (5/12/15 8:17 AM):
+        estaint\command\Sub_CommandReply.subflow (5/12/15 8:17 AM):
+        estaint\command\Sub_CommandRequest.subflow (5/12/15 8:17 AM):
+        estaint\command\Sub_CommandRequest.esql (5/12/15 8:17 AM):
+        estaint\command\Namespaces.esql (5/12/15 8:17 AM):
+        estaint\command\Sub_CommandReply.esql (5/12/15 8:17 AM):
+        Deployment descriptor:
+          estaint.command.Sub_CommandReply#MQ Output.queueManagerName
+          estaint.command.Sub_CommandReply#MQ Output.queueName = ESTAINT.CDA.COMMAND.REPLY.A
+          estaint.command.Sub_CommandReply#MQ Output.replyToQMgr
+          estaint.command.Sub_CommandReply#MQ Output.replyToQ
+          estaint.command.Sub_CommandReply#MQ Output.validateMaster
+          estaint.command.Sub_CommandReply#MQ Output.securityProfileName
+          estaint.command.Sub_CommandReply#ConstructResponse.dataSource
+          estaint.command.Sub_CommandReply#ConstructResponse.connectDatasourceBeforeFlowStarts
+          estaint.command.Sub_CommandReply#ConstructResponse.validateMaster
+          estaint.command.Sub_CommandRequest#CommandQueue = APPID.COMMAND.A
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.sourceQueueName
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.topic = cn=cda_command_topic,cn=estaint
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.durableSubscriptionID
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.initialContextFactory = not_used
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.locationJndiBindings = not_used
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.connectionFactoryName = cn=estaint_cda_cf,cn=estaint
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.backoutDestination
+          estaint.command.Sub_CommandRequest#CommandRequestTopic.validateMaster
+          estaint.command.Sub_CommandRequest#RouteToLabel.dataSource
+          estaint.command.Sub_CommandRequest#RouteToLabel.connectDatasourceBeforeFlowStarts
+          estaint.command.Sub_CommandRequest#RouteToLabel.validateMaster
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.serializationToken
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.topicProperty
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.resetBrowseTimeout
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.validateMaster
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.securityProfileName
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.componentLevel
+          estaint.command.Sub_CommandRequest#CommandRequestQueue.additionalInstances
+          estaint.command.Sub_CommandRequest#TopicCorrelId.dataSource
+          estaint.command.Sub_CommandRequest#TopicCorrelId.connectDatasourceBeforeFlowStarts
+          estaint.command.Sub_CommandRequest#TopicCorrelId.validateMaster
+          estaint.command.Sub_CommandRequest#QueueCorrelId.dataSource
+          estaint.command.Sub_CommandRequest#QueueCorrelId.connectDatasourceBeforeFlowStarts
+          estaint.command.Sub_CommandRequest#QueueCorrelId.validateMaster
+    iprix\cis\command\IprixCisCommand.msgflow (5/12/15 8:17 AM):
+    Deployment descriptor:
+      startMode
+      iprix.cis.command.IprixCisCommand#additionalInstances
+      iprix.cis.command.IprixCisCommand#notificationThresholdMsgsPerSec
+      iprix.cis.command.IprixCisCommand#maximumRateMsgsPerSec
+      iprix.cis.command.IprixCisCommand#processingTimeoutSec
+      iprix.cis.command.IprixCisCommand#processingTimeoutAction
+      iprix.cis.command.IprixCisCommand#wlmPolicy
+      iprix.cis.command.IprixCisCommand#commitCount
+      iprix.cis.command.IprixCisCommand#commitInterval
+      iprix.cis.command.IprixCisCommand#coordinatedTransaction
+      iprix.cis.command.IprixCisCommand#consumerPolicySet
+      iprix.cis.command.IprixCisCommand#providerPolicySet
+      iprix.cis.command.IprixCisCommand#consumerPolicySetBindings
+      iprix.cis.command.IprixCisCommand#providerPolicySetBindings
+      iprix.cis.command.IprixCisCommand#securityProfileName
+      iprix.cis.command.IprixCisCommand#monitoringProfile
+      iprix.cis.command.IprixCisCommand#startMode
+      iprix.cis.command.IprixCisCommand#startInstancesWhenFlowStarts
+      iprix.cis.command.IprixCisCommand#Sub_CommandRequest.CommandQueue = ESTAINT.CDA.COMMAND.A
+      iprix.cis.IprixCisKomposition#additionalInstances
+      iprix.cis.IprixCisKomposition#notificationThresholdMsgsPerSec
+      iprix.cis.IprixCisKomposition#maximumRateMsgsPerSec
+      iprix.cis.IprixCisKomposition#processingTimeoutSec
+      iprix.cis.IprixCisKomposition#processingTimeoutAction
+      iprix.cis.IprixCisKomposition#wlmPolicy
+      iprix.cis.IprixCisKomposition#commitCount
+      iprix.cis.IprixCisKomposition#commitInterval
+      iprix.cis.IprixCisKomposition#coordinatedTransaction
+      iprix.cis.IprixCisKomposition#consumerPolicySet
+      iprix.cis.IprixCisKomposition#providerPolicySet
+      iprix.cis.IprixCisKomposition#consumerPolicySetBindings
+      iprix.cis.IprixCisKomposition#providerPolicySetBindings
+      iprix.cis.IprixCisKomposition#securityProfileName
+      iprix.cis.IprixCisKomposition#monitoringProfile
+      iprix.cis.IprixCisKomposition#startMode
+      iprix.cis.IprixCisKomposition#startInstancesWhenFlowStarts
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.queueName = IPRIX.FROM.CISI.KOMPOSITION.A
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.serializationToken
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.topicProperty
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.resetBrowseTimeout
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.validateMaster
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.securityProfileName
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.componentLevel
+      iprix.cis.IprixCisKomposition#IPRIX.FROM.CISI.KOMPOSITION.A.additionalInstances
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ReplicationCurrentEnvironment = ENTW
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ReplicationConfigurationFile = smb://Filer17/IT170/Project/MB_Dev.B4828/iprix/ReplicationConfiguration.xml
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ReplicationApplication = iprix
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ReplicationMessageType = cis
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ExpirySeconds = 86400
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.filePath = /opt/source/delivery/wsm/traces/iprix/ReplicationError-cis.trc
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ApplicationId = iprix
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.filePath1 = /opt/source/delivery/wsm/traces/iprix/ReplicationDebug-cis.trc
+      iprix.cis.IprixCisKomposition#Sub_ReplicateWireTap.ApplicationId1 = iprix
+      iprix.cis.IprixCisKomposition#Sub_Retry.MaxRetries = 10
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Catch.LogLevel = ERROR
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Catch.ApplicationId = iprix
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Catch.LogMessage
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Catch.FullLogging = true
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Catch.filePath = /opt/source/delivery/wsm/traces/iprix/logging.trc
+      iprix.cis.IprixCisKomposition#Sub_IprixDatabaseInsert.dataSource = IPRIX
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Max Retries.LogLevel = ERROR
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Max Retries.ApplicationId = iprix
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Max Retries.LogMessage = Max Retries Reached
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Max Retries.FullLogging = true
+      iprix.cis.IprixCisKomposition#Sub_ApplicationLogging - Max Retries.filePath = /opt/source/delivery/wsm/traces/iprix/logging.trc
+      iprix.cis.IprixCisKomposition#PrepareEmail.dataSource
+      iprix.cis.IprixCisKomposition#PrepareEmail.connectDatasourceBeforeFlowStarts
+      iprix.cis.IprixCisKomposition#PrepareEmail.validateMaster
+      iprix.cis.IprixCisKomposition#Send Email.smtpServer = MBROKER_SMTP_APP
+      iprix.cis.IprixCisKomposition#Send Email.securityIdentity
+      iprix.cis.IprixCisKomposition#Send Email.validateMaster
+
+BIP8071I: Successful command completion.
