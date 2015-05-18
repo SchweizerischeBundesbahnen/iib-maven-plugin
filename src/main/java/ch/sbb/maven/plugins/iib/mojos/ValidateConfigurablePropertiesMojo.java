@@ -34,6 +34,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 import ch.sbb.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
+import ch.sbb.maven.plugins.iib.utils.ProcessOutputCatcher;
 import ch.sbb.maven.plugins.iib.utils.ProcessOutputLogger;
 
 /**
@@ -115,6 +116,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         List<String> params = new ArrayList<String>();
         params.add("-b");
         params.add(barName.getAbsolutePath());
+
+        // process the bar file recursively (applies to applications and libraries)
+        params.add("-r");
 
         List<String> output = executeReadBar(params);
 
@@ -365,7 +369,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             // make sure it can be executed on Unix
             cmdFile.setExecutable(true);
         } catch (IOException e1) {
-            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath(), e1);
+            throw new MojoFailureException("Could not create command file: " + cmdFile.getAbsolutePath());
         }
 
         // ProcessBuilder pb = new ProcessBuilder(command);
@@ -374,34 +378,23 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         // redirect subprocess stderr to stdout
         pb.redirectErrorStream(true);
         Process process;
-        ProcessOutputLogger stdOutHandler = null;
-        ProcessOutputLogger stdErrorHandler = null;
+        ProcessOutputCatcher stdOutHandler = null;
         try {
             pb.redirectErrorStream(true);
             process = pb.start();
-            stdOutHandler = new ProcessOutputLogger(process.getInputStream(), getLog());
-            stdErrorHandler = new ProcessOutputLogger(process.getErrorStream(), getLog());
+            stdOutHandler = new ProcessOutputCatcher(process.getInputStream(), output);
             stdOutHandler.start();
-            stdErrorHandler.start();
             process.waitFor();
 
         } catch (IOException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
         } catch (InterruptedException e) {
-            throw new MojoFailureException("Error executing: " + getCommandLine(command), e);
+            throw new MojoFailureException("Error executing: " + getCommandLine(command), e.getCause());
         } finally {
             if (stdOutHandler != null) {
                 stdOutHandler.interrupt();
                 try {
                     stdOutHandler.join();
-                } catch (InterruptedException e) {
-                    // this should never happen, so ignore this one
-                }
-            }
-            if (stdErrorHandler != null) {
-                stdErrorHandler.interrupt();
-                try {
-                    stdErrorHandler.join();
                 } catch (InterruptedException e) {
                     // this should never happen, so ignore this one
                 }
@@ -452,23 +445,39 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      * @param output the output of the mqsireadbar command for a given bar file
      * @return a list of properties that can be overriden for a given bar file
      */
-    private List<String> getConfigurableProperties(List<String> output) {
+    protected List<String> getConfigurableProperties(List<String> output) {
         // extract the configurable properties
-        // 1. search the output for "  Deployment descriptor:"
+
+        // output format changed for iib9...
+
+        // 1. search the output for a line indented with spaces followed by "Deployment descriptor:"
         // 2. everything after that is a configurable property up until
-        // 3. a blank line followed by "  BIP8071I: Successful command completion."
-        boolean ddFound = false;
+        // 3.a. a line less indented than the output line from "1" above
+        // OR
+        // 3.b. a blank line followed by "  BIP8071I: Successful command completion."
+        boolean inDeploymentDescriptor = false;
+        int currentIndentation = 0;
 
         // this could probably be done more efficiently with a subList
         List<String> configurableProperties = new ArrayList<String>();
         for (String outputLine : output) {
-            if (!ddFound) {
-                if ("  Deployment descriptor:".equals(outputLine)) {
-                    ddFound = true;
+            if (!inDeploymentDescriptor) {
+                if (outputLine.matches(" *Deployment descriptor:")) {
+                    inDeploymentDescriptor = true;
+
+                    // calculate how far indented the outputLine is
+                    currentIndentation = getIndentation(outputLine);
                 }
                 continue;
             } else {
-                // "  Deployment descriptor:" has been found
+                // inDeploymentDescriptor == true, check that it hasn't ended
+                if (getIndentation(outputLine) < currentIndentation) {
+                    // reset and continue
+                    currentIndentation = 0;
+                    inDeploymentDescriptor = false;
+                    continue;
+                }
+
                 if (!outputLine.trim().equals("")) {
                     configurableProperties.add(outputLine.trim());
                 } else {
@@ -479,6 +488,14 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             }
         }
         return configurableProperties;
+    }
+
+    /**
+     * @param outputLine
+     * @return
+     */
+    protected int getIndentation(String outputLine) {
+        return outputLine.length() - outputLine.replaceAll("^ *", "").length();
     }
 
     private String getCommandLine(List<String> command) {
