@@ -14,6 +14,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.execution.MavenSession;
@@ -78,24 +79,57 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        unpackIibDependencies(workspace);
+        unpackIibDependencies();
+
+        deleteAppAndLibPoms();
+    }
+
+    /**
+     * deletes the unrequired pom.xml files. pom.xml's appear in all projects, but are only really required for java projects for .bar packaging
+     * 
+     * @throws MojoExecutionException
+     */
+    @SuppressWarnings("unchecked")
+    private void deleteAppAndLibPoms() throws MojoExecutionException {
+        try {
+            getLog().debug("Deleting pom.xml from Applications and Libraries...");
+            List<String> appAndLibProjects = FileUtils.getDirectoryNames(workspace, "*-app,*-lib", null, false);
+            for (String project : appAndLibProjects) {
+                getLog().debug("  Found " + project);
+
+                // find the pom file
+                File pomFile = new File(new File(workspace, project), "pom.xml");
+                if (!pomFile.exists()) {
+                    getLog().warn("Trying to delete pom.xml, but couldn't find it: " + pomFile.getAbsolutePath());
+                }
+
+                boolean deleted = pomFile.delete();
+                if (deleted) {
+                    getLog().debug("    Deleted " + pomFile.getAbsolutePath());
+                } else {
+                    getLog().warn("Trying to delete pom.xml, but couldn't: " + pomFile.getAbsolutePath());
+                }
+            }
+        } catch (IOException e) {
+            // FIXME handle exception
+            throw new RuntimeException(e);
+        }
 
     }
 
     /**
      * unpacks dependencies of a given scope to the specified directory
      * 
-     * @param unpackDir the directory to unpack the dependencies into
      * @throws MojoExecutionException
      */
-    private void unpackIibDependencies(File unpackDir) throws MojoExecutionException {
+    private void unpackIibDependencies() throws MojoExecutionException {
 
         // define the directory to be unpacked into and create it
-        unpackDir.mkdirs();
+        workspace.mkdirs();
 
         // unpack all dependencies that match the given scope
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("2.8")), goal("unpack-dependencies"), configuration(element(name("outputDirectory"),
-                unpackDir.getAbsolutePath()), element(name("includeTypes"), UNPACK_IIB_DEPENDENCY_TYPES), element(name("includeScope"), UNPACK_IIB_DEPENDENCY_SCOPE)),
+                workspace.getAbsolutePath()), element(name("includeTypes"), UNPACK_IIB_DEPENDENCY_TYPES), element(name("includeScope"), UNPACK_IIB_DEPENDENCY_SCOPE)),
                 executionEnvironment(project, session, buildPluginManager));
 
         // delete the dependency-maven-plugin-markers directory

@@ -98,26 +98,29 @@ public class ValidateBarBuildWorkspaceMojo extends AbstractMojo {
 
             // checks that the directory name is the same as the artifactId from the pom.xml file
             String artifactId = getProjectArtifactId(projectDirectory);
-            if (!projectDirectoryName.equals(artifactId)) {
+            if (artifactId != null && !projectDirectoryName.equals(artifactId)) {
                 throw new MojoFailureException("The Project Directory Name ('" + projectDirectoryName + "') is not the same as the Maven artifactId (in pom.xml): " + artifactId);
             }
         }
     }
 
     /**
+     * return the artifactId (if the pom.xml exists), otherwise null
+     * 
      * @param projectDirectory directory containing pom.xml
      * @return the artifactId from the pom.xml
      * @throws MojoFailureException if something goes wrong
      */
     private String getProjectArtifactId(File projectDirectory) throws MojoFailureException {
         File pomFile = new File(projectDirectory, "pom.xml");
-        Model model;
+        String artifactId = null;
         try {
-            model = unmarshallPomFile(pomFile);
+            Model model = unmarshallPomFile(pomFile);
+            artifactId = model.getArtifactId();
         } catch (JAXBException e) {
-            throw new MojoFailureException("Exception unmarshalling ('" + pomFile.getAbsolutePath() + "')", e);
+            getLog().debug("Exception unmarshalling ('" + pomFile.getAbsolutePath() + "')", e);
         }
-        return model.getArtifactId();
+        return artifactId;
     }
 
     protected static Model unmarshallPomFile(File pomFile)
