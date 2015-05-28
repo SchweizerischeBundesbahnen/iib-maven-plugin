@@ -113,5 +113,53 @@
 				</phases>
 			</configuration>
 		</component>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>eclipse-plugin</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<lifecycles>
+					<lifecycle>
+						<id>default</id>
+						<phases>
+							<validate>
+								org.eclipse.tycho:tycho-packaging-plugin:0.22.0:build-qualifier,
+								org.eclipse.tycho:tycho-packaging-plugin:0.22.0:validate-id,
+								org.eclipse.tycho:tycho-packaging-plugin:0.22.0:validate-version
+							</validate>
+							<process-resources>
+								org.apache.maven.plugins:maven-resources-plugin:2.4.3:resources
+							</process-resources>
+							<compile>
+								org.eclipse.tycho:tycho-compiler-plugin:0.22.0:compile
+							</compile>
+							<process-test-resources>
+								org.apache.maven.plugins:maven-resources-plugin:2.4.3:testResources
+							</process-test-resources>
+							<test-compile><!-- tests are always in a separate plugin -->
+							</test-compile>
+							<test><!-- tests are always in a separate plugin -->
+							</test>
+							<package>
+								ch.sbb.maven.plugins:iib-maven-plugin:package-udn-jar,
+								org.eclipse.tycho:target-platform-configuration:0.22.0:target-platform,
+								org.eclipse.tycho:tycho-packaging-plugin:0.22.0:package-plugin,
+								org.eclipse.tycho:tycho-p2-plugin:0.22.0:p2-metadata-default
+							</package>
+							<integration-test></integration-test>
+							<install>
+								org.apache.maven.plugins:maven-install-plugin:2.3.1:install,
+								org.eclipse.tycho:tycho-p2-plugin:0.22.0:update-local-index
+							</install>
+							<deploy>
+								org.apache.maven.plugins:maven-deploy-plugin:2.5:deploy
+							</deploy>
+						</phases>
+					</lifecycle>
+				</lifecycles>
+			</configuration>
+		</component>
 	</components>
 </component-set>
