@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -29,6 +31,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
+
+import ch.sbb.maven.plugins.iib.generated.maven_pom.Model;
+import ch.sbb.maven.plugins.iib.utils.PomXmlUtils;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
@@ -81,7 +86,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
         unpackIibDependencies();
 
-        deleteAppAndLibPoms();
+        deleteUnquiredPoms();
     }
 
     /**
@@ -90,10 +95,10 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
      * @throws MojoExecutionException
      */
     @SuppressWarnings("unchecked")
-    private void deleteAppAndLibPoms() throws MojoExecutionException {
+    private void deleteUnquiredPoms() throws MojoExecutionException {
         try {
             getLog().debug("Deleting pom.xml from Applications and Libraries...");
-            List<String> appAndLibProjects = FileUtils.getDirectoryNames(workspace, "*-app,*-lib", null, false);
+            List<String> appAndLibProjects = FileUtils.getDirectoryNames(workspace, "*", ".*", false);
             for (String project : appAndLibProjects) {
                 getLog().debug("  Found " + project);
 
@@ -101,13 +106,20 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
                 File pomFile = new File(new File(workspace, project), "pom.xml");
                 if (!pomFile.exists()) {
                     getLog().warn("Trying to delete pom.xml, but couldn't find it: " + pomFile.getAbsolutePath());
-                }
-
-                boolean deleted = pomFile.delete();
-                if (deleted) {
-                    getLog().debug("    Deleted " + pomFile.getAbsolutePath());
                 } else {
-                    getLog().warn("Trying to delete pom.xml, but couldn't: " + pomFile.getAbsolutePath());
+
+                    // pom's from java Projects won't be deleted
+                    if (isJarPackaging(pomFile)) {
+                        getLog().debug(pomFile.getAbsolutePath() + " is a packaging type jar, so will not be deleted.");
+                    } else {
+                        boolean deleted = pomFile.delete();
+                        if (deleted) {
+                            getLog().debug("    Deleted " + pomFile.getAbsolutePath());
+                        } else {
+                            getLog().warn("Trying to delete pom.xml, but couldn't: " + pomFile.getAbsolutePath());
+                        }
+                    }
+
                 }
             }
         } catch (IOException e) {
@@ -115,6 +127,26 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
             throw new RuntimeException(e);
         }
 
+    }
+
+    /**
+     * @param pomFile
+     * @return
+     */
+    private boolean isJarPackaging(File pomFile) {
+        try {
+            Model model = PomXmlUtils.unmarshallPomFile(pomFile);
+
+            // packaging "jar" is the default and may not be defined
+            if (model.getPackaging() == null || model.getPackaging().equals("") || model.getPackaging().equals("jar")) {
+                return true;
+            }
+        } catch (JAXBException e) {
+            getLog().debug("Exception unmarshalling ('" + pomFile.getAbsolutePath() + "')", e);
+        }
+
+        // this should really never happen
+        return false;
     }
 
     /**

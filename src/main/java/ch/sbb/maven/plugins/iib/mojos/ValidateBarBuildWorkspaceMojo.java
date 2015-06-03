@@ -2,10 +2,7 @@ package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.File;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBIntrospector;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -20,6 +17,7 @@ import org.apache.maven.project.MavenProject;
 
 import ch.sbb.maven.plugins.iib.generated.maven_pom.Model;
 import ch.sbb.maven.plugins.iib.utils.EclipseProjectUtils;
+import ch.sbb.maven.plugins.iib.utils.PomXmlUtils;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
@@ -115,20 +113,12 @@ public class ValidateBarBuildWorkspaceMojo extends AbstractMojo {
         File pomFile = new File(projectDirectory, "pom.xml");
         String artifactId = null;
         try {
-            Model model = unmarshallPomFile(pomFile);
+            Model model = PomXmlUtils.unmarshallPomFile(pomFile);
             artifactId = model.getArtifactId();
         } catch (JAXBException e) {
             getLog().debug("Exception unmarshalling ('" + pomFile.getAbsolutePath() + "')", e);
         }
         return artifactId;
-    }
-
-    protected static Model unmarshallPomFile(File pomFile)
-            throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(Model.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        return (Model) JAXBIntrospector.getValue(unmarshaller.unmarshal(pomFile));
-
     }
 
 }
