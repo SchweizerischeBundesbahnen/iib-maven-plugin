@@ -182,7 +182,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
                 // (Optional) The name of an application in the BAR file
                 params.add("-k");
-                params.add(getApplicationName());
+                params.add(getApplicationName() + "-" + project.getVersion());
 
                 // (Optional) A list of the property-name=override pairs, current-property-value=override pairs.
                 // -m
