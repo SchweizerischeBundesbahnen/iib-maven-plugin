@@ -44,24 +44,19 @@
 			<version>1.9.1</version>
 		</dependency>
 		<dependency>
+			<!-- jaxb for sources generated from xsd -->
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.2.12</version>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- jaxb for sources generated from xsd -->
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.2.12</version>
-		</dependency>
-<!-- <dependency>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
-	<version>2.6</version>
-</dependency>
- -->	</dependencies>
+	</dependencies>
 	<reporting>
 		<plugins>
 			<plugin>
@@ -197,14 +192,8 @@
 							<parallelThreads>1</parallelThreads>
 
 							<!-- selectively run tests -->
-							<!-- 
-							<pomExcludes>
-								<pomExclude>CreateBarMojo1</pomExclude>
-							</pomExcludes>
-							<pomIncludes>
-								<pomInclude>ValidateBarBuildWorkspaceMojo*</pomInclude>
-							</pomIncludes>
-							 -->
+							<!-- <pomExcludes> <pomExclude>CreateBarMojo1</pomExclude> </pomExcludes> 
+								<pomIncludes> <pomInclude>ValidateBarBuildWorkspaceMojo*</pomInclude> </pomIncludes> -->
 						</configuration>
 						<executions>
 							<execution>
