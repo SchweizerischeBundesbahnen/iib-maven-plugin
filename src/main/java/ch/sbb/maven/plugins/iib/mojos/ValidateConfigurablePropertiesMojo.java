@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -81,6 +82,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     @Parameter(property = "iib.workspace", defaultValue = "${project.build.directory}/iib/workspace", required = true)
     protected File workspace;
 
+
+    /**
+     * The basename of the trace file to use when applybaroverriding bar files
+     */
+    @Parameter(property = "iib.applyBarOverrideTraceFile", defaultValue = "${project.build.directory}/applybaroverridetrace.txt", required = true)
+    protected File applyBarOverrideTraceFile;
 
     /**
      * The Maven Project Object
@@ -191,8 +198,8 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 // -r
 
                 // (Optional) Specifies that the internal trace is to be sent to the named file.
-                // TODO
-                // -v machen mit creatbar...
+                params.add("-v");
+                params.add(getTraceFileParameter(propFile));
 
                 // (Optional) The name of a library in the BAR file to which to apply overrides.
                 // -y
@@ -203,6 +210,16 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoFailureException("Error applying bar overrides", e);
         }
+    }
+
+    /**
+     * @param propFile the name of the apply bar override property file
+     * @return the value to be passed to the (-v) Trace parameter on the command line
+     */
+    protected String getTraceFileParameter(File propFile) {
+        String filename = FilenameUtils.getBaseName(applyBarOverrideTraceFile.getAbsolutePath()) + "-" + FilenameUtils.getBaseName(propFile.getName()) + ".txt";
+        String directory = applyBarOverrideTraceFile.getParent();
+        return new File(directory, filename).getAbsolutePath();
     }
 
     private String getApplicationName() throws MojoExecutionException {
