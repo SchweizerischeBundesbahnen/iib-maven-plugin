@@ -77,6 +77,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
     protected File toolkitInstallDir;
 
     /**
+     * Appends the _ (underscore) character and the value of VersionString to the names of the compiled versions of the message flows (.cmf) files added to the BAR file, before the file extension.
+     */
+    @Parameter(property = "iib.versionString", defaultValue = "${project.version}")
+    protected String versionString;
+
+    /**
      * The path of the workspace in which the projects are extracted to be built.
      */
     @Parameter(property = "iib.workspace", defaultValue = "${project.build.directory}/iib/workspace", required = true)
@@ -189,7 +195,7 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
 
                 // (Optional) The name of an application in the BAR file
                 params.add("-k");
-                params.add(getApplicationName());
+                params.add(getApplicationParameter());
 
                 // (Optional) A list of the property-name=override pairs, current-property-value=override pairs.
                 // -m
@@ -210,6 +216,19 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoFailureException("Error applying bar overrides", e);
         }
+    }
+
+    /**
+     * @return
+     * @throws MojoExecutionException
+     */
+    private String getApplicationParameter() throws MojoExecutionException {
+        String appParam = getApplicationName();
+        if (versionString != null || !versionString.isEmpty()) {
+            appParam = appParam + "_" + versionString;
+        }
+
+        return appParam;
     }
 
     /**
