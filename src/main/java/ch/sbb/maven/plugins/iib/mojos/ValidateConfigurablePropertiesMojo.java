@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
@@ -49,6 +48,12 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
      */
     @Parameter(property = "iib.applybaroverride", defaultValue = "true", required = true)
     protected Boolean applyBarOverride;
+
+    /**
+     * Whether the applybaroverride command should be executed or not
+     */
+    @Parameter(property = "iib.applyBarOverrideRecursively", defaultValue = "true", required = true)
+    protected Boolean applyBarOverrideRecursively;
 
     /**
      * The name of the BAR (compressed file format) archive file where the result is stored.
@@ -201,7 +206,9 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
                 // -m
 
                 // (Optional) Specifies that all deployment descriptor files are updated recursively.
-                // -r
+                if (applyBarOverrideRecursively) {
+                    params.add("-r");
+                }
 
                 // (Optional) Specifies that the internal trace is to be sent to the named file.
                 params.add("-v");
