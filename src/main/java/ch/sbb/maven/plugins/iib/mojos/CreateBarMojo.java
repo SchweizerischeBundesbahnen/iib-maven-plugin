@@ -158,6 +158,11 @@ public class CreateBarMojo extends AbstractMojo {
         // loop through them
         for (Dependency dependency : project.getDependencies()) {
 
+            // only check for dependencies with scope "compile"
+            if (!dependency.getScope().equals("compile")) {
+                continue;
+            }
+
             // the projectName is the directoryName is the artifactId
             projectName = dependency.getArtifactId();
 
