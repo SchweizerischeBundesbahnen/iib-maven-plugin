@@ -247,20 +247,21 @@ public class ValidateConfigurablePropertiesMojo extends AbstractMojo {
             return applicationName;
         }
 
-        // application name not specified, look for a single dependency
-        Set<Artifact> artifacts = project.getDependencyArtifacts();
-        if (artifacts.size() == 1) {
-            // there is only one dependency - it should be an application
-            // there is only one, but we have to use the iterator...
-            for (Artifact artifact : artifacts) {
-                // return the artifactId of the first (only) artifact
-                return artifact.getArtifactId();
+        // figure out the app name according to the naming conventions
+        String artifactId = project.getArtifactId();
+        String appName = artifactId.substring(0, artifactId.lastIndexOf("-bar")).concat("-app");
+
+        // now loop through the know dependencies to see if the calculated name exists
+        for (Artifact artifact : project.getDependencyArtifacts()) {
+
+            // found it, so return it
+            if (appName.equals(artifact.getArtifactId())) {
+                return appName;
             }
         }
 
-        // TODO return project.getArtifactId()artifacts - "bar" + "app"
-
-        throw new MojoExecutionException("Unable to determine application to be overriden");
+        // didn't find it, so break the build
+        throw new MojoExecutionException("Unable to determine application to be overriden. Calculated name is: " + appName);
     }
 
     @SuppressWarnings("unchecked")
