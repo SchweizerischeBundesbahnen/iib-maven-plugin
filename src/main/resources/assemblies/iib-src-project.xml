@@ -19,6 +19,7 @@
 				<include>**/*.mset</include>
 				<include>**/*.sh</include>
 				<include>**/*.txt</include>
+				<include>**/*.subflow</include>
 			</includes>
 			<excludes>
 				<exclude>target/**</exclude>
