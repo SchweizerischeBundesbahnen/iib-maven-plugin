@@ -1,11 +1,19 @@
 import java.io.*;
 
 // somewhat inefficient and not always 100% accurate, but it'll do for now
-void validateParam(String param, String valuePattern) throws FileNotFoundException {
 
-        boolean valid = false;
+void validateParam(String param, String valuePattern) throws Exception {
+
         String searchPattern = "^\\[DEBUG\\]   \\(f\\) " +
                 param + " = " + valuePattern;
+
+	checkBuildLogContains(searchPattern);
+
+}
+
+void checkBuildLogContains(String searchPattern) throws Exception {
+
+        boolean valid = false;
 
         // find the build log
         String filename = "build.log";
@@ -31,17 +39,17 @@ void validateParam(String param, String valuePattern) throws FileNotFoundExcepti
 		// ignore
 		}
 	}
-	if (valid == false) {
-	        throw new Exception(searchPattern +
-	                " was not found in " + file.getName());
+	if (!valid) {
+                throw new Exception("'" + searchPattern + "' was not found in build.log ");
         }
 }
 
+//validate that the mojo parameters are set correctly
 validateParam("barName", ".*CreateBarMojo1-.*.bar");
 validateParam("cleanBuild", "true");
 validateParam("esql21", "false");
-//validateParam("excludeArtifactsPattern", "null");
-validateParam("includeArtifactsPattern", "\\*\\*/\\*\\.msgflow,\\*\\*/\\*\\.mset");
+validateParam("excludeArtifactsPattern", ".*");
+validateParam("includeArtifactsPattern", ".*");
 validateParam("versionString", ".*");
 validateParam("toolkitInstallDir", ".*");
 validateParam("toolkitVersion", "9");

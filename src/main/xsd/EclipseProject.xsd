@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="projectDescription">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"></xs:element>
+				<xs:element name="comment"></xs:element>
+				<xs:element name="projects">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="project" type="xs:string"></xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="buildSpec">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="buildCommand" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="name" type="xs:string"></xs:element>
+										<xs:element name="arguments">
+											<xs:complexType>
+												<xs:sequence minOccurs="0" maxOccurs="unbounded">
+													<xs:element name="argument" type="xs:string"></xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="natures">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="nature" maxOccurs="unbounded" type="xs:string"></xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
+ 

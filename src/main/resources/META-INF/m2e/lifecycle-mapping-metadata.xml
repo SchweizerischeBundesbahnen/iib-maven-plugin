@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE lifecycleMappingMetadata>
+<!-- the presence of this file fixes the m2eclipse problem "Plugin execution 
+	not covered by lifecycle configuration..." -->
+<lifecycleMappingMetadata>
+	<pluginExecutions>
+		<pluginExecution>
+			<pluginExecutionFilter>
+				<goals>
+					<goal>clean-bar-build-workspace</goal>
+					<goal>create-bar</goal>
+					<goal>package-iib-bar</goal>
+					<goal>package-classloader</goal>
+					<goal>package-par</goal>
+					<goal>package-src</goal>
+					<goal>package-udn-jar</goal>
+					<goal>prepare-bar-build-workspace</goal>
+					<goal>prepare-iib-par-packaging</goal>
+					<goal>prepare-iib-classloader-packaging</goal>
+					<goal>prepare-iib-par-packaging</goal>
+					<goal>package-par</goal>
+					<goal>validate-bar-build-workspace</goal>
+					<goal>validate-classloader-approach</goal>
+					<goal>validate-configurable-properties</goal>
+				</goals>
+			</pluginExecutionFilter>
+			<action>
+				<ignore />
+			</action>
+		</pluginExecution>
+		<pluginExecution>
+			<pluginExecutionFilter>
+				<goals>
+					<goal>validate-project</goal>
+				</goals>
+			</pluginExecutionFilter>
+			<action>
+				<execute>
+					<runOnIncremental>false</runOnIncremental>
+				</execute>
+			</action>
+		</pluginExecution>
+	</pluginExecutions>
+</lifecycleMappingMetadata>

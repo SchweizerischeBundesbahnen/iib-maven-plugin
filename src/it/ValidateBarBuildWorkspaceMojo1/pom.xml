@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>@project.groupId@.@project.artifactId@.it</groupId>
+  <artifactId>ValidateBarBuildWorkspace1</artifactId>
+  <version>@project.version@</version>
+
+  <description>Test the validate-bar-build-workspace Mojo - that the project directory, project name and artifactId are identical</description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <extensions>true</extensions>
+        <version>@project.version@</version>
+        <executions>
+          <execution>
+            <id>validate-bar-build-workspace</id>
+            <goals>
+            	<goal>validate-bar-build-workspace</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

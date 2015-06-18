@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>@project.groupId@.@project.artifactId@.it</groupId>
+  <artifactId>ValidateClassloaderApproach4</artifactId>
+  <version>@project.version@</version>
+
+  <description>Test the validate-classloader-approach Mojo breaks with classloaders defined sometimes </description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <extensions>true</extensions>
+        <version>@project.version@</version>
+        <configuration>
+          <useClassloaders>true</useClassloaders>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

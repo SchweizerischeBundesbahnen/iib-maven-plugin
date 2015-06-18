@@ -20,12 +20,11 @@
             <goals>
               <goal>create-bar</goal>
             </goals>
-            <configuration>
-              <projectName>project1</projectName>
-              <toolkitInstallDir>@iib.toolkitInstallDir@</toolkitInstallDir>
-            </configuration>
           </execution>
         </executions>
+        <configuration>
+          <projectName>project1</projectName>
+        </configuration>
       </plugin>
     </plugins>
   </build>
