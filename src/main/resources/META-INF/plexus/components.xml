@@ -13,7 +13,7 @@
 					</generate-resources>
 					<process-resources>ch.sbb.maven.plugins:iib-maven-plugin:validate-bar-build-workspace
 					</process-resources>
-					<compile>ch.sbb.maven.plugins:iib-maven-plugin:create-bar</compile>
+					<compile>ch.sbb.maven.plugins:iib-maven-plugin:package-bar</compile>
 					<process-classes>ch.sbb.maven.plugins:iib-maven-plugin:apply-bar-overrides,ch.sbb.maven.plugins:iib-maven-plugin:clean-bar-build-workspace,ch.sbb.maven.plugins:iib-maven-plugin:validate-classloader-approach
 					</process-classes>
 					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-iib-bar
@@ -34,7 +34,7 @@
 				<phases>
 					<generate-sources>ch.sbb.maven.plugins:iib-maven-plugin:prepare-iib-classloader-packaging
 					</generate-sources>
-					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-classloader
+					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-iib-classloader
 					</package>
 					<install>org.apache.maven.plugins:maven-install-plugin:2.4:install
 					</install>
@@ -86,7 +86,7 @@
 					<test-compile>org.apache.maven.plugins:maven-compiler-plugin:testCompile
 					</test-compile>
 					<test>org.apache.maven.plugins:maven-surefire-plugin:test</test>
-					<package>org.apache.maven.plugins:maven-jar-plugin:jar,ch.sbb.maven.plugins:iib-maven-plugin:package-src
+					<package>org.apache.maven.plugins:maven-jar-plugin:jar,ch.sbb.maven.plugins:iib-maven-plugin:package-iib-src
 					</package>
 					<install>org.apache.maven.plugins:maven-install-plugin:2.4:install
 					</install>
@@ -104,7 +104,7 @@
 				<phases>
 					<validate>ch.sbb.maven.plugins:iib-maven-plugin:validate-project
 					</validate>
-					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-src
+					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-iib-src
 					</package>
 					<install>org.apache.maven.plugins:maven-install-plugin:2.4:install
 					</install>

@@ -19,6 +19,7 @@ import com.ibm.broker.config.proxy.LogEntry;
  * @author u209936 (Jamie Townsend)
  * @since 2.1, 2015
  */
+@SuppressWarnings("javadoc")
 public class ApplyBarOverride
 {
 

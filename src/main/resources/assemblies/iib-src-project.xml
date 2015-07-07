@@ -36,16 +36,5 @@
 				<exclude>target/**</exclude>
 			</excludes>
 		</fileSet>
-		<!-- include dependent jars (which are most likely on the classpath -->
-		<!-- also include any default generated-sources directories -->
-		<fileSet>
-			<directory>${project.basedir}</directory>
-			<filtered>false</filtered>
-			<includes>
-				<include>target/dependency/*.jar</include>
-				<include>target/test-dependency/*.jar</include>
-				<include>target/generated-sources/**</include>
-			</includes>
-		</fileSet>
 	</fileSets>
 </assembly>
