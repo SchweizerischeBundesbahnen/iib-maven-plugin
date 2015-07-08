@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.IOUtil;
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
-@Mojo(name = "package-src")
+@Mojo(name = "package-iib-src")
 public class PackageIibSrcMojo extends AbstractMojo {
 
     /**
@@ -88,8 +88,7 @@ public class PackageIibSrcMojo extends AbstractMojo {
         try {
             FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "archive-tmp"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // Fail silently
         }
     }
 

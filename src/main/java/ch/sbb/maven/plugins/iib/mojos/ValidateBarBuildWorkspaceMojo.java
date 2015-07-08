@@ -2,8 +2,6 @@ package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.File;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
@@ -15,9 +13,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
-import ch.sbb.maven.plugins.iib.generated.maven_pom.Model;
 import ch.sbb.maven.plugins.iib.utils.EclipseProjectUtils;
-import ch.sbb.maven.plugins.iib.utils.PomXmlUtils;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
@@ -61,31 +57,10 @@ public class ValidateBarBuildWorkspaceMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
-        // the following code would be a nicer implementation, but breaks the Integration Tests
-        //
-        // Set<String> unpackIibDependencyTypes = PrepareBarBuildWorkspaceMojo.getUnpackIibDependencyTypes();
-        //
-        // // loop through the dependencies
-        // for (Dependency dependency : project.getDependencies()) {
-        //
-        // // ignore dependencies that won't be unpacked (ie. non-IIB dependencies)
-        // if (!unpackIibDependencyTypes.contains(dependency.getType())) {
-        // continue;
-        // }
-        //
-        // String projectDirectoryName = dependency.getArtifactId();
-
-
         // loop through the project directories
         File[] projects = workspace.listFiles();
-        //
-        for (File projectDirectory : projects) {
-            // ignore the directory .metadata
-            // normally it won't exist unless a previous build failed during bar packaging and no clean was specified on the new build
-            if (".metadata".equals(projectDirectory.getName())) {
-                continue;
-            }
 
+        for (File projectDirectory : projects) {
             String projectDirectoryName = projectDirectory.getName();
 
             // checks that the directory name is the same as the name in the .project file
@@ -93,32 +68,6 @@ public class ValidateBarBuildWorkspaceMojo extends AbstractMojo {
             if (!projectDirectoryName.equals(eclipseProjectName)) {
                 throw new MojoFailureException("The Project Directory Name ('" + projectDirectoryName + "') is not the same as the Project Name (in .project file) ('" + eclipseProjectName + "')");
             }
-
-            // checks that the directory name is the same as the artifactId from the pom.xml file
-            String artifactId = getProjectArtifactId(projectDirectory);
-            if (artifactId != null && !projectDirectoryName.equals(artifactId)) {
-                throw new MojoFailureException("The Project Directory Name ('" + projectDirectoryName + "') is not the same as the Maven artifactId (in pom.xml): " + artifactId);
-            }
         }
     }
-
-    /**
-     * return the artifactId (if the pom.xml exists), otherwise null
-     * 
-     * @param projectDirectory directory containing pom.xml
-     * @return the artifactId from the pom.xml
-     * @throws MojoFailureException if something goes wrong
-     */
-    private String getProjectArtifactId(File projectDirectory) throws MojoFailureException {
-        File pomFile = new File(projectDirectory, "pom.xml");
-        String artifactId = null;
-        try {
-            Model model = PomXmlUtils.unmarshallPomFile(pomFile);
-            artifactId = model.getArtifactId();
-        } catch (JAXBException e) {
-            getLog().debug("Exception unmarshalling ('" + pomFile.getAbsolutePath() + "')", e);
-        }
-        return artifactId;
-    }
-
 }

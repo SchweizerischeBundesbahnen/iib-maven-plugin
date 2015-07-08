@@ -34,7 +34,7 @@ import org.codehaus.plexus.util.IOUtil;
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
-@Mojo(name = "package-classloader")
+@Mojo(name = "package-iib-classloader")
 public class PackageIibClassloaderMojo extends AbstractMojo {
 
     /**

@@ -16,6 +16,7 @@ import com.ibm.broker.config.proxy.DeploymentDescriptor;
  * @author u209936 (Jamie Townsend)
  * @since 2.1, 2015
  */
+@SuppressWarnings("javadoc")
 public class ReadBar {
 
     public static Properties getOverridableProperties(BarFile barfile) throws IOException {

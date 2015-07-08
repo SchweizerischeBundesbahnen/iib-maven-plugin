@@ -37,13 +37,13 @@ import ch.sbb.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
 import ch.sbb.maven.plugins.iib.utils.ReadBar;
 
 /**
- * Goal which reads the a bar file, including creating a list of configurable properties
+ * Validates override .properties files and (optionally) applies them to the default .bar file.
  */
 @Mojo(name = "apply-bar-overrides", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class ApplyBarOverridesMojo extends AbstractMojo {
 
     /**
-     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
+     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace.
      */
     @Parameter(property = "iib.applicationName")
     protected String applicationName;
