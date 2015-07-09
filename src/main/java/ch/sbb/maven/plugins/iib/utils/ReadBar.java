@@ -2,7 +2,6 @@ package ch.sbb.maven.plugins.iib.utils;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Properties;
 
 import com.ibm.broker.config.proxy.BarEntry;
 import com.ibm.broker.config.proxy.BarFile;
@@ -19,8 +18,8 @@ import com.ibm.broker.config.proxy.DeploymentDescriptor;
 @SuppressWarnings("javadoc")
 public class ReadBar {
 
-    public static Properties getOverridableProperties(BarFile barfile) throws IOException {
-        Properties configurableProperties = new Properties();
+    public static ConfigurableProperties getOverridableProperties(BarFile barfile) throws IOException {
+        ConfigurableProperties configurableProperties = new ConfigurableProperties();
         // int i = 0;
         if (barfile != null)
         {
@@ -32,29 +31,9 @@ public class ReadBar {
                 }
                 String s1 = enumeration.nextElement();
                 BarEntry barentry = barfile.getBarEntryByName(s1);
-                // String as[] = barentry.getKeywords();
-                // String s3 = (new SimpleDateFormat()).format(barentry.getModifyTime());
-                // System.out.println((new StringBuilder()).append(s).append(barentry.getFullName()).append(" (").append(s3).append("):").toString());
-                // String as1[] = as;
-                // int j = as1.length;
-                // for (int k = 0; k < j; k++)
-                // {
-                // String s5 = as1[k];
-                // // String s6 = barentry.getKeywordValue(s5);
-                // // System.out.println((new StringBuilder()).append(s).append("  ").append(s5).append(" = ").append(s6).toString());
-                // }
 
-                // if (_isRecursive && (barentry.isApplication() || barentry.isLibrary())) {
                 if (barentry.isApplication() || barentry.isLibrary()) {
-                    // try
-                    // {
-                    // i = runCommand(BarFile.loadBarFile(barentry.getBytes(), barentry.getFullName()), (new StringBuilder()).append(s).append(s).toString());
                     configurableProperties.putAll(getOverridableProperties(BarFile.loadBarFile(barentry.getBytes(), barentry.getFullName())));
-                    // } catch (IOException ioexception)
-                    // {
-                    // DisplayMessage.write(1050, ioexception.toString());
-                    // i = CompletionCodeType.failure.intValue();
-                    // }
                 }
             } while (true);
             DeploymentDescriptor deploymentdescriptor = barfile.getDeploymentDescriptor();
@@ -63,18 +42,11 @@ public class ReadBar {
                 Enumeration<String> enumeration1 = deploymentdescriptor.getPropertyIdentifiers();
                 if (enumeration1.hasMoreElements())
                 {
-                    // System.out.println((new StringBuilder()).append(s).append("Deployment descriptor:").toString());
                     while (enumeration1.hasMoreElements())
                     {
-                        String s2 = enumeration1.nextElement();
-                        String override = (deploymentdescriptor.getOverride(s2) != null) ? deploymentdescriptor.getOverride(s2) : "";
-                        configurableProperties.put(s2, override);
-                        // String s4 = deploymentdescriptor.getOverride(s2);
-                        // if (s4 == null) {
-                        // System.out.println((new StringBuilder()).append(s).append("  ").append(s2).toString());
-                        // } else {
-                        // System.out.println((new StringBuilder()).append(s).append("  ").append(s2).append(" = ").append(s4).toString());
-                        // }
+                        String overrideKey = enumeration1.nextElement();
+                        String overrideValue = (deploymentdescriptor.getOverride(overrideKey) != null) ? deploymentdescriptor.getOverride(overrideKey) : "";
+                        configurableProperties.put(overrideKey, overrideValue);
                     }
                 }
             }
@@ -82,7 +54,7 @@ public class ReadBar {
         return configurableProperties;
     }
 
-    public static Properties getOverridableProperties(String barFileName) throws IOException {
+    public static ConfigurableProperties getOverridableProperties(String barFileName) throws IOException {
 
         BarFile barfile = BarFile.loadBarFile(barFileName);
         return ReadBar.getOverridableProperties(barfile);

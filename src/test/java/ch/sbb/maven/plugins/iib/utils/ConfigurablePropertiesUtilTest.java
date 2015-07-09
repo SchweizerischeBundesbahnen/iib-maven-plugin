@@ -12,34 +12,34 @@ public class ConfigurablePropertiesUtilTest {
 
     @Test
     public void getPropNameTest() {
-        assertEquals("a", ConfigurablePropertiesUtil.getPropName("a"));
-        assertEquals("a", ConfigurablePropertiesUtil.getPropName("a=1"));
-        assertEquals("a", ConfigurablePropertiesUtil.getPropName("a = 1"));
-        assertEquals("a", ConfigurablePropertiesUtil.getPropName(" a  "));
-        assertEquals("a", ConfigurablePropertiesUtil.getPropName(" a=1  "));
-        assertEquals("a", ConfigurablePropertiesUtil.getPropName(" a = 1  "));
-        assertEquals("a#b", ConfigurablePropertiesUtil.getPropName("a#b"));
-        assertEquals("a#b", ConfigurablePropertiesUtil.getPropName("a#b=1"));
-        assertEquals("a#b", ConfigurablePropertiesUtil.getPropName("a#b = 1"));
-        assertEquals("a#b", ConfigurablePropertiesUtil.getPropName("  a#b  "));
-        assertEquals("a#b", ConfigurablePropertiesUtil.getPropName("  a#b=1  "));
-        assertEquals("a#b", ConfigurablePropertiesUtil.getPropName("  a#b = 1  "));
+        assertEquals("a", ConfigurableProperties.getPropName("a"));
+        assertEquals("a", ConfigurableProperties.getPropName("a=1"));
+        assertEquals("a", ConfigurableProperties.getPropName("a = 1"));
+        assertEquals("a", ConfigurableProperties.getPropName(" a  "));
+        assertEquals("a", ConfigurableProperties.getPropName(" a=1  "));
+        assertEquals("a", ConfigurableProperties.getPropName(" a = 1  "));
+        assertEquals("a#b", ConfigurableProperties.getPropName("a#b"));
+        assertEquals("a#b", ConfigurableProperties.getPropName("a#b=1"));
+        assertEquals("a#b", ConfigurableProperties.getPropName("a#b = 1"));
+        assertEquals("a#b", ConfigurableProperties.getPropName("  a#b  "));
+        assertEquals("a#b", ConfigurableProperties.getPropName("  a#b=1  "));
+        assertEquals("a#b", ConfigurableProperties.getPropName("  a#b = 1  "));
     }
 
     @Test
     public void getPropValueTest() {
-        assertEquals("", ConfigurablePropertiesUtil.getPropValue("a"));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue("a=1"));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue("a = 1"));
-        assertEquals("", ConfigurablePropertiesUtil.getPropValue(" a  "));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue(" a=1  "));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue(" a = 1  "));
-        assertEquals("", ConfigurablePropertiesUtil.getPropValue("a#b"));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue("a#b=1"));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue("a#b = 1"));
-        assertEquals("", ConfigurablePropertiesUtil.getPropValue("  a#b  "));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue("  a#b=1  "));
-        assertEquals("1", ConfigurablePropertiesUtil.getPropValue("  a#b = 1  "));
+        assertEquals("", ConfigurableProperties.getPropValue("a"));
+        assertEquals("1", ConfigurableProperties.getPropValue("a=1"));
+        assertEquals("1", ConfigurableProperties.getPropValue("a = 1"));
+        assertEquals("", ConfigurableProperties.getPropValue(" a  "));
+        assertEquals("1", ConfigurableProperties.getPropValue(" a=1  "));
+        assertEquals("1", ConfigurableProperties.getPropValue(" a = 1  "));
+        assertEquals("", ConfigurableProperties.getPropValue("a#b"));
+        assertEquals("1", ConfigurableProperties.getPropValue("a#b=1"));
+        assertEquals("1", ConfigurableProperties.getPropValue("a#b = 1"));
+        assertEquals("", ConfigurableProperties.getPropValue("  a#b  "));
+        assertEquals("1", ConfigurableProperties.getPropValue("  a#b=1  "));
+        assertEquals("1", ConfigurableProperties.getPropValue("  a#b = 1  "));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ConfigurablePropertiesUtilTest {
         expectedProps.add("Flow2#Java Node.javaClassLoader=x");
 
 
-        List<String> resultProps = ConfigurablePropertiesUtil.getJavaClassLoaderProperties(sampleProps);
+        List<String> resultProps = ConfigurableProperties.getJavaClassLoaderProperties(sampleProps);
 
         assertEquals(expectedProps, resultProps);
 
