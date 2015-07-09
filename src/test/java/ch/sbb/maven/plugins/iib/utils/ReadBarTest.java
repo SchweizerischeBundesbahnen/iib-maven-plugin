@@ -19,7 +19,7 @@ public class ReadBarTest {
 
     @Test
     public void GetConfigurablePropertiesTest() throws IOException {
-        Properties properties = ReadBar.getOverridableProperties(getClass().getResource("/estaint-logging-test-bar-2.0.bar").getFile());
+        ConfigurableProperties properties = ReadBar.getOverridableProperties(getClass().getResource("/estaint-logging-test-bar-2.0.bar").getFile());
 
         assertEquals(getExpectedProperties(), properties);
     }

@@ -55,9 +55,9 @@ public class ApplyBarOverride
 
         Enumeration<LogEntry> enumeration = null;
 
-        HashMap<String, String> hashmap = readPropertiesFile(propertiesFile);
-        if (hashmap != null) {
-            enumeration = barfile.applyOverrides(hashmap, appName, libName, recurse);
+        ConfigurableProperties configurableProperties = readPropertiesFile(propertiesFile);
+        if (configurableProperties != null) {
+            enumeration = barfile.applyOverrides(new HashMap<String, String>(configurableProperties), appName, libName, recurse);
         }
         return enumeration;
     }
@@ -80,12 +80,12 @@ public class ApplyBarOverride
     }
 
     // TODO Refactor into separate class and re-use for .properties validation
-    private static HashMap<String, String> readPropertiesFile(String propertiesFilename)
+    private static ConfigurableProperties readPropertiesFile(String propertiesFilename)
             throws IOException // , ConfigUtilityException
     {
         String commentString = System.getProperty("COMMENT", "#");
         String delimiterString = System.getProperty("KEY_VALUE_DELIMITER", "=");
-        HashMap<String, String> linkedhashmap = new HashMap<String, String>();
+        ConfigurableProperties linkedhashmap = new ConfigurableProperties();
         File file = new File(propertiesFilename);
         FileReader filereader = new FileReader(file);
         BufferedReader bufferedreader = new BufferedReader(filereader);

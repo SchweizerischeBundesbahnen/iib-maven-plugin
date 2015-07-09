@@ -12,7 +12,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import ch.sbb.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
+import ch.sbb.maven.plugins.iib.utils.ConfigurableProperties;
 
 /**
  * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them
@@ -60,11 +60,11 @@ public class ValidateClassloaderApproachMojo extends AbstractMojo {
 
         // loop through the javaClassLoader properties to see if they're
         // consistent (all defined or all not defined)
-        List<String> clProps = ConfigurablePropertiesUtil.getJavaClassLoaderProperties(configurableProperties);
+        List<String> clProps = ConfigurableProperties.getJavaClassLoaderProperties(configurableProperties);
 
         for (String clProp : clProps) {
             // if clDefined is null, this is the first entry
-            boolean clValueDefined = !"".equals(ConfigurablePropertiesUtil.getPropValue(clProp));
+            boolean clValueDefined = !"".equals(ConfigurableProperties.getPropValue(clProp));
             if (clValueDefined != useClassloaders) {
                 logInconsistency(clProps);
                 if (failOnInvalidClassloader) {
