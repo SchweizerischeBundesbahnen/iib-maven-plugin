@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -30,12 +31,12 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Creates a .bar file from a iib-bar Project.
+ * Packages a built Maven Project with &lt;packaging&gt; iib-bar into the Maven .zip file for (Maven) installation / deployment
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
 @Mojo(name = "package-iib-bar")
-public class PackageIibBarMojo extends CreateBarMojo {
+public class PackageIibBarMojo extends AbstractMojo {
 
     /**
      * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
@@ -61,7 +62,6 @@ public class PackageIibBarMojo extends CreateBarMojo {
     @Component
     protected BuildPluginManager buildPluginManager;
 
-    @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
         packageIibBarArtifact();

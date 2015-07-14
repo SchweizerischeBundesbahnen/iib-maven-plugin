@@ -12,12 +12,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.execution.MavenSession;
@@ -33,17 +29,17 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 import ch.sbb.maven.plugins.iib.utils.ApplyBarOverride;
-import ch.sbb.maven.plugins.iib.utils.ConfigurablePropertiesUtil;
+import ch.sbb.maven.plugins.iib.utils.ConfigurableProperties;
 import ch.sbb.maven.plugins.iib.utils.ReadBar;
 
 /**
- * Goal which reads the a bar file, including creating a list of configurable properties
+ * Validates override .properties files and (optionally) applies them to the default .bar file.
  */
 @Mojo(name = "apply-bar-overrides", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
 public class ApplyBarOverridesMojo extends AbstractMojo {
 
     /**
-     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace. A new workspace is a system folder which don't contain a .metadata folder.
+     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace.
      */
     @Parameter(property = "iib.applicationName")
     protected String applicationName;
@@ -123,16 +119,16 @@ public class ApplyBarOverridesMojo extends AbstractMojo {
 
         getLog().info("Reading bar file: " + barName);
 
-        List<String> overridableProperties;
+        ConfigurableProperties overridableProperties;
         try {
-            overridableProperties = getOverridablePropertyNames();
+            overridableProperties = getOverridableProperties();
         } catch (IOException e) {
             throw new MojoFailureException("Error extracting configurable properties from bar file: " + barName.getAbsolutePath(), e);
         }
 
         writeToFile(overridableProperties, defaultPropertiesFile);
 
-        validatePropertiesFiles(ConfigurablePropertiesUtil.getPropNames(overridableProperties));
+        validatePropertiesFiles(overridableProperties);
 
         if (applyBarOverrides) {
             executeApplyBarOverrides();
@@ -188,8 +184,7 @@ public class ApplyBarOverridesMojo extends AbstractMojo {
         return new File(directory, filename).getAbsolutePath();
     }
 
-    @SuppressWarnings("unchecked")
-    private void validatePropertiesFiles(List<String> validProps) throws MojoFailureException {
+    private void validatePropertiesFiles(ConfigurableProperties overrideableProperties) throws MojoFailureException {
 
         boolean invalidPropertiesFound = false;
 
@@ -199,17 +194,18 @@ public class ApplyBarOverridesMojo extends AbstractMojo {
         for (File file : propFiles) {
             getLog().info("  " + file.getAbsolutePath());
             try {
-                List<String> definedProps = FileUtils.loadFile(file);
+                ConfigurableProperties definedProps = new ConfigurableProperties();
+                definedProps.load(defaultPropertiesFile);
 
                 // check if all the defined properties are valid
-                if (!validProps.containsAll(ConfigurablePropertiesUtil.getPropNames(definedProps))) {
+                if (!overrideableProperties.keySet().containsAll(definedProps.keySet())) {
 
                     getLog().error("Invalid properties found in " + file.getAbsolutePath());
                     invalidPropertiesFound = true;
 
                     // list the invalid properties in this file
-                    for (String definedProp : definedProps) {
-                        if (!validProps.contains(ConfigurablePropertiesUtil.getPropName(definedProp))) {
+                    for (Object definedProp : definedProps.keySet()) {
+                        if (!overrideableProperties.containsKey(ConfigurableProperties.getPropName((String) definedProp))) {
                             getLog().error("  " + definedProp);
                         }
                     }
@@ -225,28 +221,16 @@ public class ApplyBarOverridesMojo extends AbstractMojo {
         }
     }
 
-    private void writeToFile(List<String> configurableProperties, File file) throws MojoFailureException {
+    private void writeToFile(ConfigurableProperties configurableProperties, File file) throws MojoFailureException {
 
         getLog().info("Writing overridable properties to: " + defaultPropertiesFile.getAbsolutePath());
 
-        FileWriter writer = null;
         try {
-            writer = new FileWriter(file);
-            for (String prop : configurableProperties) {
-                writer.write(prop + System.getProperty("line.separator"));
-            }
+            configurableProperties.save(defaultPropertiesFile);
         } catch (IOException e) {
-            throw new MojoFailureException("Error creating configurable properties file: " + defaultPropertiesFile, e);
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                // ignore any error here
-            }
-
+            throw new MojoFailureException("Error writing properties file: " + file.getAbsolutePath(), e);
         }
+
 
     }
 
@@ -254,14 +238,9 @@ public class ApplyBarOverridesMojo extends AbstractMojo {
      * @return a sorted list of properties that can be overriden for a given bar file
      * @throws IOException
      */
-    protected List<String> getOverridablePropertyNames() throws IOException {
+    protected ConfigurableProperties getOverridableProperties() throws IOException {
 
-        Set<String> uniquePropertyNames = ReadBar.getOverridableProperties(barName.getAbsolutePath()).stringPropertyNames();
-
-        ArrayList<String> propertyNameList = new ArrayList<String>(uniquePropertyNames);
-        Collections.sort(propertyNameList);
-
-        return propertyNameList;
+        return ReadBar.getOverridableProperties(barName.getAbsolutePath());
     }
 
     @SuppressWarnings("unchecked")
