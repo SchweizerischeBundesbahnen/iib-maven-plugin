@@ -83,12 +83,6 @@ public class ApplyBarOverridesMojo extends AbstractMojo {
     protected Boolean failOnInvalidProperties;
 
     /**
-     * Installation directory of the IIB Toolkit
-     */
-    @Parameter(property = "iib.toolkitInstallDir", required = true)
-    protected File toolkitInstallDir;
-
-    /**
      * Appends the _ (underscore) character and the value of VersionString to the names of the compiled versions of the message flows (.cmf) files added to the BAR file, before the file extension.
      */
     @Parameter(property = "iib.versionString", defaultValue = "${project.version}")
