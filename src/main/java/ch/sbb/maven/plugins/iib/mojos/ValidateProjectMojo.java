@@ -43,7 +43,7 @@ public class ValidateProjectMojo extends AbstractMojo {
         // checks that the directory name is the same as the artifactId from the pom.xml file
         String artifactId = project.getArtifactId();
         if (!projectDirectoryName.equals(artifactId)) {
-            throw new MojoFailureException("Project Directory Name ('" + projectDirectoryName + "') is not the same as the Maven artifactId (in pom.xml) ('" + eclipseProjectName + "')");
+            throw new MojoFailureException("Project Directory Name ('" + projectDirectoryName + "') is not the same as the Maven artifactId (in pom.xml) ('" + project.getName() + "')");
         }
 
 
