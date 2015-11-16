@@ -131,17 +131,14 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
             }
             MavenProject dependencyProject = new MavenProject(model);
 
-            if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
-                deleteFile(pomfile);
-            }
-
             // if classloaders are not in use, copy any transient dependencies of type jar into the dependency directory
             if (!useClassloaders) {
                 // copyJarDependencies also deletes the "pom.xml"
                 copyJarDependencies(dependencyDirectory, "pom.xml");
-            } else {
-                // delete the pom.xml's as their presence will cause problems with the bar packaging (if there is more than one)
-                // deleteFile(new File(dependencyDirectory, "pom.xml"));
+            }
+			
+			if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
+                deleteFile(pomfile);
             }
         }
     }
@@ -176,8 +173,6 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
             // TODO this could potentially be optimised to copy-dependencies in one shot instead of each transient jar separately
             copyJarDependencies(dependencyDirectory, tmpPomFilename);
         }
-
-        // deleteFile(pomFile);
     }
 
     /**
