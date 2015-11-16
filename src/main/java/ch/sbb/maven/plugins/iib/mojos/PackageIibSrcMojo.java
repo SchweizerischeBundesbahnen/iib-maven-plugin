@@ -78,11 +78,15 @@ public class PackageIibSrcMojo extends AbstractMojo {
             // should never happen
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
+        // if (project.getBuild().getFinalName() == null) {
+        // project.getBuild().setFinalName(project.getArtifactId());
+        // }
 
         // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-src-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/iib-src-project.xml"), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/iib-src-project.xml"), element(name("appendAssemblyId"), "false")),
+                executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {

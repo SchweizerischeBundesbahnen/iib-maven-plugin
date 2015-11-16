@@ -1,0 +1,40 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>iib-project</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<baseDirectory>${project.name}</baseDirectory>
+	<fileSets>
+		<!-- make sure that specific text files are filtered -->
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<filtered>true</filtered>
+			<includes>
+				<include>**/*.bat</include>
+				<include>**/*.esql</include>
+				<include>**/*.msgflow</include>
+				<include>**/*.mset</include>
+				<include>**/*.sh</include>
+				<include>**/*.txt</include>
+				<include>**/*.subflow</include>
+			</includes>
+			<excludes>
+				<exclude>target/**</exclude>
+			</excludes>
+		</fileSet>
+		<!-- don't filter other files, don't include files from the target directory -->
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<filtered>false</filtered>
+			<includes>
+				<include>**</include>
+			</includes>
+			<excludes>
+				<exclude>target/**</exclude>
+			</excludes>
+		</fileSet>
+	</fileSets>
+</assembly>

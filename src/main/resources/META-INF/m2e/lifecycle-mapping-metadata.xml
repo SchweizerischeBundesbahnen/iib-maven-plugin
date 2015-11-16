@@ -13,6 +13,7 @@
 					<goal>package-iib-bar</goal>
 					<goal>package-iib-classloader</goal>
 					<goal>package-iib-src</goal>
+					<goal>package-iib-app</goal>
 					<goal>package-par</goal>
 					<goal>package-udn-jar</goal>
 					<goal>prepare-bar-build-workspace</goal>

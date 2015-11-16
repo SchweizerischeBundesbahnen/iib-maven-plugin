@@ -1,12 +1,17 @@
 package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -15,8 +20,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
-
-import ch.sbb.maven.plugins.iib.utils.EclipseProjectUtils;
 
 import com.ibm.broker.config.appdev.CommandProcessorPublicWrapper;
 
@@ -98,19 +101,54 @@ public class PackageBarMojo extends AbstractMojo {
         // only direct dependencies of the current bar project will be added as Applications or Libraries
         // loop through them
         for (Dependency dependency : project.getDependencies()) {
-
             // only check for dependencies with scope "compile"
             if (!dependency.getScope().equals("compile")) {
                 continue;
             }
 
-            // the projectName is the directoryName is the artifactId
-            projectName = dependency.getArtifactId();
+            // load pom.xml from workspace to check if this dependency is an app oder a lib project
+            File pomfile = new File(project.getBuild().getDirectory() + "/iib/workspace/" + dependency.getArtifactId() + "/pom.xml");
+            Model model = null;
+            FileReader reader = null;
+            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
+            try {
+                reader = new FileReader(pomfile);
+                model = mavenreader.read(reader);
+                model.setPomFile(pomfile);
+            } catch (Exception ex) {
+            }
+            MavenProject dependencyProject = new MavenProject(model);
+            // iib-app or iib-scr (used with diffrent params by the mqsipackagebar) everything else will be ignored
+            String packing = dependencyProject.getPackaging();
 
-            if (EclipseProjectUtils.isApplication(new File(workspace, projectName), getLog())) {
-                apps.add(projectName);
-            } else if (EclipseProjectUtils.isLibrary(new File(workspace, projectName), getLog())) {
+            // use the finalName of the dependency to rename the app / lib in the bar
+            if (dependencyProject.getBuild().getFinalName() == null) {
+                projectName = dependency.getArtifactId();
+            } else {
+                projectName = dependencyProject.getBuild().getFinalName();
+            }
+            dependencyProject = null;
+
+            // unlock the pom.xml to rename the parent dir
+            try {
+                reader.close();
+            } catch (IOException e) {
+                // TODO handle exception
+                throw new RuntimeException(e);
+            }
+
+            // Load and rename the directory name --> pack the dependency with that name in the .bar
+            Path projectDirectory = pomfile.getParentFile().toPath();
+            try {
+                Files.move(projectDirectory, projectDirectory.resolveSibling(projectName));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (packing.equals("iib-src")) {
                 libs.add(projectName);
+            } else if (packing.equals("iib-app")) {
+                apps.add(projectName);
             }
         }
 
@@ -184,28 +222,6 @@ public class PackageBarMojo extends AbstractMojo {
         List<String> params = constructParams();
 
         executeMqsiPackageBar(params);
-
-        // try {
-        // // if classloaders are in use, all jars are to be removed
-        // if (useClassloaders) {
-        // getLog().info(
-        // "Classloaders in use. All jars will be removed from the bar file.");
-        // ZipUtils.removeFiles(barName, "**/*.jar");
-        // } else {
-        // // remove the jars specified with discardJarsPattern
-        // if (discardJarsPattern != null
-        // && !"".equals(discardJarsPattern)) {
-        // getLog().info(
-        // "Classloaders are not in use. The following jars will be removed from the bar file: "
-        // + discardJarsPattern);
-        // ZipUtils.removeFiles(barName, discardJarsPattern);
-        // }
-        // }
-        // } catch (IOException e) {
-        // throw new MojoFailureException(
-        // "Error removing jar files from bar file", e);
-        // }
-
     }
 
     private void executeMqsiPackageBar(List<String> params) {
