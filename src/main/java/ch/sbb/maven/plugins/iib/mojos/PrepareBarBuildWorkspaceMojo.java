@@ -128,6 +128,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
                 model = mavenreader.read(reader);
                 model.setPomFile(pomfile);
             } catch (Exception ex) {
+                throw new MojoExecutionException("Unable to read pom File: " + pomfile.getAbsolutePath());
             }
             MavenProject dependencyProject = new MavenProject(model);
 
@@ -136,8 +137,8 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
                 // copyJarDependencies also deletes the "pom.xml"
                 copyJarDependencies(dependencyDirectory, "pom.xml");
             }
-			
-			if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
+
+            if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
                 deleteFile(pomfile);
             }
         }
