@@ -13,6 +13,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,13 +118,28 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
         getLog().info("Copying jar dependencies into iib-src directories...");
         for (String dependencyDirectory : getDependencyDirectories()) {
+
+            File pomfile = new File(dependencyDirectory + "/pom.xml");
+            Model model = null;
+            FileReader reader = null;
+            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
+            try {
+                reader = new FileReader(pomfile);
+                model = mavenreader.read(reader);
+                model.setPomFile(pomfile);
+            } catch (Exception ex) {
+                throw new MojoExecutionException("Unable to read pom File: " + pomfile.getAbsolutePath());
+            }
+            MavenProject dependencyProject = new MavenProject(model);
+
             // if classloaders are not in use, copy any transient dependencies of type jar into the dependency directory
             if (!useClassloaders) {
                 // copyJarDependencies also deletes the "pom.xml"
                 copyJarDependencies(dependencyDirectory, "pom.xml");
-            } else {
-                // delete the pom.xml's as their presence will cause problems with the bar packaging (if there is more than one)
-                deleteFile(new File(dependencyDirectory, "pom.xml"));
+            }
+
+            if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
+                deleteFile(pomfile);
             }
         }
     }
@@ -135,31 +151,29 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
      * @throws MojoFailureException
      */
     private void copyJarDependencies(String dependencyDirectory, String pomFilename) throws MojoExecutionException, MojoFailureException {
-    
+
         File pomFile = new File(dependencyDirectory, pomFilename);
-    
+
         // optimise performance by quickly checking if there's a dependency of type jar before kicking off the maven copy-dependencies (sub-)build
-    
+
         for (Dependency dependency : getRuntimeJarDependencies(pomFile)) {
-    
-    
+
+
             ArtifactResult jarArtifactResult = resolveArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(), dependency.getVersion());
             ArtifactResult pomArtifactResult = resolveArtifact(dependency.getGroupId(), dependency.getArtifactId(), "pom", dependency.getVersion());
-    
+
             String tmpPomFilename = "." + pomArtifactResult.getArtifact().getArtifactId() + "-" + pomArtifactResult.getArtifact().getFile().getName();
-    
+
             try {
                 FileUtils.copyFile(jarArtifactResult.getArtifact().getFile(), new File(dependencyDirectory, jarArtifactResult.getArtifact().getFile().getName()));
                 FileUtils.copyFile(pomArtifactResult.getArtifact().getFile(), new File(dependencyDirectory, tmpPomFilename));
             } catch (IOException e) {
                 throw new MojoExecutionException("Error copying dependency from " + jarArtifactResult.getArtifact().getFile().getAbsolutePath() + " to " + dependencyDirectory, e);
             }
-    
+
             // TODO this could potentially be optimised to copy-dependencies in one shot instead of each transient jar separately
             copyJarDependencies(dependencyDirectory, tmpPomFilename);
         }
-    
-        deleteFile(pomFile);
     }
 
     /**
@@ -188,23 +202,23 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         InvocationRequest request = new DefaultInvocationRequest();
         request.setJavaHome(new File(System.getProperty("java.home")));
         request.setPomFile(pomFile);
-    
+
         List<String> goals = new ArrayList<String>();
         goals.add("org.codehaus.mojo:flatten-maven-plugin:1.0.0-beta-5:flatten");
-    
+
         goals.add("-f");
         goals.add(pomFile.getAbsolutePath());
-    
+
         // if maven debugging is not enabled, run the flattening in quiet mode
-    
+
         if (!getLog().isDebugEnabled()) {
             goals.add("--quiet");
         }
-    
+
         request.setGoals(goals);
-    
+
         Invoker invoker = new DefaultInvoker();
-    
+
         try {
             invoker.execute(request);
             invoker = null;
@@ -338,15 +352,15 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
      * @throws MojoExecutionException
      */
     private void unpackIibDependencies() throws MojoExecutionException {
-    
+
         // define the directory to be unpacked into and create it
         workspace.mkdirs();
-    
+
         // unpack all IIB dependencies that match the given scope (compile)
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-dependency-plugin"), version("2.8")), goal("unpack-dependencies"), configuration(element(name("outputDirectory"),
                 workspace.getAbsolutePath()), element(name("includeTypes"), UNPACK_IIB_DEPENDENCY_TYPES), element(name("includeScope"), UNPACK_IIB_DEPENDENCY_SCOPE)),
                 executionEnvironment(project, session, buildPluginManager));
-    
+
         // delete the dependency-maven-plugin-markers directory
         try {
             FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "dependency-maven-plugin-markers"));

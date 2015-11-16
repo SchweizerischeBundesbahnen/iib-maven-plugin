@@ -31,37 +31,18 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
- * Packages a built Maven Project with &lt;packaging&gt; iib-bar into the Maven .zip file for (Maven) installation / deployment
+ * Packages a WebSphere Message Broker Project.
  * 
  * Implemented with help from: https://github.com/TimMoore/mojo-executor/blob/master/README.md
  */
-@Mojo(name = "package-iib-bar")
-public class PackageIibBarMojo extends AbstractMojo {
-
-    /**
-     * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
-     */
-    @Parameter(defaultValue = "${project.build.directory}/assemblies/iib-bar-project.xml", readonly = true)
-    private File buildAssemblyFile;
-
-    /**
-     * The path to write the assemblies/iib-bar-project.xml file to before invoking the maven-assembly-plugin.
-     */
-    @Parameter(defaultValue = "${project.build.directory}/assemblies/iib-bar-project-continuous-delivery.xml", readonly = true)
-    private File buildAssemblyFileContinuousDelivery;
+@Mojo(name = "package-iib-app")
+public class PackageIibAppMojo extends AbstractMojo {
 
     /**
      * The Maven Project Object
      */
     @Parameter(property = "project", required = true, readonly = true)
     protected MavenProject project;
-
-    /**
-     * 
-     */
-    @Parameter(property = "iib.continuousDelivery", required = true, readonly = true, defaultValue = "false")
-    protected boolean continuousDelivery;
-
 
     /**
      * The Maven Session Object
@@ -75,51 +56,41 @@ public class PackageIibBarMojo extends AbstractMojo {
     @Component
     protected BuildPluginManager buildPluginManager;
 
-    public void execute() throws MojoFailureException, MojoExecutionException {
+    /**
+     * The path to write the assemblies/iib-app-project.xml file to before invoking the maven-assembly-plugin.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/assemblies/iib-app-project.xml", readonly = true)
+    private File buildAssemblyFile;
 
-        packageIibBarArtifact();
-
-    }
-
-    private void packageIibBarArtifact() throws MojoFailureException, MojoExecutionException {
-        String assemblyPath = "/assemblies/iib-bar-project.xml";
-        //
-        if (continuousDelivery) {
-            assemblyPath = "/assemblies/iib-bar-project-continuous-delivery.xml";
-        }
-        InputStream is = this.getClass().getResourceAsStream(assemblyPath);
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        InputStream is = this.getClass().getResourceAsStream("/assemblies/iib-app-project.xml");
         FileOutputStream fos;
-        File buildAssembly = null;
-        if (continuousDelivery) {
-            buildAssembly = buildAssemblyFileContinuousDelivery;
-        } else {
-            buildAssembly = buildAssemblyFile;
-        }
-        buildAssembly.getParentFile().mkdirs();
+        buildAssemblyFile.getParentFile().mkdirs();
         try {
-            fos = new FileOutputStream(buildAssembly);
+            fos = new FileOutputStream(buildAssemblyFile);
         } catch (FileNotFoundException e) {
             // should never happen, as the file is packaged in this plugin's jar
-            throw new MojoFailureException("Error creating the build assembly file: " + buildAssembly);
+            throw new MojoFailureException("Error creating the build assembly file: " + buildAssemblyFile, e);
         }
         try {
             IOUtil.copy(is, fos);
         } catch (IOException e) {
             // should never happen
-            throw new MojoFailureException("Error creating the assembly file: " + buildAssembly.getAbsolutePath());
+            throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-bar-project.xml -Dassembly.appendAssemblyId=false
+        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-app-project.xml -Dassembly.appendAssemblyId=false
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}" + assemblyPath), element(name("appendAssemblyId"), "false")), executionEnvironment(project, session, buildPluginManager));
+                "${project.build.directory}/assemblies/iib-app-project.xml"), element(name("appendAssemblyId"), "false")),
+                executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {
             FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "archive-tmp"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // Fail silently
         }
     }
+
 }
