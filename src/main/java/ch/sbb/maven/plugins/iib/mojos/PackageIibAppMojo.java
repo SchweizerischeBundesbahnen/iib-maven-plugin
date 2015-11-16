@@ -78,9 +78,6 @@ public class PackageIibAppMojo extends AbstractMojo {
             // should never happen
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
-        // if (project.getBuild().getFinalName() == null) {
-        // project.getBuild().setFinalName(project.getArtifactId());
-        // }
 
         // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-app-project.xml -Dassembly.appendAssemblyId=false
 
