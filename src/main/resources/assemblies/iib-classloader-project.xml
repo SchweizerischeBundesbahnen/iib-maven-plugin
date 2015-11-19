@@ -7,11 +7,14 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<dependencySets>
-	    <dependencySet>
-	        <outputDirectory>${project.build.directory}/iib/classloader</outputDirectory>
-	        <unpack>true</unpack>
-	        <scope>compile</scope>
-	    </dependencySet>
-	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/iib/classloader</directory>
+			<outputDirectory>.</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<filtered>false</filtered>
+		</fileSet>
+	</fileSets>
 </assembly>
