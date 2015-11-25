@@ -9,6 +9,7 @@
 			</implementation>
 			<configuration>
 				<phases>
+				    <validate>ch.sbb.maven.plugins:iib-maven-plugin:validate-property-name,ch.sbb.maven.plugins:iib-maven-plugin:validate-top-level-name</validate>
 					<generate-resources>ch.sbb.maven.plugins:iib-maven-plugin:prepare-bar-build-workspace
 					</generate-resources>
 					<compile>ch.sbb.maven.plugins:iib-maven-plugin:package-bar</compile>
