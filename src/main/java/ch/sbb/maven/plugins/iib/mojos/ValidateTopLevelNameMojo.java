@@ -9,24 +9,20 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import ch.sbb.maven.plugins.iib.utils.ProjectType;
+
 /**
- * Goal which reads the default.properties file to figure out if the classloader approach for this bar project is consistent. Either all jar nodes in all flows must use a classloader or none of them
- * should.
+ * Goal which reads the dependencies from the bar projec to figure out if the naming convention for this bar project is observed.
+ * Only one dependeny with the suffix -app or -lib is allowed (depends on the iib.projectType property)
  */
 @Mojo(name = "validate-top-level-name")
 public class ValidateTopLevelNameMojo extends AbstractMojo {
 
     /**
-     * The name of the default properties file to be generated from the bar file.
-     */
-    @Parameter(property = "iib.configurablePropertiesPath", defaultValue = "${project.build.resources[0].directory}", required = true)
-    protected String propertyPath;
-
-    /**
      * The type of the dependency which is added in the pom.xml of the bar project. app and lib are allowed.
      */
-    @Parameter(property = "iib.projectType", defaultValue = "app", required = true)
-    protected String projectType;
+    @Parameter(property = "iib.projectType", defaultValue = "APPLICATION", required = true)
+    protected ProjectType projectType;
 
     /**
      * The Maven Project Object
@@ -40,7 +36,7 @@ public class ValidateTopLevelNameMojo extends AbstractMojo {
             throw new RuntimeException("Invalid dependencies in bar project. Only one dependency is allowed.");
         }
 
-        if (!dependencyList.get(0).getArtifactId().endsWith("-" + projectType)) {
+        if (!dependencyList.get(0).getArtifactId().endsWith("-" + projectType.getType())) {
             throw new RuntimeException("Invalid dependencies in bar project or wrong iib.projectType is defined. Only " + projectType + " is allowed");
         }
     }
