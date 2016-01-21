@@ -1,9 +1,9 @@
 package ch.sbb.maven.plugins.iib.mojos;
 
+import static ch.sbb.maven.plugins.iib.utils.PomXmlUtils.getModel;
+
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -90,7 +89,7 @@ public class PackageBarMojo extends AbstractMojo {
     protected MavenProject project;
 
 
-    private List<String> addObjectsAppsLibs() throws MojoFailureException {
+    private List<String> addObjectsAppsLibs() throws MojoFailureException, MojoExecutionException {
         List<String> params = new ArrayList<String>();
         List<String> apps = new ArrayList<String>();
         List<String> libs = new ArrayList<String>();
@@ -108,47 +107,23 @@ public class PackageBarMojo extends AbstractMojo {
 
             // load pom.xml from workspace to check if this dependency is an app oder a lib project
             File pomfile = new File(project.getBuild().getDirectory() + "/iib/workspace/" + dependency.getArtifactId() + "/pom.xml");
-            Model model = null;
-            FileReader reader = null;
-            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
-            try {
-                reader = new FileReader(pomfile);
-                model = mavenreader.read(reader);
-                model.setPomFile(pomfile);
-            } catch (Exception ex) {
-            }
+            Model model = getModel(pomfile);
             MavenProject dependencyProject = new MavenProject(model);
             // iib-app or iib-scr (used with diffrent params by the mqsipackagebar) everything else will be ignored
             String packing = dependencyProject.getPackaging();
 
-            // use the finalName of the dependency to rename the app / lib in the bar
-            if (dependencyProject.getBuild().getFinalName() == null) {
-                projectName = dependency.getArtifactId();
-            } else {
-                projectName = dependencyProject.getBuild().getFinalName();
-            }
-            dependencyProject = null;
-
-            // unlock the pom.xml to rename the parent dir
-            try {
-                reader.close();
-            } catch (IOException e) {
-                // TODO handle exception
-                throw new RuntimeException(e);
-            }
-
             // Load and rename the directory name --> pack the dependency with that name in the .bar
             Path projectDirectory = pomfile.getParentFile().toPath();
             try {
-                Files.move(projectDirectory, projectDirectory.resolveSibling(projectName));
+                FileUtils.forceDelete(pomfile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
             if (packing.equals("iib-src")) {
-                libs.add(projectName);
+                libs.add(model.getArtifactId());
             } else if (packing.equals("iib-app")) {
-                apps.add(projectName);
+                apps.add(model.getArtifactId());
             }
         }
 
@@ -174,7 +149,7 @@ public class PackageBarMojo extends AbstractMojo {
         return params;
     }
 
-    protected List<String> constructParams() throws MojoFailureException {
+    protected List<String> constructParams() throws MojoFailureException, MojoExecutionException {
         List<String> params = new ArrayList<String>();
 
         // bar file name - required
