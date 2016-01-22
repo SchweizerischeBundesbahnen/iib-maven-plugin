@@ -1,5 +1,6 @@
 package ch.sbb.maven.plugins.iib.mojos;
 
+import static ch.sbb.maven.plugins.iib.utils.PomXmlUtils.getModel;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -12,16 +13,15 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -45,6 +45,8 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
+
+import ch.sbb.maven.plugins.iib.utils.DependencyPredicate;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
@@ -120,17 +122,9 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         for (String dependencyDirectory : getDependencyDirectories()) {
 
             File pomfile = new File(dependencyDirectory + "/pom.xml");
-            Model model = null;
-            FileReader reader = null;
-            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
-            try {
-                reader = new FileReader(pomfile);
-                model = mavenreader.read(reader);
-                model.setPomFile(pomfile);
-            } catch (Exception ex) {
-                throw new MojoExecutionException("Unable to read pom File: " + pomfile.getAbsolutePath());
-            }
-            MavenProject dependencyProject = new MavenProject(model);
+            Model model = getModel(pomfile);
+
+            // MavenProject dependencyProject = new MavenProject(model);
 
             // if classloaders are not in use, copy any transient dependencies of type jar into the dependency directory
             if (!useClassloaders) {
@@ -138,7 +132,9 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
                 copyJarDependencies(dependencyDirectory, "pom.xml");
             }
 
-            if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
+            Collection<Dependency> filtered = CollectionUtils.select(project.getDependencies(), new DependencyPredicate("artifactId", model.getArtifactId()));
+
+            if (filtered.size() == 0) {
                 deleteFile(pomfile);
             }
         }
@@ -234,23 +230,9 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         try {
             dependencyDirectories = FileUtils.getDirectoryNames(workspace, "*", ".*", true);
         } catch (IOException e1) {
-            // TODO handle exception
             throw new MojoExecutionException("Error searching for dependent project directories under: " + workspace.getAbsolutePath());
         }
         return dependencyDirectories;
-    }
-
-    private Model getModel(File pomFile) throws MojoExecutionException {
-        // first parse the original pom.xml
-        MavenXpp3Reader pomReader = new MavenXpp3Reader();
-        Model dependentModel;
-        try {
-            dependentModel = pomReader.read(new FileInputStream(pomFile));
-        } catch (Throwable t) {
-            // TODO handle exception
-            throw new MojoExecutionException("An error occurred trying to parse: " + pomFile, t);
-        }
-        return dependentModel;
     }
 
     /**
