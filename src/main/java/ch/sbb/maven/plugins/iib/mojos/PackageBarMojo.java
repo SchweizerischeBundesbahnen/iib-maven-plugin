@@ -1,14 +1,17 @@
 package ch.sbb.maven.plugins.iib.mojos;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -19,9 +22,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 
 import com.ibm.broker.config.appdev.CommandProcessorPublicWrapper;
-
-import ch.sbb.maven.plugins.iib.generated.maven_pom.Model;
-import ch.sbb.maven.plugins.iib.utils.PomXmlUtils;
 
 /**
  * Creates a .bar file from a previously prepared worksapce
@@ -54,14 +54,34 @@ public class PackageBarMojo extends AbstractMojo {
      * 
      * @see <a href="http://www-01.ibm.com/support/knowledgecenter/SSMKHH_9.0.0/com.ibm.etools.mft.doc/bc31720_.htm">IIB9 Documentation</a>
      */
-    @Parameter(property = "iib.includeArtifactsPattern", defaultValue = "**/*.xsdzip,**/*.tblxmi,**/*.xsd,**/*.wsdl,**/*.dictionary,**/*.xsl,**/*.xslt,**/*.xml,**/*.jar,**/*.inadapter,**/*.outadapter,**/*.insca,**/*.outsca,**/*.descriptor,**/*.php,**/*.idl,**/*.map,**/*.msgflow", required = true)
+    @Parameter(property = "iib.includeArtifactsPattern", defaultValue =
+            "**/*.xsdzip,**/*.tblxmi,**/*.xsd,**/*.wsdl,**/*.dictionary,**/*.xsl,**/*.xslt,**/*.xml,**/*.jar,**/*.inadapter,**/*.outadapter,**/*.insca,**/*.outsca,**/*.descriptor,**/*.php,**/*.idl,**/*.map,**/*.msgflow",
+            required = true)
     protected String includeArtifactsPattern;
+
+    /**
+     * Projects containing files to include in the BAR file in the workspace. Required for a new workspace.
+     */
+    @Parameter(property = "iib.projectName", defaultValue = "")
+    protected String projectName;
 
     /**
      * The path of the workspace in which the projects are extracted to be built.
      */
     @Parameter(property = "iib.workspace", defaultValue = "${project.build.directory}/iib/workspace", required = true)
     protected File workspace;
+    //
+    /**
+     * Pattern (or patterns, comma separated) of jars to be excluded from the generated bar file
+     */
+    @Parameter(property = "iib.discardJarsPattern", defaultValue = "**/javacompute_**.jar,**/jplugin2_**.jar")
+    protected String discardJarsPattern;
+
+    /**
+     * Whether classloaders are in use with this bar
+     */
+    @Parameter(property = "iib.useClassloaders", defaultValue = "false", required = true)
+    protected Boolean useClassloaders;
 
     /**
      * The Maven Project Object
@@ -88,20 +108,47 @@ public class PackageBarMojo extends AbstractMojo {
 
             // load pom.xml from workspace to check if this dependency is an app oder a lib project
             File pomfile = new File(project.getBuild().getDirectory() + "/iib/workspace/" + dependency.getArtifactId() + "/pom.xml");
-            Model model;
+            Model model = null;
+            FileReader reader = null;
+            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
             try {
-                model = PomXmlUtils.unmarshallPomFile(pomfile);
-                FileUtils.forceDelete(pomfile);
-            } catch (JAXBException e) {
-                throw new RuntimeException("Pom.xml konnte nicht gefunden werden." + e.getMessage());
+                reader = new FileReader(pomfile);
+                model = mavenreader.read(reader);
+                model.setPomFile(pomfile);
+            } catch (Exception ex) {
+            }
+            MavenProject dependencyProject = new MavenProject(model);
+            // iib-app or iib-scr (used with diffrent params by the mqsipackagebar) everything else will be ignored
+            String packing = dependencyProject.getPackaging();
+
+            // use the finalName of the dependency to rename the app / lib in the bar
+            if (dependencyProject.getBuild().getFinalName() == null) {
+                projectName = dependency.getArtifactId();
+            } else {
+                projectName = dependencyProject.getBuild().getFinalName();
+            }
+            dependencyProject = null;
+
+            // unlock the pom.xml to rename the parent dir
+            try {
+                reader.close();
             } catch (IOException e) {
-                throw new RuntimeException("Pom.xml konnte nicht gelöscht werden." + e.getMessage());
+                // TODO handle exception
+                throw new RuntimeException(e);
             }
 
-            if (model.getPackaging().equals("iib-src")) {
-                libs.add(model.getArtifactId());
-            } else if (model.getPackaging().equals("iib-app")) {
-                apps.add(model.getArtifactId());
+            // Load and rename the directory name --> pack the dependency with that name in the .bar
+            Path projectDirectory = pomfile.getParentFile().toPath();
+            try {
+                Files.move(projectDirectory, projectDirectory.resolveSibling(projectName));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (packing.equals("iib-src")) {
+                libs.add(projectName);
+            } else if (packing.equals("iib-app")) {
+                apps.add(projectName);
             }
         }
 
@@ -208,8 +255,7 @@ public class PackageBarMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoFailureException(
                     "Could not resolve includeArtifactsPattern: "
-                            + includeArtifactsPattern,
-                    e);
+                            + includeArtifactsPattern, e);
         }
 
         return objectNames;
