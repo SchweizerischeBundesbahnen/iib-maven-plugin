@@ -263,12 +263,11 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         // do a quick analysis of the pom file to see if it has runtime jar dependencies
         boolean mustResolve = false;
         Model model = getModel(pomFile);
-        if (model.getDependencies() != null) {
-            for (Dependency dependency : model.getDependencies().getDependency()) {
-                if (isRuntimeJarDependency(dependency)) {
-                    mustResolve = true;
-                }
+        for (Dependency dependency : model.getDependencies().getDependency()) {
+            if (isRuntimeJarDependency(dependency)) {
+                mustResolve = true;
             }
+
         }
 
         // runtime jar dependencies
