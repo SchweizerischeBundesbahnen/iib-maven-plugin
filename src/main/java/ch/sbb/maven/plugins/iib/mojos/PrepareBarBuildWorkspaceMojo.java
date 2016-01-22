@@ -12,13 +12,16 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -42,11 +45,6 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-
-import ch.sbb.maven.plugins.iib.generated.maven_pom.Dependency;
-import ch.sbb.maven.plugins.iib.generated.maven_pom.Model;
-import ch.sbb.maven.plugins.iib.utils.DependencyPredicate;
-import ch.sbb.maven.plugins.iib.utils.PomXmlUtils;
 
 /**
  * Unpacks the dependent WebSphere Message Broker Projects.
@@ -122,7 +120,17 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         for (String dependencyDirectory : getDependencyDirectories()) {
 
             File pomfile = new File(dependencyDirectory + "/pom.xml");
-            Model model = getModel(pomfile);
+            Model model = null;
+            FileReader reader = null;
+            MavenXpp3Reader mavenreader = new MavenXpp3Reader();
+            try {
+                reader = new FileReader(pomfile);
+                model = mavenreader.read(reader);
+                model.setPomFile(pomfile);
+            } catch (Exception ex) {
+                throw new MojoExecutionException("Unable to read pom File: " + pomfile.getAbsolutePath());
+            }
+            MavenProject dependencyProject = new MavenProject(model);
 
             // if classloaders are not in use, copy any transient dependencies of type jar into the dependency directory
             if (!useClassloaders) {
@@ -130,9 +138,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
                 copyJarDependencies(dependencyDirectory, "pom.xml");
             }
 
-            Collection<Dependency> filtered = CollectionUtils.select(project.getDependencies(), new DependencyPredicate("artifactId", model.getArtifactId()));
-
-            if (filtered.size() == 0) {
+            if (dependencyProject != null && !dependencyProject.getPackaging().equals("iib-app") && !dependencyProject.getPackaging().equals("iib-src")) {
                 deleteFile(pomfile);
             }
         }
@@ -152,10 +158,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
         for (Dependency dependency : getRuntimeJarDependencies(pomFile)) {
 
-            // default value
-            if (dependency.getType() == null || dependency.getType().isEmpty()) {
-                dependency.setType("jar");
-            }
+
             ArtifactResult jarArtifactResult = resolveArtifact(dependency.getGroupId(), dependency.getArtifactId(), dependency.getType(), dependency.getVersion());
             ArtifactResult pomArtifactResult = resolveArtifact(dependency.getGroupId(), dependency.getArtifactId(), "pom", dependency.getVersion());
 
@@ -219,7 +222,8 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         try {
             invoker.execute(request);
             invoker = null;
-        } catch (MavenInvocationException e) {
+        } catch (MavenInvocationException e)
+        {
             e.printStackTrace();
         }
     }
@@ -238,15 +242,15 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
     private Model getModel(File pomFile) throws MojoExecutionException {
         // first parse the original pom.xml
-
-        Model model;
+        MavenXpp3Reader pomReader = new MavenXpp3Reader();
+        Model dependentModel;
         try {
-            model = PomXmlUtils.unmarshallPomFile(pomFile);
-        } catch (Exception ex) {
-            throw new MojoExecutionException("Unable to read pom File: " + pomFile.getAbsolutePath());
+            dependentModel = pomReader.read(new FileInputStream(pomFile));
+        } catch (Throwable t) {
+            // TODO handle exception
+            throw new MojoExecutionException("An error occurred trying to parse: " + pomFile, t);
         }
-
-        return model;
+        return dependentModel;
     }
 
     /**
@@ -263,12 +267,11 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         // do a quick analysis of the pom file to see if it has runtime jar dependencies
         boolean mustResolve = false;
         Model model = getModel(pomFile);
-        if (model.getDependencies() != null) {
-            for (Dependency dependency : model.getDependencies().getDependency()) {
-                if (isRuntimeJarDependency(dependency)) {
-                    mustResolve = true;
-                }
+        for (Dependency dependency : model.getDependencies()) {
+            if (isRuntimeJarDependency(dependency)) {
+                mustResolve = true;
             }
+
         }
 
         // runtime jar dependencies
@@ -281,7 +284,7 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
             File flattenedPomFile = new File(pomFile.getParentFile(), ".flattened-pom.xml");
             Model flattenedModel = getModel(flattenedPomFile);
 
-            List<Dependency> dependencies = flattenedModel.getDependencies().getDependency();
+            List<Dependency> dependencies = flattenedModel.getDependencies();
             for (Dependency dependency : dependencies) {
 
                 if (isRuntimeJarDependency(dependency)) {
@@ -311,11 +314,14 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
 
     }
 
-    private ArtifactResult resolveArtifact(String groupId, String artifactId, String extension, String version) throws MojoFailureException {
+    private ArtifactResult resolveArtifact(String groupId, String artifactId, String extension, String version) throws MojoFailureException
+    {
         Artifact artifact;
-        try {
+        try
+        {
             artifact = new DefaultArtifact(groupId, artifactId, extension, version);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e)
+        {
             throw new MojoFailureException(e.getMessage(), e);
         }
 
@@ -326,9 +332,11 @@ public class PrepareBarBuildWorkspaceMojo extends AbstractMojo {
         getLog().debug("Resolving artifact " + artifact + " from " + remoteRepos);
 
         ArtifactResult result;
-        try {
+        try
+        {
             result = repoSystem.resolveArtifact(repoSession, artifactRequest);
-        } catch (ArtifactResolutionException e) {
+        } catch (ArtifactResolutionException e)
+        {
             throw new MojoFailureException(e.getMessage(), e);
         }
 
