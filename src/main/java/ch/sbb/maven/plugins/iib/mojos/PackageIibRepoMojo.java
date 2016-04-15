@@ -29,7 +29,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.twdata.maven.mojoexecutor.MojoExecutor.Attribute;
+import org.twdata.maven.mojoexecutor.MojoExecutor.Element;
 
 /**
  * Packages a WebSphere Message Broker Project.
@@ -80,50 +81,45 @@ public class PackageIibRepoMojo extends AbstractMojo {
             throw new MojoFailureException("Error creating the assembly file: " + buildAssemblyFile.getAbsolutePath(), e);
         }
 
-        // mvn org.apache.maven.plugins:maven-assembly-plugin:2.4:single -Ddescriptor=target\assemblies\iib-src-project.xml -Dassembly.appendAssemblyId=false
+        // setup configuration:
+        // <configuration>
+        // <tasks>
+        // <copy todir="${project.build.directory}/tmp">
+        // <fileset dir="${basedir}/tmp">
+        // <include name="**/*.xsd"/>
+        // <include name="**/*.wsdl"/>
+        // <include name="**/*.wadl"/>
+        // <include name="**/pom.xml"/>
+        // </fileset>
+        // <flattenmapper/>
+        // </copy>
+        // </tasks>
+        // </configuration>
 
-        Xpp3Dom configurationDom = new Xpp3Dom("configuration");
-        Xpp3Dom tasksDom = new Xpp3Dom("tasks");
-        Xpp3Dom copyDom = new Xpp3Dom("copy");
-        Xpp3Dom filesetDom = new Xpp3Dom("fileset");
-        Xpp3Dom includeDom1 = new Xpp3Dom("include");
-        Xpp3Dom includeDom2 = new Xpp3Dom("include");
-        Xpp3Dom includeDom3 = new Xpp3Dom("include");
-        Xpp3Dom includeDom4 = new Xpp3Dom("include");
+        Element includeXsd = element(name("include"), new Attribute("name", "**/*.xsd"));
+        Element includeWsdl = element(name("include"), new Attribute("name", "**/*.wsdl"));
+        Element includeWadl = element(name("include"), new Attribute("name", "**/*.wadl"));
+        Element includePom = element(name("include"), new Attribute("name", "**/pom.xml"));
 
-        includeDom1.setAttribute("name", "**/*.xsd");
-        includeDom2.setAttribute("name", "**/*.wsdl");
-        includeDom3.setAttribute("name", "**/*.wadl");
-        includeDom4.setAttribute("name", "**/pom.xml");
+        Element fileSet = element(name("fileset"), new Attribute("dir", "${basedir}/"), includePom, includeWadl, includeWsdl, includeXsd);
+        Element flattenMapper = element(name("flattenmapper"));
 
+        Element copy = element(name("copy"), new Attribute("todir", "${project.build.directory}/tmp"), fileSet, flattenMapper);
 
-        filesetDom.setAttribute("dir", "${basedir}/");
-        filesetDom.addChild(includeDom1);
-        filesetDom.addChild(includeDom2);
-        filesetDom.addChild(includeDom3);
-        filesetDom.addChild(includeDom4);
-
-        Xpp3Dom flattenmapperDom = new Xpp3Dom("flattenmapper");
-
-        copyDom.setAttribute("todir", "${project.build.directory}/tmp");
-        copyDom.addChild(filesetDom);
-        copyDom.addChild(flattenmapperDom);
-
-        tasksDom.addChild(copyDom);
-        configurationDom.addChild(tasksDom);
-
+        Element task = element(name("tasks"), copy);
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-antrun-plugin"), version("1.3")), goal("run"),
-                configurationDom,
+                configuration(task),
                 executionEnvironment(project, session, buildPluginManager));
 
         executeMojo(plugin(groupId("org.apache.maven.plugins"), artifactId("maven-assembly-plugin"), version("2.4")), goal("single"), configuration(element(name("descriptor"),
-                "${project.build.directory}/assemblies/iib-repo-project.xml"), element(name("appendAssemblyId"), "false"), element(name("runOnlyAtExecutionRoot"), "true")),
+                "${project.build.directory}/assemblies/iib-repo-project.xml"), element(name("appendAssemblyId"), "false")),
                 executionEnvironment(project, session, buildPluginManager));
 
         // delete the archive-tmp directory
         try {
             FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "archive-tmp"));
+            FileUtils.deleteDirectory(new File(project.getBuild().getDirectory(), "tmp"));
         } catch (IOException e) {
             // Fail silently
         }
