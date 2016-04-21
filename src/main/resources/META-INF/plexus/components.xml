@@ -11,7 +11,8 @@
 				<phases>
 					<generate-resources>ch.sbb.maven.plugins:iib-maven-plugin:prepare-bar-build-workspace
 					</generate-resources>
-					<compile>ch.sbb.maven.plugins:iib-maven-plugin:package-bar</compile>
+					<compile>ch.sbb.maven.plugins:iib-maven-plugin:package-bar
+					</compile>
 					<process-classes>ch.sbb.maven.plugins:iib-maven-plugin:apply-bar-overrides,ch.sbb.maven.plugins:iib-maven-plugin:clean-bar-build-workspace,ch.sbb.maven.plugins:iib-maven-plugin:validate-classloader-approach
 					</process-classes>
 					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-iib-bar
@@ -23,6 +24,7 @@
 				</phases>
 			</configuration>
 		</component>
+		
 		<component>
 			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
 			<role-hint>iib-classloader</role-hint>
@@ -60,6 +62,31 @@
 					</test-compile>
 					<test>org.apache.maven.plugins:maven-surefire-plugin:test</test>
 					<package>ch.sbb.maven.plugins:iib-maven-plugin:package-par
+					</package>
+					<install>org.apache.maven.plugins:maven-install-plugin:2.4:install
+					</install>
+					<deploy>org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy
+					</deploy>
+				</phases>
+			</configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>iib-repo</role-hint>
+			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<process-resources>org.apache.maven.plugins:maven-resources-plugin:resources
+					</process-resources>
+					<compile>org.apache.maven.plugins:maven-compiler-plugin:compile
+					</compile>
+					<process-test-resources>org.apache.maven.plugins:maven-resources-plugin:testResources
+					</process-test-resources>
+					<test-compile>org.apache.maven.plugins:maven-compiler-plugin:testCompile
+					</test-compile>
+					<test>org.apache.maven.plugins:maven-surefire-plugin:test</test>
+					<package>org.apache.maven.plugins:maven-jar-plugin:jar,ch.sbb.maven.plugins:iib-maven-plugin:package-iib-repo
 					</package>
 					<install>org.apache.maven.plugins:maven-install-plugin:2.4:install
 					</install>
@@ -108,7 +135,8 @@
 					</deploy>
 				</phases>
 			</configuration>
-		</component><component>
+		</component>
+		<component>
 			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
 			<role-hint>iib-app</role-hint>
 			<implementation>org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
