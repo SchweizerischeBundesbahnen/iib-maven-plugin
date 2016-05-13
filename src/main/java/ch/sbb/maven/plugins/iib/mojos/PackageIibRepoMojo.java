@@ -90,6 +90,7 @@ public class PackageIibRepoMojo extends AbstractMojo {
         // <include name="**/*.wsdl"/>
         // <include name="**/*.wadl"/>
         // <include name="**/pom.xml"/>
+        // <include name="**/.project"/>
         // </fileset>
         // <flattenmapper/>
         // </copy>
@@ -100,8 +101,9 @@ public class PackageIibRepoMojo extends AbstractMojo {
         Element includeWsdl = element(name("include"), new Attribute("name", "**/*.wsdl"));
         Element includeWadl = element(name("include"), new Attribute("name", "**/*.wadl"));
         Element includePom = element(name("include"), new Attribute("name", "**/pom.xml"));
+        Element includeProjectFile = element(name("include"), new Attribute("name", "**/.project"));
 
-        Element fileSet = element(name("fileset"), new Attribute("dir", "${basedir}/"), includePom, includeWadl, includeWsdl, includeXsd);
+        Element fileSet = element(name("fileset"), new Attribute("dir", "${basedir}/"), includePom, includeWadl, includeWsdl, includeXsd, includeProjectFile);
         Element flattenMapper = element(name("flattenmapper"));
 
         Element copy = element(name("copy"), new Attribute("todir", "${project.build.directory}/tmp"), fileSet, flattenMapper);

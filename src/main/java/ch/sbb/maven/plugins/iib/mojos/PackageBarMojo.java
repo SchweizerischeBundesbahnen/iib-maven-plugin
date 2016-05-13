@@ -120,7 +120,7 @@ public class PackageBarMojo extends AbstractMojo {
                 throw new RuntimeException(e);
             }
 
-            if (packing.equals("iib-src")) {
+            if (packing.equals("iib-src") || packing.equals("iib-repo")) {
                 libs.add(model.getArtifactId());
             } else if (packing.equals("iib-app")) {
                 apps.add(model.getArtifactId());
