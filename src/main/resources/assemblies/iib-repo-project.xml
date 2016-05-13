@@ -6,6 +6,7 @@
 	<formats>
 		<format>zip</format>
 	</formats>
+	<baseDirectory>${project.name}</baseDirectory>
 	<fileSets>
 		<!-- make sure that specific text files are filtered -->
 		<fileSet>
@@ -17,6 +18,7 @@
 				<include>**/*.wsdl</include>
 				<include>**/*.wadl</include>
 				<include>**/pom.xml</include>
+				<include>**/.project</include>
 			</includes>
 		</fileSet>
 	</fileSets>
