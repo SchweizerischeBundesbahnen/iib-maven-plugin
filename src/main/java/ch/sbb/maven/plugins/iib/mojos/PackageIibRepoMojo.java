@@ -90,7 +90,7 @@ public class PackageIibRepoMojo extends AbstractMojo {
         // <include name="**/*.wsdl"/>
         // <include name="**/*.wadl"/>
         // <include name="**/pom.xml"/>
-        // <include name="**/pom.xml"/>
+        // <include name="**/.project"/>
         // </fileset>
         // <flattenmapper/>
         // </copy>
