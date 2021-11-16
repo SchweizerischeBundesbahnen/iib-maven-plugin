@@ -14,7 +14,7 @@ import com.ibm.broker.config.proxy.LogEntry;
 /**
  * Highly borrowed from
  * 
- * @see com.ibm.broker.config.util.ApplyBarOverride
+ * com.ibm.broker.config.util.ApplyBarOverride
  * 
  * @author u209936 (Jamie Townsend)
  * @since 2.1, 2015
