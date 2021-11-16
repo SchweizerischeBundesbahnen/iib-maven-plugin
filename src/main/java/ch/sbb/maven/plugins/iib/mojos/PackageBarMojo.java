@@ -49,7 +49,7 @@ public class PackageBarMojo extends AbstractMojo {
     protected String excludeArtifactsPattern;
 
     /**
-     * Include artifacts pattern (or patterns, comma separated). By default, the default value used for mqsipackagebar, except .esql & .subflow, which as not compilable
+     * Include artifacts pattern (or patterns, comma separated). By default, the default value used for mqsipackagebar, except .esql &amp; .subflow, which as not compilable
      * 
      * @see <a href="http://www-01.ibm.com/support/knowledgecenter/SSMKHH_9.0.0/com.ibm.etools.mft.doc/bc31720_.htm">IIB9 Documentation</a>
      */

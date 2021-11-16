@@ -10,7 +10,7 @@ import com.ibm.broker.config.proxy.DeploymentDescriptor;
 /**
  * Highly borrowed from
  * 
- * @see com.ibm.broker.config.util.ReadBar
+ * com.ibm.broker.config.util.ReadBar
  * 
  * @author u209936 (Jamie Townsend)
  * @since 2.1, 2015
