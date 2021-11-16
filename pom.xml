@@ -120,9 +120,9 @@
 						<configuration>
 							<packageName>${project.groupId}.iib.generated.eclipse_project</packageName>
 							<clearOutputDir>false</clearOutputDir>
-							<includes>
-								<include>EclipseProject.xsd</include>
-							</includes>
+							<sources>
+								<source>src/main/xsd/EclipseProject.xsd</source>
+							</sources>
 						</configuration>
 					</execution>
 					<execution>
@@ -133,9 +133,9 @@
 						<configuration>
 							<packageName>${project.groupId}.iib.generated.maven_pom</packageName>
 							<clearOutputDir>false</clearOutputDir>
-							<includes>
-								<include>maven-v4_0_0.xsd</include>
-							</includes>
+							<sources>
+								<source>src/main/xsd/maven-v4_0_0.xsd</source>
+							</sources>
 						</configuration>
 					</execution>
 				</executions>
